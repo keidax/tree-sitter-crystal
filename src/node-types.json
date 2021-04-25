@@ -12,6 +12,10 @@
           "named": true
         },
         {
+          "type": "float",
+          "named": true
+        },
+        {
           "type": "integer",
           "named": true
         },
@@ -28,6 +32,10 @@
   },
   {
     "type": "false",
+    "named": true
+  },
+  {
+    "type": "float",
     "named": true
   },
   {

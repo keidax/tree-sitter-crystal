@@ -173,3 +173,35 @@ hex integers
   (integer)
   (integer)
   (integer))
+
+
+======
+floats
+======
+
+0.0
+0.0000
++1_2.3_4
+-1.1e1
+0_2.00f64
++0.1E2f32
+0_7e-07
+3E
+52f32
+-2e+2f64
+1_e_
+
+---
+
+(source_file
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float)
+  (float))

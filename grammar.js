@@ -13,6 +13,7 @@ module.exports = grammar({
       $.nil,
       $._bool,
       $.integer,
+      $.float,
       // $.identifier,
       // TODO: other expressions
     ),
@@ -25,7 +26,7 @@ module.exports = grammar({
 
     integer: $ => {
 
-      const leading_sign = /[-+]/
+      const sign = /[-+]/
 
       const binary_literal = seq('0b', repeat(/[01_]/))
       const octal_literal = seq('0o', repeat(/[0-7_]/))
@@ -43,7 +44,7 @@ module.exports = grammar({
       )
 
       return token(seq(
-        optional(leading_sign),
+        optional(sign),
         choice(
           binary_literal,
           octal_literal,
@@ -54,5 +55,33 @@ module.exports = grammar({
         optional(type_suffix)
       ))
      },
+
+    float: $ => {
+      const digit_or_underscore = /[0-9_]/
+      const sign = /[-+]/
+
+      const leading_non_zero_value = seq(/[1-9]/, repeat(digit_or_underscore))
+      const leading_zero_value = choice(
+        '0',
+        seq('0_', repeat(/[0-9_]/))
+      )
+      const leading_number = choice(
+        leading_non_zero_value,
+        leading_zero_value
+      )
+
+      const decimal_and_trailing_value = seq(/\.[0-9]/, repeat(digit_or_underscore))
+
+      const exponent = seq(/[eE]/, optional(seq(optional(sign), repeat1(digit_or_underscore))))
+
+      const float_suffix = choice('f32', 'f64')
+
+      // A float must contain at least one of {decimal point, exponent, suffix}
+      return token(choice(
+        seq(optional(sign), leading_number, decimal_and_trailing_value, optional(exponent), optional(float_suffix)),
+        seq(optional(sign), leading_number, optional(decimal_and_trailing_value), exponent, optional(float_suffix)),
+        seq(optional(sign), leading_number, optional(decimal_and_trailing_value), optional(exponent), float_suffix),
+      ))
+    }
   }
 });
