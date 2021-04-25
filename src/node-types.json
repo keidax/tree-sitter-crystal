@@ -1,5 +1,20 @@
 [
   {
+    "type": "char",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "char_escape_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -7,6 +22,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "char",
+          "named": true
+        },
         {
           "type": "false",
           "named": true
@@ -29,6 +48,14 @@
         }
       ]
     }
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
+    "type": "char_escape_sequence",
+    "named": true
   },
   {
     "type": "false",

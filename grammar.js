@@ -14,15 +14,16 @@ module.exports = grammar({
       $._bool,
       $.integer,
       $.float,
+      $.char,
       // $.identifier,
       // TODO: other expressions
     ),
 
-    nil: $ => "nil",
+    nil: $ => 'nil',
 
     _bool: $ => choice($.true, $.false),
-    true: $ => "true",
-    false: $ => "false",
+    true: $ => 'true',
+    false: $ => 'false',
 
     integer: $ => {
 
@@ -82,6 +83,23 @@ module.exports = grammar({
         seq(optional(sign), leading_number, optional(decimal_and_trailing_value), exponent, optional(float_suffix)),
         seq(optional(sign), leading_number, optional(decimal_and_trailing_value), optional(exponent), float_suffix),
       ))
-    }
+    },
+
+    char: $ => seq(
+      '\'',
+      choice(token.immediate(/[^\\]/), $.char_escape_sequence),
+      token.immediate('\'')
+    ),
+
+    char_escape_sequence: $ => {
+      const char_unicode_escape = seq('u', choice(
+        /[0-9a-fA-F]{4}/,
+        /\{[0-9a-fA-F]{1,6}\}/
+      ))
+
+      return token.immediate(seq('\\', choice(
+        '\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
+      )))
+    },
   }
 });

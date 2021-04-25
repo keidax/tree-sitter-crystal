@@ -205,3 +205,66 @@ floats
   (float)
   (float)
   (float))
+
+
+=====
+chars
+=====
+
+'a'
+'あ'
+'"'
+'🎅'
+
+' '
+'
+'
+''
+'	'
+
+'\''
+'\\'
+'\a'
+'\b'
+'\e'
+'\f'
+'\n'
+'\r'
+'\t'
+'\v'
+'\u00aF'
+'\u{0}'
+'\u{20}'
+'\u{abcd}'
+'\u{aBcDe}'
+'\u{10FFFF}'
+
+---
+
+(source_file
+  (char)
+  (char)
+  (char)
+  (char)
+
+  (char)
+  (char)
+  (char)
+  (char)
+
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence))
+  (char (char_escape_sequence)))
