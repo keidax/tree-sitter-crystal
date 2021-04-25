@@ -222,6 +222,7 @@ chars
 ''
 '	'
 
+'\0'
 '\''
 '\\'
 '\a'
@@ -252,6 +253,7 @@ chars
   (char)
   (char)
 
+  (char (char_escape_sequence))
   (char (char_escape_sequence))
   (char (char_escape_sequence))
   (char (char_escape_sequence))

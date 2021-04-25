@@ -98,7 +98,7 @@ module.exports = grammar({
       ))
 
       return token.immediate(seq('\\', choice(
-        '\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
+        '0' ,'\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
       )))
     },
   }
