@@ -12,6 +12,14 @@
           "named": true
         },
         {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -20,6 +28,14 @@
   },
   {
     "type": "false",
+    "named": true
+  },
+  {
+    "type": "integer",
+    "named": true
+  },
+  {
+    "type": "nil",
     "named": true
   },
   {

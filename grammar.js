@@ -10,14 +10,19 @@ module.exports = grammar({
     ),
 
     _expression: $ => choice(
-      $._bool
+      $.nil,
+      $._bool,
+      $.integer,
       // $.identifier,
       // TODO: other expressions
     ),
 
+    nil: $ => "nil",
+
     _bool: $ => choice($.true, $.false),
     true: $ => "true",
-    false: $ => "false"
+    false: $ => "false",
 
+    integer: $ => /[-+]?(0b[01_]*|0o[0-7_]*|0x[0-9a-fA-F_]*|0(_[0-9_]*)?|[1-9][0-9_]*)((i|u)(8|16|32|64|128))?/,
   }
 });

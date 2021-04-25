@@ -1,3 +1,14 @@
+===
+nil
+===
+
+nil
+
+---
+
+(source_file
+  (nil))
+
 =====
 bools
 =====
@@ -10,3 +21,155 @@ false
 (source_file
   (true)
   (false))
+
+===============
+binary integers
+===============
+
+0b0
+-0b1_
++0b_0_1_
+0b1_______u8
++0b0u16
+0b0_0_0_0u32
++0b_111u64
+-0b10_10_01_01u128
+0bi8
+-0b01010i16
++0b01101i32
+0b1001_1101i64
+-0b___i128
+
+---
+
+(source_file
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer))
+
+==============
+octal integers
+==============
+
+0o0
+-0o7_
++0o_2_6_
+0o3_______u8
++0o1u16
+0o0_1_2_3u32
++0o_777u64
+-0o10_10_01_01u128
+0oi8
+-0o01_234i16
++0o01114i32
+0o7036_1205i64
+-0o___i128
+
+---
+
+(source_file
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer))
+
+================
+decimal integers
+================
+
+0
+-0
+0_
+0_0_0
++0_1_234_0
+1
+-1
++1___0
++9__________
+9u8
++1_2_3u16
+4____2u32
++1234567890u64
+888_888_888u128
+-7i8
++3_3i16
+32i32
+-123_456_789i64
++1_000_000_000_000i128
+
+---
+
+(source_file
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer))
+
+============
+hex integers
+============
+
+0x0
++0x1
+-0x__f__
+0xu8
+0xfFu16
++0x_dead_beef_u32
+0x0123456789u64
+0xAbC_dEfu128
+0x42i8
+-0x3f_ffi16
++0xi32
+0x12341234i64
+0xaabb_bbaa_abba_baabi128
+
+---
+
+(source_file
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer)
+  (integer))

@@ -22,9 +22,21 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "nil"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_bool"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "integer"
         }
       ]
+    },
+    "nil": {
+      "type": "STRING",
+      "value": "nil"
     },
     "_bool": {
       "type": "CHOICE",
@@ -46,6 +58,10 @@
     "false": {
       "type": "STRING",
       "value": "false"
+    },
+    "integer": {
+      "type": "PATTERN",
+      "value": "[-+]?(0b[01_]*|0o[0-7_]*|0x[0-9a-fA-F_]*|0(_[0-9_]*)?|[1-9][0-9_]*)((i|u)(8|16|32|64|128))?"
     }
   },
   "extras": [
