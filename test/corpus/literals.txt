@@ -1,0 +1,12 @@
+=====
+bools
+=====
+
+true
+false
+
+---
+
+(source_file
+  (true)
+  (false))

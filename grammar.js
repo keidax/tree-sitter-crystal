@@ -2,7 +2,22 @@ module.exports = grammar({
   name: 'crystal',
 
   rules: {
-    // TODO
-    source_file: $ => 'hello'
+    source_file: $ => repeat($._statement),
+
+    _statement: $ => choice(
+      $._expression,
+      // TODO: add definitions, etc.
+    ),
+
+    _expression: $ => choice(
+      $._bool
+      // $.identifier,
+      // TODO: other expressions
+    ),
+
+    _bool: $ => choice($.true, $.false),
+    true: $ => "true",
+    false: $ => "false"
+
   }
 });
