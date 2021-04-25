@@ -192,37 +192,37 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       ACCEPT_TOKEN(sym_integer);
       if (lookahead == '_') ADVANCE(24);
       if (lookahead == 'b') ADVANCE(22);
-      if (lookahead == 'i' ||
-          lookahead == 'u') ADVANCE(2);
+      if (lookahead == 'i') ADVANCE(2);
       if (lookahead == 'o') ADVANCE(23);
+      if (lookahead == 'u') ADVANCE(2);
       if (lookahead == 'x') ADVANCE(25);
       END_STATE();
     case 22:
       ACCEPT_TOKEN(sym_integer);
-      if (lookahead == 'i' ||
-          lookahead == 'u') ADVANCE(2);
+      if (lookahead == 'i') ADVANCE(2);
+      if (lookahead == 'u') ADVANCE(2);
       if (lookahead == '0' ||
           lookahead == '1' ||
           lookahead == '_') ADVANCE(22);
       END_STATE();
     case 23:
       ACCEPT_TOKEN(sym_integer);
-      if (lookahead == 'i' ||
-          lookahead == 'u') ADVANCE(2);
+      if (lookahead == 'i') ADVANCE(2);
+      if (lookahead == 'u') ADVANCE(2);
       if (('0' <= lookahead && lookahead <= '7') ||
           lookahead == '_') ADVANCE(23);
       END_STATE();
     case 24:
       ACCEPT_TOKEN(sym_integer);
-      if (lookahead == 'i' ||
-          lookahead == 'u') ADVANCE(2);
+      if (lookahead == 'i') ADVANCE(2);
+      if (lookahead == 'u') ADVANCE(2);
       if (('0' <= lookahead && lookahead <= '9') ||
           lookahead == '_') ADVANCE(24);
       END_STATE();
     case 25:
       ACCEPT_TOKEN(sym_integer);
-      if (lookahead == 'i' ||
-          lookahead == 'u') ADVANCE(2);
+      if (lookahead == 'i') ADVANCE(2);
+      if (lookahead == 'u') ADVANCE(2);
       if (('0' <= lookahead && lookahead <= '9') ||
           ('A' <= lookahead && lookahead <= 'F') ||
           lookahead == '_' ||
