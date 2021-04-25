@@ -26,7 +26,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_bool"
+          "name": "true"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "false"
         },
         {
           "type": "SYMBOL",
@@ -45,19 +49,6 @@
     "nil": {
       "type": "STRING",
       "value": "nil"
-    },
-    "_bool": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "true"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "false"
-        }
-      ]
     },
     "true": {
       "type": "STRING",

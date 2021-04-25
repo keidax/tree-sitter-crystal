@@ -11,7 +11,8 @@ module.exports = grammar({
 
     _expression: $ => choice(
       $.nil,
-      $._bool,
+      $.true,
+      $.false,
       $.integer,
       $.float,
       $.char,
@@ -21,7 +22,6 @@ module.exports = grammar({
 
     nil: $ => 'nil',
 
-    _bool: $ => choice($.true, $.false),
     true: $ => 'true',
     false: $ => 'false',
 

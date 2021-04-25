@@ -8,7 +8,7 @@
 #define LANGUAGE_VERSION 13
 #define STATE_COUNT 8
 #define LARGE_STATE_COUNT 4
-#define SYMBOL_COUNT 16
+#define SYMBOL_COUNT 15
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 10
 #define EXTERNAL_TOKEN_COUNT 0
@@ -29,9 +29,8 @@ enum {
   sym_source_file = 10,
   sym__statement = 11,
   sym__expression = 12,
-  sym__bool = 13,
-  sym_char = 14,
-  aux_sym_source_file_repeat1 = 15,
+  sym_char = 13,
+  aux_sym_source_file_repeat1 = 14,
 };
 
 static const char *ts_symbol_names[] = {
@@ -48,7 +47,6 @@ static const char *ts_symbol_names[] = {
   [sym_source_file] = "source_file",
   [sym__statement] = "_statement",
   [sym__expression] = "_expression",
-  [sym__bool] = "_bool",
   [sym_char] = "char",
   [aux_sym_source_file_repeat1] = "source_file_repeat1",
 };
@@ -67,7 +65,6 @@ static TSSymbol ts_symbol_map[] = {
   [sym_source_file] = sym_source_file,
   [sym__statement] = sym__statement,
   [sym__expression] = sym__expression,
-  [sym__bool] = sym__bool,
   [sym_char] = sym_char,
   [aux_sym_source_file_repeat1] = aux_sym_source_file_repeat1,
 };
@@ -122,10 +119,6 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .named = true,
   },
   [sym__expression] = {
-    .visible = false,
-    .named = true,
-  },
-  [sym__bool] = {
     .visible = false,
     .named = true,
   },
@@ -460,7 +453,6 @@ static uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_source_file] = STATE(6),
     [sym__statement] = STATE(2),
     [sym__expression] = STATE(2),
-    [sym__bool] = STATE(2),
     [sym_char] = STATE(2),
     [aux_sym_source_file_repeat1] = STATE(2),
     [ts_builtin_sym_end] = ACTIONS(3),
@@ -474,7 +466,6 @@ static uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [2] = {
     [sym__statement] = STATE(3),
     [sym__expression] = STATE(3),
-    [sym__bool] = STATE(3),
     [sym_char] = STATE(3),
     [aux_sym_source_file_repeat1] = STATE(3),
     [ts_builtin_sym_end] = ACTIONS(11),
@@ -488,7 +479,6 @@ static uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [3] = {
     [sym__statement] = STATE(3),
     [sym__expression] = STATE(3),
-    [sym__bool] = STATE(3),
     [sym_char] = STATE(3),
     [aux_sym_source_file_repeat1] = STATE(3),
     [ts_builtin_sym_end] = ACTIONS(17),
