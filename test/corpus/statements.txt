@@ -1,0 +1,48 @@
+===================
+compound statements
+===================
+
+;;;nil;;;
+;nil;nil;
+  ;;;;;
+
+nil
+
+nil;
+
+nil; nil
+
+nil; (nil;nil)
+
+()
+
+(nil)
+
+(nil;)
+
+(nil; nil)
+
+(nil; (nil;nil))
+
+---
+(source_file
+    (nil)
+ (nil) (nil)
+
+ (nil)
+
+ (nil)
+
+ (nil) (nil)
+
+ (nil) (nil) (nil)
+
+ (nil)
+
+ (nil)
+
+ (nil) (nil)
+
+ (nil) (nil) (nil)
+
+)

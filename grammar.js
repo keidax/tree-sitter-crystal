@@ -2,22 +2,53 @@ module.exports = grammar({
   name: 'crystal',
 
   rules: {
-    source_file: $ => repeat($._statement),
+    source_file: $ => seq(
+      optional($._statements)
+    ),
+
+    _terminator: $ => choice('\n', ';'),
+
+    _statements: $ => choice(
+      seq(
+        repeat1(
+          choice(
+            seq($._statement, $._terminator),
+            prec(-1, ';'),
+          )
+        ),
+        optional($._statement)
+      ),
+      $._statement
+    ),
+
+    _parenthesized_statements: $ => seq(
+      '(', optional($._statements), ')'
+    ),
 
     _statement: $ => choice(
       $._expression,
-      // TODO: add definitions, etc.
+      // TODO:
+      // class
+      // module
+      // lib
+      // const
     ),
 
     _expression: $ => choice(
+      $._parenthesized_statements,
       $.nil,
       $.true,
       $.false,
       $.integer,
       $.float,
       $.char,
-      // $.identifier,
       // TODO: other expressions
+      // string
+      // symbol
+      // array
+      // hash
+      // tuple
+      // begin/end
     ),
 
     nil: $ => 'nil',
@@ -26,7 +57,6 @@ module.exports = grammar({
     false: $ => 'false',
 
     integer: $ => {
-
       const sign = /[-+]/
 
       const binary_literal = seq('0b', repeat(/[01_]/))
@@ -55,7 +85,7 @@ module.exports = grammar({
         ),
         optional(type_suffix)
       ))
-     },
+    },
 
     float: $ => {
       const digit_or_underscore = /[0-9_]/
