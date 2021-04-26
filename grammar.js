@@ -1,3 +1,8 @@
+const
+  const_start = /[A-Z]/,
+  ident_start = /[A-Za-z_\u{00a0}-\u{10ffff}]/u,
+  ident_part = choice(ident_start, /[0-9]/)
+
 module.exports = grammar({
   name: 'crystal',
 
@@ -27,9 +32,9 @@ module.exports = grammar({
 
     _statement: $ => choice(
       $._expression,
+      $.module,
       // TODO:
       // class
-      // module
       // lib
       // const
     ),
@@ -131,5 +136,15 @@ module.exports = grammar({
         '0' ,'\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
       )))
     },
+
+    module: $ => seq(
+      'module',
+      field('name', $.constant), $._terminator,
+      field('body', optional($._statements)),
+      'end'
+    ),
+
+    // TODO: namespaces
+    constant: $ => seq(const_start, repeat(ident_part)),
   }
 });

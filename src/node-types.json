@@ -15,6 +15,77 @@
     }
   },
   {
+    "type": "constant",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "\n",
+            "named": false
+          },
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "module",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "constant",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -36,6 +107,10 @@
         },
         {
           "type": "integer",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -74,6 +149,10 @@
     "named": true
   },
   {
+    "type": "end",
+    "named": false
+  },
+  {
     "type": "false",
     "named": true
   },
@@ -84,6 +163,10 @@
   {
     "type": "integer",
     "named": true
+  },
+  {
+    "type": "module",
+    "named": false
   },
   {
     "type": "nil",

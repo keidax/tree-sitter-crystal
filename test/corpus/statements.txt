@@ -46,3 +46,30 @@ nil; (nil;nil)
  (nil) (nil) (nil)
 
 )
+
+=======
+modules
+=======
+
+module A♦️; end
+
+module Outer
+  module Inner
+    true
+  end
+end
+
+---
+(source_file
+  (module
+    name: (constant))
+
+  (module
+    name: (constant)
+    body:
+      (module
+        name: (constant)
+        body: (true)
+      )
+  )
+)
