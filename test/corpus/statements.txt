@@ -51,9 +51,13 @@ nil; (nil;nil)
 modules
 =======
 
-module A♦️; end
+module A; end
 
-module Outer
+module ::Global; end
+
+module A1♣️::B♦️2::C_♠️::D♥️_; end
+
+module ::Outer
   module Inner
     true
   end
@@ -61,11 +65,18 @@ end
 
 ---
 (source_file
+
   (module
     name: (constant))
 
   (module
-    name: (constant)
+    name: (scope (constant)))
+
+  (module
+    name: (scope (scope (scope (scope (constant)) (constant)) (constant)) (constant)))
+
+  (module
+    name: (scope (constant))
     body:
       (module
         name: (constant)

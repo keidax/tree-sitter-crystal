@@ -80,9 +80,32 @@
           {
             "type": "constant",
             "named": true
+          },
+          {
+            "type": "scope",
+            "named": true
           }
         ]
       }
+    }
+  },
+  {
+    "type": "scope",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "scope",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -138,6 +161,10 @@
   },
   {
     "type": ")",
+    "named": false
+  },
+  {
+    "type": "::",
     "named": false
   },
   {

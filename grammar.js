@@ -139,12 +139,20 @@ module.exports = grammar({
 
     module: $ => seq(
       'module',
-      field('name', $.constant), $._terminator,
+      field('name', choice($.constant, $.scope)), // TODO: generics
+      $._terminator,
       field('body', optional($._statements)),
       'end'
     ),
 
-    // TODO: namespaces
+    scope: $ => prec.right(seq(
+      choice(
+        optional('::'),
+        seq($.scope, '::')
+      ),
+      $.constant,
+    )),
+
     constant: $ => seq(const_start, repeat(ident_part)),
   }
 });
