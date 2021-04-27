@@ -4,7 +4,7 @@ constants
 
 A
 A1
-A_A____
+(A_A____)
 
 ::B
 ::B💎::C
@@ -27,10 +27,26 @@ unions
 
 alias AOrB = A | B
 
+alias AOrBCOrD = A|B::C|D
+
+alias NestedUnion = (A)|( B::C|D )
+alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F))
+
 ---
 
 (source_file
-  (alias name: (constant) type:
-    (union_type
-      (constant) (constant)))
+  (alias
+    name: (constant)
+    type: (union_type (constant) (constant)))
+
+  (alias
+    name: (constant)
+    type: (union_type (constant) (constant) (constant)))
+
+  (alias
+    name: (constant)
+    type: (union_type (constant) (constant) (constant)))
+  (alias
+    name: (constant)
+    type: (union_type (constant) (constant) (constant) (constant) (constant) (constant)))
 )

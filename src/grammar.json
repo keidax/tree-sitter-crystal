@@ -1048,6 +1048,23 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_type"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
+        },
+        {
           "type": "SYMBOL",
           "name": "constant"
         },
@@ -1065,7 +1082,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "constant"
+            "name": "_nested_union_type"
           },
           {
             "type": "STRING",
@@ -1073,7 +1090,82 @@
           },
           {
             "type": "SYMBOL",
+            "name": "_nested_union_type"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "PREC",
+              "value": 1,
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "|"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_nested_union_type"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "_nested_union_type": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "("
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_nested_union_type"
+              },
+              {
+                "type": "STRING",
+                "value": ")"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
             "name": "constant"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_inner_union_type"
+          }
+        ]
+      }
+    },
+    "_inner_union_type": {
+      "type": "PREC_RIGHT",
+      "value": -1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_nested_union_type"
+          },
+          {
+            "type": "STRING",
+            "value": "|"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_nested_union_type"
           },
           {
             "type": "REPEAT",
@@ -1086,7 +1178,7 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "constant"
+                  "name": "_nested_union_type"
                 }
               ]
             }

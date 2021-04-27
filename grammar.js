@@ -162,14 +162,26 @@ module.exports = grammar({
     identifier: $ => seq(ident_start, repeat(ident_part)),
 
     _type: $ => choice(
+      seq('(', $._type, ')'),
       $.constant,
       $.union_type,
       // TODO: rest of type grammar
+      // Any types added here should also be added to _nested_union
     ),
 
     union_type: $ => prec.right(seq(
-      // TODO: needs to be full type, not just constant
-      $.constant, "|", $.constant, repeat(seq("|", $.constant))
+      $._nested_union_type, "|", $._nested_union_type, repeat(prec(1, seq("|", $._nested_union_type)))
+    )),
+
+    // Any nested union types are flattened
+    _nested_union_type: $ => prec(1, choice(
+      seq('(', $._nested_union_type, ')'),
+      $.constant,
+      $._inner_union_type,
+    )),
+
+    _inner_union_type: $ => prec.right(-1, seq(
+      $._nested_union_type, "|", $._nested_union_type, repeat(seq("|", $._nested_union_type))
     )),
 
     alias: $ => seq(
