@@ -1,7 +1,7 @@
 const
   const_start = /[A-Z]/,
   ident_start = /[A-Za-z_\u{00a0}-\u{10ffff}]/u,
-  ident_part = choice(ident_start, /[0-9]/)
+  ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
 module.exports = grammar({
   name: 'crystal',
@@ -33,6 +33,7 @@ module.exports = grammar({
     _statement: $ => choice(
       $._expression,
       $.module,
+      $.alias,
       // TODO:
       // class
       // lib
@@ -47,12 +48,14 @@ module.exports = grammar({
       $.integer,
       $.float,
       $.char,
+      $.constant,
       // TODO: other expressions
       // string
       // symbol
       // array
       // hash
       // tuple
+      $.begin_block,
       // begin/end
     ),
 
@@ -139,20 +142,67 @@ module.exports = grammar({
 
     module: $ => seq(
       'module',
-      field('name', choice($.constant, $.scope)), // TODO: generics
+      field('name', choice($.constant)), // TODO: generics
       $._terminator,
       field('body', optional($._statements)),
       'end'
     ),
 
-    scope: $ => prec.right(seq(
-      choice(
+    constant: $ => {
+      const constant_segment = seq(const_start, repeat(ident_part))
+      return token(seq(
         optional('::'),
-        seq($.scope, '::')
-      ),
+        constant_segment,
+        repeat(
+          seq('::', constant_segment)
+        ),
+      ))
+    },
+
+    identifier: $ => seq(ident_start, repeat(ident_part)),
+
+    _type: $ => choice(
       $.constant,
+      $.union_type,
+      // TODO: rest of type grammar
+    ),
+
+    union_type: $ => prec.right(seq(
+      // TODO: needs to be full type, not just constant
+      $.constant, "|", $.constant, repeat(seq("|", $.constant))
     )),
 
-    constant: $ => seq(const_start, repeat(ident_part)),
+    alias: $ => seq(
+      'alias',
+      field('name', $.constant),
+      '=',
+      field('type', $._type)
+    ),
+
+    begin_block: $ => seq(
+      'begin',
+      optional($._terminator),
+      field('body', optional($._statements)),
+      field('rescue', optional($.rescue_block)),
+      // TODO: else, ensure
+      'end'
+    ),
+
+    rescue_block: $ => {
+      const rescue_variable = field('variable', $.identifier)
+      const rescue_type = field('type', $._type) // TODO: the entire type grammar isn't really valid here
+      const rescue_body = field('body', optional($._statements))
+
+      return seq(
+        'rescue',
+        optional(choice(
+          seq(rescue_variable, ': ', rescue_type),
+          rescue_variable,
+          rescue_type,
+        )),
+        $._terminator,
+        rescue_body
+      )
+    }
   }
 });

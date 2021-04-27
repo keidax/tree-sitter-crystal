@@ -1,0 +1,36 @@
+=========
+constants
+=========
+
+A
+A1
+A_A____
+
+::B
+::B💎::C
+::B_::C4
+
+---
+(source_file
+  (constant)
+  (constant)
+  (constant)
+
+  (constant)
+  (constant)
+  (constant)
+)
+
+======
+unions
+======
+
+alias AOrB = A | B
+
+---
+
+(source_file
+  (alias name: (constant) type:
+    (union_type
+      (constant) (constant)))
+)

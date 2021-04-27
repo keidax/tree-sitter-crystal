@@ -48,14 +48,26 @@ nil; (nil;nil)
 )
 
 =======
+aliases
+=======
+
+alias Foo = Bar::Baz
+
+---
+
+(source_file
+  (alias
+    name: (constant)
+    type: (constant)
+  ))
+
+=======
 modules
 =======
 
 module A; end
 
-module ::Global; end
-
-module A1♣️::B♦️2::C_♠️::D♥️_; end
+module ::A1::B2::C::D; end
 
 module ::Outer
   module Inner
@@ -70,13 +82,10 @@ end
     name: (constant))
 
   (module
-    name: (scope (constant)))
+    name: (constant))
 
   (module
-    name: (scope (scope (scope (scope (constant)) (constant)) (constant)) (constant)))
-
-  (module
-    name: (scope (constant))
+    name: (constant)
     body:
       (module
         name: (constant)

@@ -1,0 +1,81 @@
+============
+begin blocks
+============
+
+begin 1 end
+begin;2;end
+
+begin
+  begin
+  end
+end
+begin begin end end
+
+begin
+  1
+rescue
+  2
+end
+
+begin 3; rescue; 4 end
+
+begin
+  5; rescue a;
+  6; end
+
+begin
+  7
+rescue Exception; 8
+end
+
+begin 9
+rescue err : FooError | BarError
+end
+
+---
+
+(source_file
+  (begin_block body: (integer))
+  (begin_block body: (integer))
+
+  (begin_block body: (begin_block))
+  (begin_block body: (begin_block))
+
+  (begin_block
+    body: (integer)
+    rescue: (rescue_block
+      body: (integer)
+    )
+  )
+
+  (begin_block
+    body: (integer)
+    rescue: (rescue_block
+      body: (integer)
+    )
+  )
+
+  (begin_block
+    body: (integer)
+    rescue: (rescue_block
+      variable: (identifier)
+      body: (integer)
+    )
+  )
+
+  (begin_block
+    body: (integer)
+    rescue: (rescue_block
+      type: (constant)
+      body: (integer)
+    )
+  )
+
+  (begin_block
+    body: (integer)
+    rescue: (rescue_block
+      variable: (identifier)
+      type: (union_type (constant) (constant))
+    )
+  )
+)
