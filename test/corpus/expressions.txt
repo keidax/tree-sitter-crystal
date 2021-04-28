@@ -1,3 +1,165 @@
+=================
+plain identifiers
+=================
+
+fOo
+f_0___
+🥺
+あいうえお
+
+---
+
+(source_file
+  (identifier)
+  (identifier)
+  (identifier)
+  (identifier))
+
+============
+method calls
+============
+
+A.b
+
+e()
+c?
+d!()
+
+true.false?
+
+m1?.m2
+
+puts(b)
+
+a b 7
+
+a!.b!.c!
+
+a b.c
+
+a(b(c()))
+
+---
+
+(source_file
+  (call
+    receiver: (constant)
+    method: (identifier)
+  )
+
+  (call method: (identifier))
+  (call method: (identifier))
+  (call method: (identifier))
+
+  (call
+    receiver: (true)
+    method: (identifier)
+  )
+
+  (call
+    receiver: (call
+      method: (identifier)
+    )
+    method: (identifier)
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list (identifier))
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list (integer))
+      )
+    )
+  )
+
+  (call
+    receiver: (call
+      receiver: (call
+        method: (identifier)
+      )
+      method: (identifier)
+    )
+    method: (identifier)
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        receiver: (identifier)
+        method: (identifier)
+      )
+    )
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (call
+            method: (identifier)
+          )
+        )
+      )
+    )
+  )
+)
+
+====================================
+method calls with multiple arguments
+====================================
+
+puts true, -1, nil
+
+puts false,
+  0
+
+puts(true, false, nil)
+puts(true, false, nil,)
+puts(
+  true,
+  false,
+  nil,
+)
+
+---
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (true) (integer) (nil)
+    )
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (false) (integer)
+    )
+  )
+
+  (call
+    method: (identifier)
+    arguments: (argument_list (true) (false) (nil))
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list (true) (false) (nil))
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list (true) (false) (nil))
+  )
+)
+
 ============
 begin blocks
 ============

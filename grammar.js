@@ -1,7 +1,11 @@
 const
   const_start = /[A-Z]/,
-  ident_start = /[A-Za-z_\u{00a0}-\u{10ffff}]/u,
+  ident_start = /[a-z_\u{00a0}-\u{10ffff}]/u,
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
+
+const PREC = {
+  CALL: 50,
+}
 
 module.exports = grammar({
   name: 'crystal',
@@ -48,15 +52,16 @@ module.exports = grammar({
       $.integer,
       $.float,
       $.char,
-      $.constant,
       // TODO: other expressions
       // string
       // symbol
       // array
       // hash
       // tuple
+      $.constant,
+      $.identifier,
+      $.call,
       $.begin_block,
-      // begin/end
     ),
 
     nil: $ => 'nil',
@@ -159,7 +164,8 @@ module.exports = grammar({
       ))
     },
 
-    identifier: $ => seq(ident_start, repeat(ident_part)),
+    identifier: $ => token(seq(ident_start, repeat(ident_part))),
+    identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),
 
     _type: $ => choice(
       seq('(', $._type, ')'),
@@ -183,6 +189,45 @@ module.exports = grammar({
     _inner_union_type: $ => prec.right(-1, seq(
       $._nested_union_type, "|", $._nested_union_type, repeat(seq("|", $._nested_union_type))
     )),
+
+    call: $ => {
+      const receiver = field('receiver', seq($._expression, '.'))
+
+      const method_identifier = field('method', alias($.identifier_method_call, $.identifier))
+      const optional_method_identifier = field('method', choice($.identifier, alias($.identifier_method_call, $.identifier)))
+
+      const argument_list = field('arguments', choice(
+        seq(
+          '(',
+          optional(alias(
+            $.argument_list_with_trailing_comma,
+            $.argument_list,
+          )),
+          ')'
+        ),
+        $.argument_list
+      ))
+
+      // how do we distingush a method call from a variable?
+      // at least one of these is required:
+      // - receiver
+      // - ends in ? or !
+      // - parentheses
+      // - arguments
+      // - block arg
+
+      // TODO:
+      // named arguments
+      // blocks
+      return prec(PREC.CALL, seq(choice(
+        seq(receiver, optional_method_identifier, optional(argument_list)),
+        seq(optional(receiver), method_identifier, optional(argument_list)),
+        seq(optional(receiver), optional_method_identifier, argument_list),
+      )))
+    },
+
+    argument_list: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)))),
+    argument_list_with_trailing_comma: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)), optional(','))),
 
     alias: $ => seq(
       'alias',
