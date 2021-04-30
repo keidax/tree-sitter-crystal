@@ -66,18 +66,28 @@ modules
 =======
 
 module A; end
+module A
+;;;;
+end
+
+module
+M end
+
+module M2 C=2;D=3 end
 
 module ::A1::B2::C::D; end
 
 module ::Outer
   module Inner
     true
+    false
   end
 end
 
 ---
 (source_file
-
+  (module
+    name: (constant))
   (module
     name: (constant))
 
@@ -86,10 +96,23 @@ end
 
   (module
     name: (constant)
-    body:
-      (module
-        name: (constant)
-        body: (true)
-      )
+    (const_assign
+      lhs: (constant)
+      rhs: (integer))
+    (const_assign
+      lhs: (constant)
+      rhs: (integer))
+  )
+
+  (module
+    name: (constant))
+
+  (module
+    name: (constant)
+    (module
+      name: (constant)
+      (true)
+      (false)
+    )
   )
 )

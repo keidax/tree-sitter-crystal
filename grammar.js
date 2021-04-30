@@ -183,8 +183,7 @@ module.exports = grammar({
     module: $ => seq(
       'module',
       field('name', choice($.constant)), // TODO: generics
-      $._terminator,
-      field('body', optional($._statements)),
+      seq(optional($._statements)),
       'end'
     ),
 
