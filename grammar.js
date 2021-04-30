@@ -49,9 +49,9 @@ module.exports = grammar({
       $._expression,
       $.const_assign,
       $.module,
+      $.class,
       $.alias,
       // TODO:
-      // class
       // lib
     ),
 
@@ -182,7 +182,17 @@ module.exports = grammar({
 
     module: $ => seq(
       'module',
+      field('name', $.constant), // TODO: generics
+      seq(optional($._statements)),
+      'end'
+    ),
+
+    class: $ => seq(
+      'class',
       field('name', choice($.constant)), // TODO: generics
+      optional(seq(
+        '<', field('superclass', $.constant)
+      )),
       seq(optional($._statements)),
       'end'
     ),

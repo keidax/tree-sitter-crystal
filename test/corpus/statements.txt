@@ -116,3 +116,75 @@ end
     )
   )
 )
+
+=======
+classes
+=======
+
+class A < Super; end
+
+class B <
+A
+;;;;
+end
+
+class
+MM end
+
+class C2 C=2;D=3 end
+
+class ::A1::B2::C::D < ::E::F::G; end
+
+class ::Outer
+  module Middle
+    class Inner
+      self
+      nil
+    end
+  end
+end
+
+---
+
+(source_file
+  (class
+    name: (constant)
+    superclass: (constant)
+  )
+
+  (class
+    name: (constant)
+    superclass: (constant)
+  )
+
+  (class
+    name: (constant)
+  )
+
+  (class
+    name: (constant)
+    (const_assign
+      lhs: (constant)
+      rhs: (integer))
+    (const_assign
+      lhs: (constant)
+      rhs: (integer))
+  )
+
+  (class
+    name: (constant)
+    superclass: (constant)
+  )
+
+  (class
+    name: (constant)
+    (module
+      name: (constant)
+      (class
+        name: (constant)
+        (self)
+        (nil)
+      )
+    )
+  )
+)
