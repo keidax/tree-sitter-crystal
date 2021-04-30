@@ -75,6 +75,7 @@ module.exports = grammar({
       $.begin_block,
 
       // Symbols
+      $.self,
       $.constant,
       $.identifier,
 
@@ -196,6 +197,8 @@ module.exports = grammar({
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),
+
+    self: $ => 'self',
 
     _type: $ => choice(
       seq('(', $._type, ')'),

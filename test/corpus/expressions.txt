@@ -15,6 +15,22 @@ f_0___
   (identifier)
   (identifier))
 
+====
+self
+====
+
+self
+self_
+selfself
+
+---
+
+(source_file
+  (self)
+  (identifier)
+  (identifier)
+)
+
 ============
 method calls
 ============

@@ -165,6 +165,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "self"
+        },
+        {
+          "type": "SYMBOL",
           "name": "constant"
         },
         {
@@ -1687,6 +1691,10 @@
           }
         ]
       }
+    },
+    "self": {
+      "type": "STRING",
+      "value": "self"
     },
     "_type": {
       "type": "CHOICE",
