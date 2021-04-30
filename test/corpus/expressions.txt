@@ -241,3 +241,147 @@ end
     )
   )
 )
+
+==================
+binary additive operators
+==================
+
+1 + 2.0
+
+a &+ b! - C
+
+D &-
+  (E)
+
+---
+
+(source_file
+  (call
+    receiver: (integer)
+    method: (identifier)
+    arguments: (float)
+  )
+
+  (call
+    receiver: (call
+      receiver: (identifier)
+      method: (identifier)
+      arguments: (call
+        method: (identifier)
+      )
+    )
+    method: (identifier)
+    arguments: (constant)
+  )
+
+  (call
+    receiver: (constant)
+    method: (identifier)
+    arguments: (constant)
+  )
+)
+
+===
+unary additive operators
+===
+
+puts + 2
+puts +2
+puts+2
+puts(+ 2)
+
+
+a! - 1
+b? -1
+c-
+1
+d_ (- 2)
+
++-+0
++- 0.3
+
+1-
++2
+1-+ 2
+
+---
+(source_file
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    arguments: (integer)
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list (integer))
+  )
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    arguments: (integer)
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        receiver: (integer)
+      )
+    )
+  )
+
+  (call
+    receiver: (call
+      method: (identifier)
+    )
+    method: (identifier)
+    arguments: (integer)
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list (integer))
+  )
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    arguments: (integer)
+  )
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        receiver: (integer)
+      )
+    )
+  )
+
+  (call
+    method: (identifier)
+    receiver: (call
+      method: (identifier)
+      receiver: (integer)
+    )
+  )
+  (call
+    method: (identifier)
+    receiver: (call
+      method: (identifier)
+      receiver: (float)
+    )
+  )
+
+  (call
+    receiver: (integer)
+    method: (identifier)
+    arguments: (integer)
+  )
+  (call
+    receiver: (integer)
+    method: (identifier)
+    arguments: (call
+      method: (identifier)
+      receiver: (integer)
+    )
+  )
+)

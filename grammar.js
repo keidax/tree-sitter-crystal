@@ -5,17 +5,28 @@ const
 
 const PREC = {
   CALL: 50,
+  ADDITIVE: 75,
+  UNARY: 90,
 }
 
 module.exports = grammar({
   name: 'crystal',
+
+  externals: $ => [
+    $._line_break,
+
+    $.unary_plus,
+    $.unary_minus,
+	$.binary_plus,
+	$.binary_minus,
+  ],
 
   rules: {
     source_file: $ => seq(
       optional($._statements)
     ),
 
-    _terminator: $ => choice('\n', ';'),
+    _terminator: $ => choice($._line_break, ';'),
 
     _statements: $ => choice(
       seq(
@@ -45,7 +56,7 @@ module.exports = grammar({
     ),
 
     _expression: $ => choice(
-      $._parenthesized_statements,
+      // Literals
       $.nil,
       $.true,
       $.false,
@@ -58,10 +69,19 @@ module.exports = grammar({
       // array
       // hash
       // tuple
+
+      // Groupings
+      $._parenthesized_statements,
+      $.begin_block,
+
+      // Symbols
       $.constant,
       $.identifier,
+
+      // Methods
       $.call,
-      $.begin_block,
+      alias($.additive_operator, $.call),
+      alias($.unary_additive_operator, $.call),
     ),
 
     nil: $ => 'nil',
@@ -70,8 +90,6 @@ module.exports = grammar({
     false: $ => 'false',
 
     integer: $ => {
-      const sign = /[-+]/
-
       const binary_literal = seq('0b', repeat(/[01_]/))
       const octal_literal = seq('0o', repeat(/[0-7_]/))
       const hex_literal = seq('0x', repeat(/[0-9a-fA-F_]/))
@@ -87,8 +105,7 @@ module.exports = grammar({
         'i8', 'i16', 'i32', 'i64', 'i128',
       )
 
-      return token(seq(
-        optional(sign),
+      const numeric_component = seq(
         choice(
           binary_literal,
           octal_literal,
@@ -97,12 +114,18 @@ module.exports = grammar({
           decimal
         ),
         optional(type_suffix)
-      ))
+      )
+
+      const sign = choice(alias($.unary_minus, '-'), alias($.unary_plus, '+'))
+
+      return choice(
+        seq(sign, token.immediate(numeric_component)),
+        token(numeric_component),
+      )
     },
 
     float: $ => {
       const digit_or_underscore = /[0-9_]/
-      const sign = /[-+]/
 
       const leading_non_zero_value = seq(/[1-9]/, repeat(digit_or_underscore))
       const leading_zero_value = choice(
@@ -116,16 +139,23 @@ module.exports = grammar({
 
       const decimal_and_trailing_value = seq(/\.[0-9]/, repeat(digit_or_underscore))
 
-      const exponent = seq(/[eE]/, optional(seq(optional(sign), repeat1(digit_or_underscore))))
+      const exponent = seq(/[eE]/, optional(seq(optional(/[+-]/), repeat1(digit_or_underscore))))
 
       const float_suffix = choice('f32', 'f64')
 
       // A float must contain at least one of {decimal point, exponent, suffix}
-      return token(choice(
-        seq(optional(sign), leading_number, decimal_and_trailing_value, optional(exponent), optional(float_suffix)),
-        seq(optional(sign), leading_number, optional(decimal_and_trailing_value), exponent, optional(float_suffix)),
-        seq(optional(sign), leading_number, optional(decimal_and_trailing_value), optional(exponent), float_suffix),
-      ))
+      const numeric_component = choice(
+        seq(leading_number, decimal_and_trailing_value, optional(exponent), optional(float_suffix)),
+        seq(leading_number, optional(decimal_and_trailing_value), exponent, optional(float_suffix)),
+        seq(leading_number, optional(decimal_and_trailing_value), optional(exponent), float_suffix),
+      )
+
+      const sign = choice(alias($.unary_minus, '-'), alias($.unary_plus, '+'))
+
+      return choice(
+        seq(sign, token.immediate(numeric_component)),
+        token(numeric_component)
+      )
     },
 
     char: $ => seq(
@@ -224,6 +254,28 @@ module.exports = grammar({
         seq(optional(receiver), method_identifier, optional(argument_list)),
         seq(optional(receiver), optional_method_identifier, argument_list),
       )))
+    },
+
+    additive_operator: $ => {
+      const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')
+      const whitespace = /\s+/
+
+      const receiver = field('receiver', $._expression)
+      const method = field('method', alias(operator, $.identifier))
+      const arg = field('arguments', $._expression)
+
+      return prec.left(PREC.ADDITIVE,
+        seq(receiver, method, arg),
+      )
+    },
+
+    unary_additive_operator: $ => {
+      const operator = choice($.unary_plus, $.unary_minus) // TODO: &+ and &-
+
+      return prec(PREC.UNARY, seq(
+        field('method', alias(operator, $.identifier)),
+        field('receiver', $._expression)
+      ))
     },
 
     argument_list: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)))),

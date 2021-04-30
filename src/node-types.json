@@ -105,10 +105,6 @@
         "required": false,
         "types": [
           {
-            "type": "\n",
-            "named": false
-          },
-          {
             "type": "(",
             "named": false
           },
@@ -199,7 +195,59 @@
             "named": false
           },
           {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
             "type": "argument_list",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "module",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "true",
             "named": true
           }
         ]
@@ -218,10 +266,6 @@
         "multiple": true,
         "required": false,
         "types": [
-          {
-            "type": "\n",
-            "named": false
-          },
           {
             "type": "(",
             "named": false
@@ -306,6 +350,16 @@
     }
   },
   {
+    "type": "float",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "integer",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "module",
     "named": true,
     "fields": {
@@ -313,10 +367,6 @@
         "multiple": true,
         "required": false,
         "types": [
-          {
-            "type": "\n",
-            "named": false
-          },
           {
             "type": "(",
             "named": false
@@ -399,10 +449,6 @@
         "multiple": true,
         "required": false,
         "types": [
-          {
-            "type": "\n",
-            "named": false
-          },
           {
             "type": "(",
             "named": false
@@ -574,10 +620,6 @@
     }
   },
   {
-    "type": "\n",
-    "named": false
-  },
-  {
     "type": "'",
     "named": false
   },
@@ -590,7 +632,15 @@
     "named": false
   },
   {
+    "type": "+",
+    "named": false
+  },
+  {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": "-",
     "named": false
   },
   {
@@ -634,15 +684,7 @@
     "named": true
   },
   {
-    "type": "float",
-    "named": true
-  },
-  {
     "type": "identifier",
-    "named": true
-  },
-  {
-    "type": "integer",
     "named": true
   },
   {
