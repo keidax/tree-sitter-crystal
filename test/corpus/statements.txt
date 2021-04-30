@@ -86,15 +86,15 @@ end
 
 ---
 (source_file
-  (module
+  (module_def
     name: (constant))
-  (module
-    name: (constant))
-
-  (module
+  (module_def
     name: (constant))
 
-  (module
+  (module_def
+    name: (constant))
+
+  (module_def
     name: (constant)
     (const_assign
       lhs: (constant)
@@ -104,12 +104,12 @@ end
       rhs: (integer))
   )
 
-  (module
+  (module_def
     name: (constant))
 
-  (module
+  (module_def
     name: (constant)
-    (module
+    (module_def
       name: (constant)
       (true)
       (false)
@@ -147,21 +147,21 @@ end
 ---
 
 (source_file
-  (class
+  (class_def
     name: (constant)
     superclass: (constant)
   )
 
-  (class
+  (class_def
     name: (constant)
     superclass: (constant)
   )
 
-  (class
+  (class_def
     name: (constant)
   )
 
-  (class
+  (class_def
     name: (constant)
     (const_assign
       lhs: (constant)
@@ -171,16 +171,16 @@ end
       rhs: (integer))
   )
 
-  (class
+  (class_def
     name: (constant)
     superclass: (constant)
   )
 
-  (class
+  (class_def
     name: (constant)
-    (module
+    (module_def
       name: (constant)
-      (class
+      (class_def
         name: (constant)
         (self)
         (nil)

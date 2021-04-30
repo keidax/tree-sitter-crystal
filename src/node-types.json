@@ -66,7 +66,7 @@
           "named": true
         },
         {
-          "type": "class",
+          "type": "class_def",
           "named": true
         },
         {
@@ -94,7 +94,7 @@
           "named": true
         },
         {
-          "type": "module",
+          "type": "module_def",
           "named": true
         },
         {
@@ -167,7 +167,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -195,7 +195,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -269,7 +269,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -297,7 +297,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -357,7 +357,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -385,7 +385,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -459,7 +459,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -487,7 +487,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -555,7 +555,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -583,7 +583,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -618,7 +618,7 @@
     }
   },
   {
-    "type": "class",
+    "type": "class_def",
     "named": true,
     "fields": {
       "name": {
@@ -667,7 +667,7 @@
           "named": true
         },
         {
-          "type": "class",
+          "type": "class_def",
           "named": true
         },
         {
@@ -695,7 +695,7 @@
           "named": true
         },
         {
-          "type": "module",
+          "type": "module_def",
           "named": true
         },
         {
@@ -764,7 +764,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -792,7 +792,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -822,7 +822,7 @@
     "fields": {}
   },
   {
-    "type": "module",
+    "type": "module_def",
     "named": true,
     "fields": {
       "name": {
@@ -861,7 +861,7 @@
           "named": true
         },
         {
-          "type": "class",
+          "type": "class_def",
           "named": true
         },
         {
@@ -889,7 +889,7 @@
           "named": true
         },
         {
-          "type": "module",
+          "type": "module_def",
           "named": true
         },
         {
@@ -948,7 +948,7 @@
             "named": true
           },
           {
-            "type": "class",
+            "type": "class_def",
             "named": true
           },
           {
@@ -976,7 +976,7 @@
             "named": true
           },
           {
-            "type": "module",
+            "type": "module_def",
             "named": true
           },
           {
@@ -1056,7 +1056,7 @@
           "named": true
         },
         {
-          "type": "class",
+          "type": "class_def",
           "named": true
         },
         {
@@ -1084,7 +1084,7 @@
           "named": true
         },
         {
-          "type": "module",
+          "type": "module_def",
           "named": true
         },
         {

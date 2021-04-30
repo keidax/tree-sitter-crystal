@@ -48,8 +48,8 @@ module.exports = grammar({
     _statement: $ => choice(
       $._expression,
       $.const_assign,
-      $.module,
-      $.class,
+      $.module_def,
+      $.class_def,
       $.alias,
       // TODO:
       // lib
@@ -180,14 +180,14 @@ module.exports = grammar({
       )))
     },
 
-    module: $ => seq(
+    module_def: $ => seq(
       'module',
       field('name', $.constant), // TODO: generics
       seq(optional($._statements)),
       'end'
     ),
 
-    class: $ => seq(
+    class_def: $ => seq(
       'class',
       field('name', choice($.constant)), // TODO: generics
       optional(seq(

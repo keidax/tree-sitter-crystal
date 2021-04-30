@@ -124,11 +124,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "module"
+          "name": "module_def"
         },
         {
           "type": "SYMBOL",
-          "name": "class"
+          "name": "class_def"
         },
         {
           "type": "SYMBOL",
@@ -1552,7 +1552,7 @@
         ]
       }
     },
-    "module": {
+    "module_def": {
       "type": "SEQ",
       "members": [
         {
@@ -1590,7 +1590,7 @@
         }
       ]
     },
-    "class": {
+    "class_def": {
       "type": "SEQ",
       "members": [
         {
