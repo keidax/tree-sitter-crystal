@@ -17,8 +17,8 @@ module.exports = grammar({
 
     $.unary_plus,
     $.unary_minus,
-	$.binary_plus,
-	$.binary_minus,
+    $.binary_plus,
+    $.binary_minus,
   ],
 
   rules: {
