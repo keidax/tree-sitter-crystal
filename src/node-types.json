@@ -66,6 +66,10 @@
           "named": true
         },
         {
+          "type": "const_assign",
+          "named": true
+        },
+        {
           "type": "constant",
           "named": true
         },
@@ -117,10 +121,6 @@
             "named": true
           },
           {
-            "type": "constant",
-            "named": true
-          },
-          {
             "type": "identifier",
             "named": true
           }
@@ -160,6 +160,10 @@
           },
           {
             "type": "char",
+            "named": true
+          },
+          {
+            "type": "const_assign",
             "named": true
           },
           {
@@ -257,6 +261,10 @@
             "named": true
           },
           {
+            "type": "const_assign",
+            "named": true
+          },
+          {
             "type": "constant",
             "named": true
           },
@@ -334,6 +342,10 @@
           },
           {
             "type": "char",
+            "named": true
+          },
+          {
+            "type": "const_assign",
             "named": true
           },
           {
@@ -431,6 +443,10 @@
             "named": true
           },
           {
+            "type": "const_assign",
+            "named": true
+          },
+          {
             "type": "constant",
             "named": true
           },
@@ -519,6 +535,10 @@
             "named": true
           },
           {
+            "type": "const_assign",
+            "named": true
+          },
+          {
             "type": "constant",
             "named": true
           },
@@ -574,6 +594,100 @@
     }
   },
   {
+    "type": "const_assign",
+    "named": true,
+    "fields": {
+      "lhs": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "constant",
+            "named": true
+          }
+        ]
+      },
+      "rhs": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "const_assign",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "module",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "float",
     "named": true,
     "fields": {}
@@ -621,6 +735,10 @@
           },
           {
             "type": "char",
+            "named": true
+          },
+          {
+            "type": "const_assign",
             "named": true
           },
           {
@@ -711,6 +829,10 @@
           },
           {
             "type": "char",
+            "named": true
+          },
+          {
+            "type": "const_assign",
             "named": true
           },
           {
@@ -811,6 +933,10 @@
         },
         {
           "type": "char",
+          "named": true
+        },
+        {
+          "type": "const_assign",
           "named": true
         },
         {

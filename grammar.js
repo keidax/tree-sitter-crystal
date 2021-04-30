@@ -47,12 +47,12 @@ module.exports = grammar({
 
     _statement: $ => choice(
       $._expression,
+      $.const_assign,
       $.module,
       $.alias,
       // TODO:
       // class
       // lib
-      // const
     ),
 
     _expression: $ => choice(
@@ -297,8 +297,17 @@ module.exports = grammar({
     argument_list_with_trailing_comma: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)), optional(','))),
 
     assign: $ => {
-      const lhs = field('lhs', choice($.identifier, $.constant, $.assign_call))
+      const lhs = field('lhs', choice($.identifier, $.assign_call))
       const rhs = field('rhs', $._expression)
+
+      return seq(
+        lhs, '=', rhs
+      )
+    },
+
+    const_assign: $ => {
+      const lhs = field('lhs', $.constant)
+      const rhs = field('rhs', $._statement)
 
       return seq(
         lhs, '=', rhs

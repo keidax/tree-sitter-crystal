@@ -182,7 +182,7 @@ plain assignment
 
 a = 1.0
 
-::B =
+b =
 c=
 2
 
@@ -200,7 +200,7 @@ d=-0.zero?
   )
 
   (assign
-    lhs: (constant)
+    lhs: (identifier)
     rhs: (assign
       lhs: (identifier)
       rhs: (integer)
@@ -221,6 +221,42 @@ d=-0.zero?
       rhs: (float)
     )
     method: (identifier)
+  )
+)
+
+===================
+constant assignment
+===================
+
+A = 1.0
+
+B =
+::C=
+2
+
+D::E=-0.zero?
+
+---
+(source_file
+  (const_assign
+    lhs: (constant)
+    rhs: (float)
+  )
+
+  (const_assign
+    lhs: (constant)
+    rhs: (const_assign
+      lhs: (constant)
+      rhs: (integer)
+    )
+  )
+
+  (const_assign
+    lhs: (constant)
+    rhs: (call
+      receiver: (integer)
+      method: (identifier)
+    )
   )
 )
 
