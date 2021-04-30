@@ -83,6 +83,10 @@ module.exports = grammar({
       $.call,
       alias($.additive_operator, $.call),
       alias($.unary_additive_operator, $.call),
+      $.assign,
+      // TODO:
+      // multi assignment
+      // operator assignment
     ),
 
     nil: $ => 'nil',
@@ -259,6 +263,14 @@ module.exports = grammar({
       )))
     },
 
+    // A subset of method calls that can be the LHS of an assignment
+    assign_call: $ => {
+      const receiver = field('receiver', seq($._expression, '.'))
+      const method_identifier = field('method', $.identifier)
+
+      return prec(PREC.CALL, seq(receiver, method_identifier))
+    },
+
     additive_operator: $ => {
       const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')
       const whitespace = /\s+/
@@ -283,6 +295,15 @@ module.exports = grammar({
 
     argument_list: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)))),
     argument_list_with_trailing_comma: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)), optional(','))),
+
+    assign: $ => {
+      const lhs = field('lhs', choice($.identifier, $.constant, $.assign_call))
+      const rhs = field('rhs', $._expression)
+
+      return seq(
+        lhs, '=', rhs
+      )
+    },
 
     alias: $ => seq(
       'alias',

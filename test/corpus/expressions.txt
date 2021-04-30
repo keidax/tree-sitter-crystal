@@ -176,6 +176,106 @@ puts(
   )
 )
 
+================
+plain assignment
+================
+
+a = 1.0
+
+::B =
+c=
+2
+
+d=-0.zero?
+
+(e=1f32)
+.to_s
+
+---
+
+(source_file
+  (assign
+    lhs: (identifier)
+    rhs: (float)
+  )
+
+  (assign
+    lhs: (constant)
+    rhs: (assign
+      lhs: (identifier)
+      rhs: (integer)
+    )
+  )
+
+  (assign
+    lhs: (identifier)
+    rhs: (call
+      receiver: (integer)
+      method: (identifier)
+    )
+  )
+
+  (call
+    receiver: (assign
+      lhs: (identifier)
+      rhs: (float)
+    )
+    method: (identifier)
+  )
+)
+
+=================
+method assignment
+=================
+
+::A.b = 1
+
+self
+.var =
+true
+
+c.foo.bar = d.baz!.quz = 8
+
+---
+
+(source_file
+  (assign
+    lhs: (assign_call
+      receiver: (constant)
+      method: (identifier)
+    )
+    rhs: (integer)
+  )
+
+  (assign
+    lhs: (assign_call
+      receiver: (self)
+      method: (identifier)
+    )
+    rhs: (true)
+  )
+
+  (assign
+    lhs: (assign_call
+      receiver: (call
+        receiver: (identifier)
+        method: (identifier)
+      )
+      method: (identifier)
+    )
+    rhs: (assign
+      lhs: (assign_call
+        receiver: (call
+          receiver: (identifier)
+          method: (identifier)
+        )
+        method: (identifier)
+      )
+      rhs: (integer)
+    )
+  )
+)
+
 ============
 begin blocks
 ============

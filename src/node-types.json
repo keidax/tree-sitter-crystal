@@ -50,6 +50,10 @@
           "named": true
         },
         {
+          "type": "assign",
+          "named": true
+        },
+        {
           "type": "begin_block",
           "named": true
         },
@@ -101,6 +105,198 @@
     }
   },
   {
+    "type": "assign",
+    "named": true,
+    "fields": {
+      "lhs": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "assign_call",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "rhs": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "module",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assign_call",
+    "named": true,
+    "fields": {
+      "method": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "receiver": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "module",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "begin_block",
     "named": true,
     "fields": {
@@ -122,6 +318,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
             "named": true
           },
           {
@@ -215,6 +415,10 @@
             "named": true
           },
           {
+            "type": "assign",
+            "named": true
+          },
+          {
             "type": "begin_block",
             "named": true
           },
@@ -296,6 +500,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
             "named": true
           },
           {
@@ -400,6 +608,10 @@
             "named": true
           },
           {
+            "type": "assign",
+            "named": true
+          },
+          {
             "type": "begin_block",
             "named": true
           },
@@ -483,6 +695,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
             "named": true
           },
           {
@@ -579,6 +795,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
           "named": true
         },
         {
