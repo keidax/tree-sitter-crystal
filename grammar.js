@@ -74,8 +74,8 @@ module.exports = grammar({
       $.float,
       $.char,
       $.array,
+      $.string,
       // TODO: other expressions
-      // string
       // symbol
       // hash
       // tuple
@@ -200,6 +200,43 @@ module.exports = grammar({
 
       return token.immediate(seq('\\', choice(
         '0' ,'\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
+      )))
+    },
+
+    // TODO:
+    // multiple string literals joined by backslashes
+    // interpolation
+    // percent literals
+    // heredocs
+    string: $ => seq(
+      '"',
+      repeat(choice(
+        token.immediate(/[^\\]/),
+        $.string_escape_sequence,
+        $.ignored_backslash,
+      )),
+      token.immediate('"'),
+    ),
+
+    ignored_backslash: $ => {
+      return token.immediate(seq('\\',
+        /[^\n\\"abefnrtuvx0-7]/
+      ))
+    },
+
+    string_escape_sequence: $ => {
+      const octal_escape = seq(/[0-7]{1,3}/)
+      const hex_escape = seq('x', /[0-9a-fA-F]{2}/)
+
+      const long_unicode_character = /[0-9a-fA-F]{1,6}/
+      const unicode_escape = seq('u', choice(
+        /[0-9a-fA-F]{4}/,
+        seq('{', long_unicode_character, repeat(seq(' ', long_unicode_character)), '}')
+      ))
+
+      return token.immediate(seq('\\', choice(
+        '\n', '\\', '"', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v',
+        octal_escape, hex_escape, unicode_escape,
       )))
     },
 

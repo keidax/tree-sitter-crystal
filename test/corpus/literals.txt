@@ -271,6 +271,81 @@ chars
   (char (char_escape_sequence))
   (char (char_escape_sequence)))
 
+=======
+strings
+=======
+
+""
+"_"
+"🔮"
+" 	
+"
+
+"\
+"
+"\\"
+"\""
+"\a"
+"\b"
+"\e"
+"\f"
+"\n"
+"\r"
+"\t"
+"\v"
+
+"\0"
+"\42"
+"\177"
+
+"\x69"
+"\xff"
+
+"\u26a1"
+"\u{1F52E}"
+"\u{48 45 4C 4C 4F}"
+
+"\'"
+"\c"
+"\?"
+"\#{}"
+
+---
+
+(source_file
+  (string)
+  (string)
+  (string)
+  (string)
+
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+  (string (string_escape_sequence))
+
+  (string (ignored_backslash))
+  (string (ignored_backslash))
+  (string (ignored_backslash))
+  (string (ignored_backslash)))
+
 ======
 arrays
 ======
