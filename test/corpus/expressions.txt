@@ -258,6 +258,43 @@ c.foo.bar = d.baz!.quz = 8
         method: (identifier))
       rhs: (integer))))
 
+===============
+while and until
+===============
+
+while true; end
+
+while 1
+next; end
+
+until a.nil?
+  a = 2
+  until a
+    break
+  end
+end
+
+----
+
+(source_file
+  (while
+    condition: (true))
+
+  (while
+    condition: (integer)
+    (next))
+
+  (until
+    condition: (call
+      receiver: (identifier)
+      method: (identifier))
+    (assign
+      lhs: (identifier)
+      rhs: (integer))
+    (until
+      condition: (identifier)
+      (break))))
+
 ============
 begin blocks
 ============

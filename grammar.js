@@ -57,7 +57,10 @@ module.exports = grammar({
       $.class_def,
       $.alias,
       $.method_def,
+
       $.return,
+      $.next,
+      $.break,
       // TODO:
       // lib
     ),
@@ -85,6 +88,14 @@ module.exports = grammar({
       $.self,
       $.constant,
       $.identifier,
+
+      // Control structures
+      $.while,
+      $.until,
+      // TODO
+      // if
+      // unless
+      // case
 
       // Methods
       $.call,
@@ -244,6 +255,10 @@ module.exports = grammar({
 
     return: $ => seq('return', optional($._expression)),
 
+    next: $ => seq('next', optional($._expression)),
+
+    break: $ => seq('break', optional($._expression)),
+
     constant: $ => {
       const constant_segment = seq(const_start, repeat(ident_part))
       return token(seq(
@@ -402,5 +417,21 @@ module.exports = grammar({
         rescue_body
       )
     },
+
+    while: $ => seq(
+      'while',
+      field('condition', $._expression),
+      $._terminator,
+      optional($._statements),
+      'end'
+    ),
+
+    until: $ => seq(
+      'until',
+      field('condition', $._expression),
+      $._terminator,
+      optional($._statements),
+      'end'
+    ),
   }
 });

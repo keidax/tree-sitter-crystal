@@ -58,6 +58,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -102,6 +106,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -115,6 +123,14 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -167,6 +183,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -211,6 +231,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -224,6 +248,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -277,6 +309,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -321,6 +357,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -334,6 +374,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -373,6 +421,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -417,6 +469,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -431,6 +487,14 @@
           {
             "type": "true",
             "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
+            "named": true
           }
         ]
       },
@@ -444,6 +508,105 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "break",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "next",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -483,6 +646,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -527,6 +694,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -540,6 +711,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -587,6 +766,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -631,6 +814,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -644,6 +831,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -707,6 +902,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -751,6 +950,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -764,6 +967,14 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -812,6 +1023,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -856,6 +1071,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -869,6 +1088,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -949,6 +1176,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -993,6 +1224,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -1006,6 +1241,14 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -1043,6 +1286,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -1087,6 +1334,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -1100,6 +1351,113 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "next",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "next",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -1139,6 +1497,10 @@
           },
           {
             "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "break",
             "named": true
           },
           {
@@ -1186,6 +1548,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -1199,6 +1565,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -1295,6 +1669,10 @@
             "named": true
           },
           {
+            "type": "break",
+            "named": true
+          },
+          {
             "type": "call",
             "named": true
           },
@@ -1339,6 +1717,10 @@
             "named": true
           },
           {
+            "type": "next",
+            "named": true
+          },
+          {
             "type": "nil",
             "named": true
           },
@@ -1352,6 +1734,14 @@
           },
           {
             "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
             "named": true
           }
         ]
@@ -1411,6 +1801,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -1455,6 +1849,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -1468,6 +1866,14 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -1494,6 +1900,10 @@
           "named": true
         },
         {
+          "type": "break",
+          "named": true
+        },
+        {
           "type": "call",
           "named": true
         },
@@ -1538,6 +1948,10 @@
           "named": true
         },
         {
+          "type": "next",
+          "named": true
+        },
+        {
           "type": "nil",
           "named": true
         },
@@ -1551,6 +1965,14 @@
         },
         {
           "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -1566,6 +1988,418 @@
       "types": [
         {
           "type": "constant",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "until",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "break",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "class_def",
+            "named": true
+          },
+          {
+            "type": "const_assign",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "method_def",
+            "named": true
+          },
+          {
+            "type": "module_def",
+            "named": true
+          },
+          {
+            "type": "next",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "next",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "while",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "break",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "class_def",
+            "named": true
+          },
+          {
+            "type": "const_assign",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "method_def",
+            "named": true
+          },
+          {
+            "type": "module_def",
+            "named": true
+          },
+          {
+            "type": "next",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "next",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
@@ -1624,6 +2458,10 @@
     "named": false
   },
   {
+    "type": "break",
+    "named": false
+  },
+  {
     "type": "char_escape_sequence",
     "named": true
   },
@@ -1660,6 +2498,10 @@
     "named": false
   },
   {
+    "type": "next",
+    "named": false
+  },
+  {
     "type": "nil",
     "named": true
   },
@@ -1678,6 +2520,14 @@
   {
     "type": "true",
     "named": true
+  },
+  {
+    "type": "until",
+    "named": false
+  },
+  {
+    "type": "while",
+    "named": false
   },
   {
     "type": "|",
