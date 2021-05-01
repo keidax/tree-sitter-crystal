@@ -31,7 +31,7 @@ module.exports = grammar({
       optional($._statements)
     ),
 
-    _terminator: $ => choice($._line_break, ';'),
+    _terminator: $ => choice(repeat1($._line_break), ';'),
 
     _statements: $ => choice(
       seq(

@@ -1,3 +1,49 @@
+==========
+blank file
+==========
+
+
+
+
+
+---
+
+(source_file)
+
+===========
+blank lines
+===========
+
+
+
+
+
+
+true
+
+
+
+
+
+def foo
+
+
+
+
+end
+
+
+
+
+
+---
+
+(source_file
+  (true)
+
+  (method_def
+    name: (identifier)))
+
 ========
 comments
 ========

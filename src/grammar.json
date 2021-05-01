@@ -22,8 +22,11 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_line_break"
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_line_break"
+          }
         },
         {
           "type": "STRING",
