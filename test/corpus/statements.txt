@@ -43,9 +43,7 @@ nil; (nil;nil)
 
  (nil) (nil)
 
- (nil) (nil) (nil)
-
-)
+ (nil) (nil) (nil))
 
 =======
 aliases
@@ -58,8 +56,7 @@ alias Foo = Bar::Baz
 (source_file
   (alias
     name: (constant)
-    type: (constant)
-  ))
+    type: (constant)))
 
 =======
 modules
@@ -101,8 +98,7 @@ end
       rhs: (integer))
     (const_assign
       lhs: (constant)
-      rhs: (integer))
-  )
+      rhs: (integer)))
 
   (module_def
     name: (constant))
@@ -112,10 +108,7 @@ end
     (module_def
       name: (constant)
       (true)
-      (false)
-    )
-  )
-)
+      (false))))
 
 =======
 classes
@@ -149,17 +142,14 @@ end
 (source_file
   (class_def
     name: (constant)
-    superclass: (constant)
-  )
+    superclass: (constant))
 
   (class_def
     name: (constant)
-    superclass: (constant)
-  )
+    superclass: (constant))
 
   (class_def
-    name: (constant)
-  )
+    name: (constant))
 
   (class_def
     name: (constant)
@@ -168,13 +158,11 @@ end
       rhs: (integer))
     (const_assign
       lhs: (constant)
-      rhs: (integer))
-  )
+      rhs: (integer)))
 
   (class_def
     name: (constant)
-    superclass: (constant)
-  )
+    superclass: (constant))
 
   (class_def
     name: (constant)
@@ -183,11 +171,7 @@ end
       (class_def
         name: (constant)
         (self)
-        (nil)
-      )
-    )
-  )
-)
+        (nil)))))
 
 ==================
 method definitions
@@ -219,21 +203,17 @@ end
 (source_file
   (method_def
     name: (identifier)
-    (return (integer))
-  )
+    (return (integer)))
 
   (method_def
-    name: (identifier)
-  )
+    name: (identifier))
   (method_def
-    name: (identifier)
-  )
+    name: (identifier))
 
   (method_def
     name: (identifier)
     type: (constant)
-    (return (true))
-  )
+    (return (true)))
 
   (method_def
     name: (identifier)
@@ -241,26 +221,18 @@ end
       (param name: (identifier))
       (param name: (identifier) type: (constant))
       (param name: (identifier) type: (constant) default: (integer))
-      (param name: (identifier) default: (nil))
-    )
-    type: (constant)
-  )
+      (param name: (identifier) default: (nil)))
+    type: (constant))
 
   (method_def
     name: (identifier)
     params: (param_list
       (param name: (identifier) default: (integer))
-      (param name: (identifier) default: (integer))
-    )
+      (param name: (identifier) default: (integer)))
     (call
       method: (identifier)
       arguments: (argument_list
         (call
           receiver: (identifier)
           method: (identifier)
-          arguments: (identifier)
-        )
-      )
-    )
-  )
-)
+          arguments: (identifier))))))

@@ -28,8 +28,7 @@ selfself
 (source_file
   (self)
   (identifier)
-  (identifier)
-)
+  (identifier))
 
 ============
 method calls
@@ -60,8 +59,7 @@ a(b(c()))
 (source_file
   (call
     receiver: (constant)
-    method: (identifier)
-  )
+    method: (identifier))
 
   (call method: (identifier))
   (call method: (identifier))
@@ -69,50 +67,37 @@ a(b(c()))
 
   (call
     receiver: (true)
-    method: (identifier)
-  )
+    method: (identifier))
 
   (call
     receiver: (call
-      method: (identifier)
-    )
-    method: (identifier)
-  )
+      method: (identifier))
+    method: (identifier))
 
   (call
     method: (identifier)
-    arguments: (argument_list (identifier))
-  )
+    arguments: (argument_list (identifier)))
 
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         method: (identifier)
-        arguments: (argument_list (integer))
-      )
-    )
-  )
+        arguments: (argument_list (integer)))))
 
   (call
     receiver: (call
       receiver: (call
-        method: (identifier)
-      )
-      method: (identifier)
-    )
-    method: (identifier)
-  )
+        method: (identifier))
+      method: (identifier))
+    method: (identifier))
 
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         receiver: (identifier)
-        method: (identifier)
-      )
-    )
-  )
+        method: (identifier))))
 
   (call
     method: (identifier)
@@ -121,13 +106,7 @@ a(b(c()))
         method: (identifier)
         arguments: (argument_list
           (call
-            method: (identifier)
-          )
-        )
-      )
-    )
-  )
-)
+            method: (identifier)))))))
 
 ====================================
 method calls with multiple arguments
@@ -151,30 +130,22 @@ puts(
   (call
     method: (identifier)
     arguments: (argument_list
-      (true) (integer) (nil)
-    )
-  )
+      (true) (integer) (nil)))
 
   (call
     method: (identifier)
     arguments: (argument_list
-      (false) (integer)
-    )
-  )
+      (false) (integer)))
 
   (call
     method: (identifier)
-    arguments: (argument_list (true) (false) (nil))
-  )
+    arguments: (argument_list (true) (false) (nil)))
   (call
     method: (identifier)
-    arguments: (argument_list (true) (false) (nil))
-  )
+    arguments: (argument_list (true) (false) (nil)))
   (call
     method: (identifier)
-    arguments: (argument_list (true) (false) (nil))
-  )
-)
+    arguments: (argument_list (true) (false) (nil))))
 
 ================
 plain assignment
@@ -196,33 +167,25 @@ d=-0.zero?
 (source_file
   (assign
     lhs: (identifier)
-    rhs: (float)
-  )
+    rhs: (float))
 
   (assign
     lhs: (identifier)
     rhs: (assign
       lhs: (identifier)
-      rhs: (integer)
-    )
-  )
+      rhs: (integer)))
 
   (assign
     lhs: (identifier)
     rhs: (call
       receiver: (integer)
-      method: (identifier)
-    )
-  )
+      method: (identifier)))
 
   (call
     receiver: (assign
       lhs: (identifier)
-      rhs: (float)
-    )
-    method: (identifier)
-  )
-)
+      rhs: (float))
+    method: (identifier)))
 
 ===================
 constant assignment
@@ -240,25 +203,19 @@ D::E=-0.zero?
 (source_file
   (const_assign
     lhs: (constant)
-    rhs: (float)
-  )
+    rhs: (float))
 
   (const_assign
     lhs: (constant)
     rhs: (const_assign
       lhs: (constant)
-      rhs: (integer)
-    )
-  )
+      rhs: (integer)))
 
   (const_assign
     lhs: (constant)
     rhs: (call
       receiver: (integer)
-      method: (identifier)
-    )
-  )
-)
+      method: (identifier))))
 
 =================
 method assignment
@@ -278,39 +235,28 @@ c.foo.bar = d.baz!.quz = 8
   (assign
     lhs: (assign_call
       receiver: (constant)
-      method: (identifier)
-    )
-    rhs: (integer)
-  )
+      method: (identifier))
+    rhs: (integer))
 
   (assign
     lhs: (assign_call
       receiver: (self)
-      method: (identifier)
-    )
-    rhs: (true)
-  )
+      method: (identifier))
+    rhs: (true))
 
   (assign
     lhs: (assign_call
       receiver: (call
         receiver: (identifier)
-        method: (identifier)
-      )
-      method: (identifier)
-    )
+        method: (identifier))
+      method: (identifier))
     rhs: (assign
       lhs: (assign_call
         receiver: (call
           receiver: (identifier)
-          method: (identifier)
-        )
-        method: (identifier)
-      )
-      rhs: (integer)
-    )
-  )
-)
+          method: (identifier))
+        method: (identifier))
+      rhs: (integer))))
 
 ============
 begin blocks
@@ -358,41 +304,30 @@ end
   (begin_block
     body: (integer)
     rescue: (rescue_block
-      body: (integer)
-    )
-  )
+      body: (integer)))
 
   (begin_block
     body: (integer)
     rescue: (rescue_block
-      body: (integer)
-    )
-  )
+      body: (integer)))
 
   (begin_block
     body: (integer)
     rescue: (rescue_block
       variable: (identifier)
-      body: (integer)
-    )
-  )
+      body: (integer)))
 
   (begin_block
     body: (integer)
     rescue: (rescue_block
       type: (constant)
-      body: (integer)
-    )
-  )
+      body: (integer)))
 
   (begin_block
     body: (integer)
     rescue: (rescue_block
       variable: (identifier)
-      type: (union_type (constant) (constant))
-    )
-  )
-)
+      type: (union_type (constant) (constant)))))
 
 ==================
 binary additive operators
@@ -411,27 +346,21 @@ D &-
   (call
     receiver: (integer)
     method: (identifier)
-    arguments: (float)
-  )
+    arguments: (float))
 
   (call
     receiver: (call
       receiver: (identifier)
       method: (identifier)
       arguments: (call
-        method: (identifier)
-      )
-    )
+        method: (identifier)))
     method: (identifier)
-    arguments: (constant)
-  )
+    arguments: (constant))
 
   (call
     receiver: (constant)
     method: (identifier)
-    arguments: (constant)
-  )
-)
+    arguments: (constant)))
 
 ===
 unary additive operators
@@ -461,79 +390,58 @@ d_ (- 2)
   (call
     receiver: (identifier)
     method: (identifier)
-    arguments: (integer)
-  )
+    arguments: (integer))
   (call
     method: (identifier)
-    arguments: (argument_list (integer))
-  )
+    arguments: (argument_list (integer)))
   (call
     receiver: (identifier)
     method: (identifier)
-    arguments: (integer)
-  )
+    arguments: (integer))
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         method: (identifier)
-        receiver: (integer)
-      )
-    )
-  )
+        receiver: (integer))))
 
   (call
     receiver: (call
-      method: (identifier)
-    )
+      method: (identifier))
     method: (identifier)
-    arguments: (integer)
-  )
+    arguments: (integer))
   (call
     method: (identifier)
-    arguments: (argument_list (integer))
-  )
+    arguments: (argument_list (integer)))
   (call
     receiver: (identifier)
     method: (identifier)
-    arguments: (integer)
-  )
+    arguments: (integer))
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         method: (identifier)
-        receiver: (integer)
-      )
-    )
-  )
+        receiver: (integer))))
 
   (call
     method: (identifier)
     receiver: (call
       method: (identifier)
-      receiver: (integer)
-    )
-  )
+      receiver: (integer)))
   (call
     method: (identifier)
     receiver: (call
       method: (identifier)
-      receiver: (float)
-    )
-  )
+      receiver: (float)))
 
   (call
     receiver: (integer)
     method: (identifier)
-    arguments: (integer)
-  )
+    arguments: (integer))
   (call
     receiver: (integer)
     method: (identifier)
     arguments: (call
       method: (identifier)
-      receiver: (integer)
-    )
-  )
-)
+      receiver: (integer))))

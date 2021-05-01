@@ -18,8 +18,7 @@ A1
 
   (constant)
   (constant)
-  (constant)
-)
+  (constant))
 
 ======
 unions
@@ -48,5 +47,4 @@ alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F))
     type: (union_type (constant) (constant) (constant)))
   (alias
     name: (constant)
-    type: (union_type (constant) (constant) (constant) (constant) (constant) (constant)))
-)
+    type: (union_type (constant) (constant) (constant) (constant) (constant) (constant))))
