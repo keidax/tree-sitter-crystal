@@ -192,8 +192,8 @@ def qux(a, b : Bool, c : Int32 = 7, d = nil) : Stuff
 end
 
 def buzz(
-  x = 2,
-  y = 3,
+  outerx x = 2,
+  outery y = 3,
 )
   puts x + y
 end
@@ -227,8 +227,8 @@ end
   (method_def
     name: (identifier)
     params: (param_list
-      (param name: (identifier) default: (integer))
-      (param name: (identifier) default: (integer)))
+      (param extern_name: (identifier) name: (identifier) default: (integer))
+      (param extern_name: (identifier) name: (identifier) default: (integer)))
     (call
       method: (identifier)
       arguments: (argument_list
