@@ -21,6 +21,11 @@ module.exports = grammar({
     $.binary_minus,
   ],
 
+  extras: $ => [
+    /\s/,
+    $.comment,
+  ],
+
   rules: {
     source_file: $ => seq(
       optional($._statements)
@@ -90,6 +95,8 @@ module.exports = grammar({
       // multi assignment
       // operator assignment
     ),
+
+    comment: $ => /#.*/,
 
     nil: $ => 'nil',
 
@@ -394,6 +401,6 @@ module.exports = grammar({
         $._terminator,
         rescue_body
       )
-    }
+    },
   }
 });

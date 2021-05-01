@@ -1,3 +1,39 @@
+========
+comments
+========
+# this is a comment
+
+a + # asdf
+2
+
+1 #
++ #
+2 #
+
+##
+##
+---
+
+(source_file
+  (comment)
+
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    (comment)
+    arguments: (integer))
+
+  (integer) (comment)
+  (call
+    method: (identifier)
+    (comment)
+    receiver: (integer)
+  )
+  (comment)
+
+  (comment)
+  (comment))
+
 ===================
 compound statements
 ===================

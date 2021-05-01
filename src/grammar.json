@@ -2895,12 +2895,20 @@
           }
         }
       ]
+    },
+    "comment": {
+      "type": "PATTERN",
+      "value": "#.*"
     }
   },
   "extras": [
     {
       "type": "PATTERN",
       "value": "\\s"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
     }
   ],
   "conflicts": [],

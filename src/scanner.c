@@ -66,7 +66,16 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer,
 const bool *valid_symbols) {
+
 	// printf(" ==> calling scan with char '%c'\n", lexer->lookahead);
+	// printf(" ==> valid symbols are ");
+	// if (valid_symbols[LINE_BREAK]) printf("LINE_BREAK,");
+	// if (valid_symbols[UNARY_PLUS]) printf("UNARY_PLUS,");
+	// if (valid_symbols[UNARY_MINUS]) printf("UNARY_MINUS,");
+	// if (valid_symbols[BINARY_PLUS]) printf("BINARY_PLUS,");
+	// if (valid_symbols[BINARY_MINUS]) printf("BINARY_MINUS,");
+	// printf("\n");
+
 	State * state = (State*)payload;
 	state->has_leading_whitespace = false;
 
