@@ -214,6 +214,7 @@ module.exports = grammar({
         token.immediate(/[^\\]/),
         $.string_escape_sequence,
         $.ignored_backslash,
+        $.string_interpolation,
       )),
       token.immediate('"'),
     ),
@@ -239,6 +240,10 @@ module.exports = grammar({
         octal_escape, hex_escape, unicode_escape,
       )))
     },
+
+    string_interpolation: $ => seq(
+      token.immediate('#{', $._statements, '}')
+    ),
 
     array: $ => {
       const of_type = field('of', seq('of', $._type))

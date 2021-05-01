@@ -277,6 +277,7 @@ strings
 
 ""
 "_"
+"# not a comment"
 "🔮"
 " 	
 "
@@ -317,6 +318,7 @@ strings
   (string)
   (string)
   (string)
+  (string)
 
   (string (string_escape_sequence))
   (string (string_escape_sequence))
@@ -345,6 +347,16 @@ strings
   (string (ignored_backslash))
   (string (ignored_backslash))
   (string (ignored_backslash)))
+
+====================
+string interpolation
+====================
+"#{1}"
+---
+
+(source_file
+  (string
+    (string_interpolation)))
 
 ======
 arrays

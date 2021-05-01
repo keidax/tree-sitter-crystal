@@ -2328,9 +2328,18 @@
         {
           "type": "string_escape_sequence",
           "named": true
+        },
+        {
+          "type": "string_interpolation",
+          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "string_interpolation",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "union_type",
@@ -2809,6 +2818,10 @@
   },
   {
     "type": "\"",
+    "named": false
+  },
+  {
+    "type": "#{",
     "named": false
   },
   {

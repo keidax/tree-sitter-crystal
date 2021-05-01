@@ -1626,6 +1626,10 @@
               {
                 "type": "SYMBOL",
                 "name": "ignored_backslash"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "string_interpolation"
               }
             ]
           }
@@ -1788,6 +1792,18 @@
           }
         ]
       }
+    },
+    "string_interpolation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "#{"
+          }
+        }
+      ]
     },
     "array": {
       "type": "CHOICE",
