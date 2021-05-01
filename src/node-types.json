@@ -94,11 +94,19 @@
           "named": true
         },
         {
+          "type": "method_def",
+          "named": true
+        },
+        {
           "type": "module_def",
           "named": true
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
           "named": true
         },
         {
@@ -195,11 +203,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -297,11 +313,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -385,11 +409,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -487,11 +519,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -583,11 +623,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -695,11 +743,19 @@
           "named": true
         },
         {
+          "type": "method_def",
+          "named": true
+        },
+        {
           "type": "module_def",
           "named": true
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
           "named": true
         },
         {
@@ -792,11 +848,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -820,6 +884,132 @@
     "type": "integer",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "method_def",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "params": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "param_list",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "module_def",
@@ -889,6 +1079,10 @@
           "named": true
         },
         {
+          "type": "method_def",
+          "named": true
+        },
+        {
           "type": "module_def",
           "named": true
         },
@@ -897,11 +1091,162 @@
           "named": true
         },
         {
+          "type": "return",
+          "named": true
+        },
+        {
           "type": "self",
           "named": true
         },
         {
           "type": "true",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "param",
+    "named": true,
+    "fields": {
+      "default": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "class_def",
+            "named": true
+          },
+          {
+            "type": "const_assign",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "method_def",
+            "named": true
+          },
+          {
+            "type": "module_def",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "param_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "param",
           "named": true
         }
       ]
@@ -976,11 +1321,19 @@
             "named": true
           },
           {
+            "type": "method_def",
+            "named": true
+          },
+          {
             "type": "module_def",
             "named": true
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "return",
             "named": true
           },
           {
@@ -1025,6 +1378,89 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "return",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1084,11 +1520,19 @@
           "named": true
         },
         {
+          "type": "method_def",
+          "named": true
+        },
+        {
           "type": "module_def",
           "named": true
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
           "named": true
         },
         {
@@ -1182,6 +1626,10 @@
     "named": true
   },
   {
+    "type": "def",
+    "named": false
+  },
+  {
     "type": "end",
     "named": false
   },
@@ -1203,6 +1651,10 @@
   },
   {
     "type": "rescue",
+    "named": false
+  },
+  {
+    "type": "return",
     "named": false
   },
   {

@@ -51,6 +51,8 @@ module.exports = grammar({
       $.module_def,
       $.class_def,
       $.alias,
+      $.method_def,
+      $.return,
       // TODO:
       // lib
     ),
@@ -196,6 +198,41 @@ module.exports = grammar({
       seq(optional($._statements)),
       'end'
     ),
+
+    method_def: $ => {
+      const name = field('name', choice($.identifier, alias($.identifier_method_call, $.identifier)))
+      const params = seq('(', field('params', optional($.param_list)), ')')
+      const return_type = field('type', seq(/\s:\s/, $._type))
+
+      return prec(1, seq(
+        'def',
+        name,
+        optional(params),
+        optional(return_type),
+        optional($._statements),
+        'end'
+      ))
+    },
+
+    param_list: $ => seq($.param, repeat(seq(',', $.param)), optional(',')),
+
+    param: $ => {
+      const name = field('name', $.identifier)
+      const type = field('type', seq(/\s:\s/, $._type))
+      const default_value = field('default', seq('=', $._expression))
+
+      return prec(1, seq(
+        name,
+        optional(type),
+        optional(default_value)
+      ))
+    },
+
+    // TODO:
+    // splat_param
+    // double splat_param
+
+    return: $ => seq('return', optional($._expression)),
 
     constant: $ => {
       const constant_segment = seq(const_start, repeat(ident_part))

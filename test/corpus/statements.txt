@@ -188,3 +188,79 @@ end
     )
   )
 )
+
+==================
+method definitions
+==================
+
+def foo
+  return 3
+end
+
+def bar; end
+def
+baz
+end
+
+def fizz() : Bool return true end
+
+def qux(a, b : Bool, c : Int32 = 7, d = nil) : Stuff
+end
+
+def buzz(
+  x = 2,
+  y = 3,
+)
+  puts x + y
+end
+
+---
+
+(source_file
+  (method_def
+    name: (identifier)
+    (return (integer))
+  )
+
+  (method_def
+    name: (identifier)
+  )
+  (method_def
+    name: (identifier)
+  )
+
+  (method_def
+    name: (identifier)
+    type: (constant)
+    (return (true))
+  )
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param name: (identifier))
+      (param name: (identifier) type: (constant))
+      (param name: (identifier) type: (constant) default: (integer))
+      (param name: (identifier) default: (nil))
+    )
+    type: (constant)
+  )
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param name: (identifier) default: (integer))
+      (param name: (identifier) default: (integer))
+    )
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          receiver: (identifier)
+          method: (identifier)
+          arguments: (identifier)
+        )
+      )
+    )
+  )
+)
