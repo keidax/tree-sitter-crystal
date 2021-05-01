@@ -96,6 +96,7 @@ nil; nil
 
 nil; (nil;nil)
 
+((()))
 ()
 
 (nil)
@@ -118,6 +119,9 @@ nil; (nil;nil)
  (nil) (nil)
 
  (nil) (nil) (nil)
+
+ (empty_braces)
+ (empty_braces)
 
  (nil)
 

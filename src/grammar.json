@@ -97,16 +97,8 @@
           "value": "("
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_statements"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "_statements"
         },
         {
           "type": "STRING",
@@ -184,6 +176,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "empty_braces"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_parenthesized_statements"
         },
         {
@@ -241,6 +237,19 @@
     "comment": {
       "type": "PATTERN",
       "value": "#.*"
+    },
+    "empty_braces": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
     },
     "nil": {
       "type": "STRING",

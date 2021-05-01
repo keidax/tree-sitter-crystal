@@ -47,7 +47,7 @@ module.exports = grammar({
     ),
 
     _parenthesized_statements: $ => seq(
-      '(', optional($._statements), ')'
+      '(', $._statements, ')'
     ),
 
     _statement: $ => choice(
@@ -81,6 +81,7 @@ module.exports = grammar({
       // tuple
 
       // Groupings
+      $.empty_braces,
       $._parenthesized_statements,
       $.begin_block,
 
@@ -108,6 +109,8 @@ module.exports = grammar({
     ),
 
     comment: $ => /#.*/,
+
+    empty_braces: $ => seq('(',')'),
 
     nil: $ => 'nil',
 
