@@ -270,3 +270,41 @@ chars
   (char (char_escape_sequence))
   (char (char_escape_sequence))
   (char (char_escape_sequence)))
+
+======
+arrays
+======
+
+[] of Bool
+
+[
+1,
+2
+
+]
+
+[(),(),nil,] of Nil | Asdf
+
+[[1,2],[3,4]]
+
+---
+
+(source_file
+  (array
+    of: (constant))
+
+  (array
+    (integer)
+    (integer))
+
+  (array
+    (empty_braces)
+    (empty_braces)
+    (nil)
+    of: (union_type (constant) (constant)))
+
+  (array
+    (array
+      (integer) (integer))
+    (array
+      (integer) (integer))))

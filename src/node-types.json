@@ -50,6 +50,144 @@
           "named": true
         },
         {
+          "type": "array",
+          "named": true
+        },
+        {
+          "type": "assign",
+          "named": true
+        },
+        {
+          "type": "begin_block",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "call",
+          "named": true
+        },
+        {
+          "type": "char",
+          "named": true
+        },
+        {
+          "type": "class_def",
+          "named": true
+        },
+        {
+          "type": "const_assign",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "empty_braces",
+          "named": true
+        },
+        {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "method_def",
+          "named": true
+        },
+        {
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "next",
+          "named": true
+        },
+        {
+          "type": "nil",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "true",
+          "named": true
+        },
+        {
+          "type": "until",
+          "named": true
+        },
+        {
+          "type": "while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "array",
+    "named": true,
+    "fields": {
+      "of": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "of",
+            "named": false
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "assign",
           "named": true
         },
@@ -176,6 +314,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "array",
             "named": true
           },
           {
@@ -309,6 +451,10 @@
             "named": true
           },
           {
+            "type": "array",
+            "named": true
+          },
+          {
             "type": "assign",
             "named": true
           },
@@ -425,6 +571,10 @@
             "named": true
           },
           {
+            "type": "array",
+            "named": true
+          },
+          {
             "type": "assign",
             "named": true
           },
@@ -536,6 +686,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
           "named": true
         },
         {
@@ -655,6 +809,10 @@
           },
           {
             "type": "argument_list",
+            "named": true
+          },
+          {
+            "type": "array",
             "named": true
           },
           {
@@ -779,6 +937,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "array",
             "named": true
           },
           {
@@ -922,6 +1084,10 @@
           "named": true
         },
         {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "assign",
           "named": true
         },
@@ -1044,6 +1210,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "array",
             "named": true
           },
           {
@@ -1209,6 +1379,10 @@
           "named": true
         },
         {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "assign",
           "named": true
         },
@@ -1323,6 +1497,10 @@
           "named": true
         },
         {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "assign",
           "named": true
         },
@@ -1423,6 +1601,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
           "named": true
         },
         {
@@ -1542,6 +1724,10 @@
           },
           {
             "type": "alias",
+            "named": true
+          },
+          {
+            "type": "array",
             "named": true
           },
           {
@@ -1718,6 +1904,10 @@
             "named": true
           },
           {
+            "type": "array",
+            "named": true
+          },
+          {
             "type": "assign",
             "named": true
           },
@@ -1854,6 +2044,10 @@
           "named": true
         },
         {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "assign",
           "named": true
         },
@@ -1954,6 +2148,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
           "named": true
         },
         {
@@ -2087,6 +2285,10 @@
             "named": true
           },
           {
+            "type": "array",
+            "named": true
+          },
+          {
             "type": "assign",
             "named": true
           },
@@ -2183,6 +2385,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
           "named": true
         },
         {
@@ -2301,6 +2507,10 @@
             "named": true
           },
           {
+            "type": "array",
+            "named": true
+          },
+          {
             "type": "assign",
             "named": true
           },
@@ -2397,6 +2607,10 @@
       "types": [
         {
           "type": "alias",
+          "named": true
+        },
+        {
+          "type": "array",
           "named": true
         },
         {
@@ -2535,6 +2749,14 @@
     "named": false
   },
   {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
     "type": "alias",
     "named": false
   },
@@ -2589,6 +2811,10 @@
   {
     "type": "nil",
     "named": true
+  },
+  {
+    "type": "of",
+    "named": false
   },
   {
     "type": "rescue",

@@ -73,10 +73,10 @@ module.exports = grammar({
       $.integer,
       $.float,
       $.char,
+      $.array,
       // TODO: other expressions
       // string
       // symbol
-      // array
       // hash
       // tuple
 
@@ -201,6 +201,26 @@ module.exports = grammar({
       return token.immediate(seq('\\', choice(
         '0' ,'\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
       )))
+    },
+
+    array: $ => {
+      const of_type = field('of', seq('of', $._type))
+
+      return choice(
+        seq(
+          '[',
+          $._expression,
+          repeat(seq(',', $._expression, )),
+          optional(','),
+          ']',
+          optional(of_type),
+        ),
+        seq(
+          '[',
+          ']',
+          of_type,
+        ),
+      )
     },
 
     module_def: $ => seq(
