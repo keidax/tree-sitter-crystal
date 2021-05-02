@@ -309,7 +309,7 @@ strings
 "\'"
 "\c"
 "\?"
-"\#{}"
+"\#"
 
 ---
 
@@ -351,12 +351,52 @@ strings
 ====================
 string interpolation
 ====================
-"#{1}"
+
+"#"
+"\#{"
+"\#{}"
+
+"#{2}"
+"#{"#{"#{'a'}"}"}"
+
+"hello, #{place.to_s}"
+
+"#{a} + #{b} = #{a + b}"
+
 ---
 
 (source_file
+  (string)
+  (string (ignored_backslash))
+  (string (ignored_backslash))
+
   (string
-    (string_interpolation)))
+    (string_interpolation
+      (integer)))
+  (string
+    (string_interpolation
+      (string
+        (string_interpolation
+          (string
+            (string_interpolation
+              (char)))))))
+
+  (string
+    (string_interpolation
+      (call
+        receiver: (identifier)
+        method: (identifier))))
+
+  (string
+    (string_interpolation
+      (identifier))
+    (string_interpolation
+      (identifier))
+    (string_interpolation
+      (call
+        receiver: (identifier)
+        method: (identifier)
+        arguments: (identifier)))))
 
 ======
 arrays

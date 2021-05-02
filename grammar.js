@@ -205,13 +205,12 @@ module.exports = grammar({
 
     // TODO:
     // multiple string literals joined by backslashes
-    // interpolation
     // percent literals
     // heredocs
     string: $ => seq(
       '"',
       repeat(choice(
-        token.immediate(/[^\\]/),
+        token.immediate(prec(1, /[^\\"]/)),
         $.string_escape_sequence,
         $.ignored_backslash,
         $.string_interpolation,
@@ -242,7 +241,7 @@ module.exports = grammar({
     },
 
     string_interpolation: $ => seq(
-      token.immediate('#{', $._statements, '}')
+      token.immediate(prec(1, '#{')), $._expression, '}'
     ),
 
     array: $ => {
