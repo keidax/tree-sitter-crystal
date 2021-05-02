@@ -62,7 +62,14 @@ module.exports = grammar({
       $.next,
       $.break,
       // TODO:
+      // struct
+      // enum
       // lib
+      // fun def
+      // macro def
+      // union
+      // lib variables
+      // lib type
     ),
 
     _expression: $ => choice(
@@ -79,6 +86,11 @@ module.exports = grammar({
       // symbol
       // hash
       // tuple
+      // named tuple
+      // range
+      // regex
+      // proc
+      // `command`
 
       // Groupings
       $.empty_braces,
@@ -89,14 +101,28 @@ module.exports = grammar({
       $.self,
       $.constant,
       $.identifier,
+      // TODO
+      // instance variables
+      // class variables
 
       // Control structures
       $.while,
       $.until,
       // TODO
       // if
+      // if modifier
       // unless
+      // unless modifier
+      // ternary if
+      // rescue modifier
       // case
+      // &&
+      // ||
+      // macro interpolation
+      // macro if
+      // macro for
+      // macro verbatim
+      // macro fresh variables
 
       // Methods
       $.call,
@@ -106,6 +132,26 @@ module.exports = grammar({
       // TODO:
       // multi assignment
       // operator assignment
+      // index operator
+      // index assignment
+      // annotations
+
+      // Keywords and special methods
+      // TODO
+      // require
+      // super
+      // previous_def
+      // typeof
+      // is_a?
+      // nil?
+      // responds_to?
+      // as
+      // as?
+      // pointerof
+      // sizeof
+      // instance_sizeof
+      // offsetof
+      // uninitialized
     ),
 
     comment: $ => /#.*/,
@@ -282,9 +328,15 @@ module.exports = grammar({
     ),
 
     method_def: $ => {
+      // TODO:
+      // visibility
+      // abstract
+      // forall
+      // class methods
       const name = field('name', choice($.identifier, alias($.identifier_method_call, $.identifier)))
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/\s:\s/, $._type))
+
 
       return prec(1, seq(
         'def',
@@ -334,6 +386,12 @@ module.exports = grammar({
       ))
     },
 
+    // TODO: pseudo constants
+    // __LINE__
+    // __END_LINE__
+    // __FILE__
+    // __DIR__
+
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),
 
@@ -344,6 +402,16 @@ module.exports = grammar({
       $.constant,
       $.union_type,
       // TODO: rest of type grammar
+      // nilable
+      // pointer
+      // static array
+      // tuple
+      // named tuple
+      // proc
+      // self
+      // class
+      // underscore
+      // typeof
       // Any types added here should also be added to _nested_union
     ),
 
