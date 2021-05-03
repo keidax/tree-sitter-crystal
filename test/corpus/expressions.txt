@@ -1,3 +1,5 @@
+vim: sw=2
+
 =================
 plain identifiers
 =================
@@ -454,9 +456,9 @@ end
       variable: (identifier)
       type: (union_type (constant) (constant)))))
 
-==================
+=========================
 binary additive operators
-==================
+=========================
 
 1 + 2.0
 
@@ -464,6 +466,8 @@ a &+ b! - C
 
 D &-
   (E)
+
+puts "a" + "b".upcase
 
 ---
 
@@ -485,17 +489,31 @@ D &-
   (call
     receiver: (constant)
     method: (identifier)
-    arguments: (constant)))
+    arguments: (constant))
 
-===
+  (call
+    method: (identifier)
+    arguments: (argument_list
+
+  (call
+    receiver: (string)
+    method: (identifier)
+    arguments: (call
+      receiver: (string)
+      method: (identifier)))
+
+    ))
+
+    )
+
+========================
 unary additive operators
-===
+========================
 
 puts + 2
 puts +2
 puts+2
 puts(+ 2)
-
 
 a! - 1
 b? -1
@@ -509,6 +527,8 @@ d_ (- 2)
 1-
 +2
 1-+ 2
+
+- 8u8.to_i8
 
 ---
 (source_file
@@ -569,4 +589,10 @@ d_ (- 2)
     method: (identifier)
     arguments: (call
       method: (identifier)
-      receiver: (integer))))
+      receiver: (integer)))
+
+  (call
+    method: (identifier)
+    receiver: (call
+      receiver: (integer)
+      method: (identifier))))

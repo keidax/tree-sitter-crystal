@@ -4,9 +4,9 @@ const
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
 const PREC = {
-  CALL: 50,
   ADDITIVE: 75,
   UNARY: 90,
+  CALL: 100,
 }
 
 module.exports = grammar({

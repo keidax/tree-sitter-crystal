@@ -2822,7 +2822,7 @@
     },
     "call": {
       "type": "PREC",
-      "value": 50,
+      "value": 91,
       "content": {
         "type": "SEQ",
         "members": [
@@ -3120,7 +3120,7 @@
     },
     "assign_call": {
       "type": "PREC",
-      "value": 50,
+      "value": 91,
       "content": {
         "type": "SEQ",
         "members": [
