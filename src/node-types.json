@@ -126,6 +126,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -268,6 +272,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -406,6 +414,10 @@
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
             "named": true
           },
           {
@@ -551,6 +563,10 @@
             "named": true
           },
           {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -679,6 +695,10 @@
             "named": true
           },
           {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -802,6 +822,10 @@
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "pseudo_constant",
           "named": true
         },
         {
@@ -933,6 +957,10 @@
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
             "named": true
           },
           {
@@ -1069,6 +1097,10 @@
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
             "named": true
           },
           {
@@ -1224,6 +1256,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1358,6 +1394,10 @@
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
             "named": true
           },
           {
@@ -1547,6 +1587,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1710,6 +1754,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1836,6 +1884,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1948,6 +2000,10 @@
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "pseudo_constant",
           "named": true
         },
         {
@@ -2082,6 +2138,10 @@
             "named": true
           },
           {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -2165,6 +2225,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "pseudo_constant",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "rescue_block",
@@ -2264,6 +2329,10 @@
           },
           {
             "type": "nil",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
             "named": true
           },
           {
@@ -2415,6 +2484,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -2527,6 +2600,10 @@
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "pseudo_constant",
           "named": true
         },
         {
@@ -2665,6 +2742,10 @@
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "pseudo_constant",
           "named": true
         },
         {
@@ -2810,6 +2891,10 @@
             "named": true
           },
           {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -2918,6 +3003,10 @@
         },
         {
           "type": "nil",
+          "named": true
+        },
+        {
+          "type": "pseudo_constant",
           "named": true
         },
         {
@@ -3048,6 +3137,10 @@
             "named": true
           },
           {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -3159,6 +3252,10 @@
           "named": true
         },
         {
+          "type": "pseudo_constant",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -3247,6 +3344,22 @@
   },
   {
     "type": "]",
+    "named": false
+  },
+  {
+    "type": "__DIR__",
+    "named": false
+  },
+  {
+    "type": "__END_LINE__",
+    "named": false
+  },
+  {
+    "type": "__FILE__",
+    "named": false
+  },
+  {
+    "type": "__LINE__",
     "named": false
   },
   {

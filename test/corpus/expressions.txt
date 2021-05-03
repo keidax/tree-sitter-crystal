@@ -30,6 +30,57 @@ selfself
   (identifier)
   (identifier))
 
+================
+pseudo-constants
+================
+
+def pseudo_constants(caller_line = __LINE__, end_of_caller = __END_LINE__)
+  puts "Called from line number: #{caller_line}"
+  puts "Currently at line number: #{__LINE__}"
+  puts "End of caller block is at: #{end_of_caller}"
+  puts "File path is: #{__FILE__}"
+  puts "Directory file is in: #{__DIR__}"
+end
+
+---
+(source_file
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param name: (identifier) default: (pseudo_constant))
+      (param name: (identifier) default: (pseudo_constant)))
+
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string
+          (string_interpolation
+            (identifier)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string
+          (string_interpolation
+            (pseudo_constant)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string
+          (string_interpolation
+            (identifier)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string
+          (string_interpolation
+            (pseudo_constant)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string
+          (string_interpolation
+            (pseudo_constant)))))))
+
 ============
 method calls
 ============

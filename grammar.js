@@ -102,6 +102,7 @@ module.exports = grammar({
       // Symbols
       $.self,
       $.constant,
+      $.pseudo_constant,
       $.identifier,
       // TODO
       // instance variables
@@ -410,11 +411,12 @@ module.exports = grammar({
       ))
     },
 
-    // TODO: pseudo constants
-    // __LINE__
-    // __END_LINE__
-    // __FILE__
-    // __DIR__
+    pseudo_constant: $ => choice(
+      "__LINE__",
+      "__END_LINE__",
+      "__FILE__",
+      "__DIR__",
+    ),
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),

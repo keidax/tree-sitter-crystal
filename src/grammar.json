@@ -206,6 +206,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "pseudo_constant"
+        },
+        {
+          "type": "SYMBOL",
           "name": "identifier"
         },
         {
@@ -2539,6 +2543,27 @@
           }
         ]
       }
+    },
+    "pseudo_constant": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "__LINE__"
+        },
+        {
+          "type": "STRING",
+          "value": "__END_LINE__"
+        },
+        {
+          "type": "STRING",
+          "value": "__FILE__"
+        },
+        {
+          "type": "STRING",
+          "value": "__DIR__"
+        }
+      ]
     },
     "identifier": {
       "type": "TOKEN",
