@@ -214,6 +214,14 @@
         },
         {
           "type": "SYMBOL",
+          "name": "instance_var"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "class_var"
+        },
+        {
+          "type": "SYMBOL",
           "name": "while"
         },
         {
@@ -2360,8 +2368,21 @@
             "type": "FIELD",
             "name": "name",
             "content": {
-              "type": "SYMBOL",
-              "name": "identifier"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "instance_var"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "class_var"
+                }
+              ]
             }
           },
           {
@@ -2603,6 +2624,52 @@
           {
             "type": "PATTERN",
             "value": "[?!]"
+          }
+        ]
+      }
+    },
+    "instance_var": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-z_\\u{00a0}-\\u{10ffff}]"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "PATTERN",
+              "value": "[0-9A-Za-z_\\u{00a0}-\\u{10ffff}]"
+            }
+          }
+        ]
+      }
+    },
+    "class_var": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@@"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-z_\\u{00a0}-\\u{10ffff}]"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "PATTERN",
+              "value": "[0-9A-Za-z_\\u{00a0}-\\u{10ffff}]"
+            }
           }
         ]
       }
@@ -3261,6 +3328,14 @@
               {
                 "type": "SYMBOL",
                 "name": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "instance_var"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "class_var"
               },
               {
                 "type": "SYMBOL",

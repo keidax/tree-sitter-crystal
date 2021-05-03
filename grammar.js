@@ -104,9 +104,8 @@ module.exports = grammar({
       $.constant,
       $.pseudo_constant,
       $.identifier,
-      // TODO
-      // instance variables
-      // class variables
+      $.instance_var,
+      $.class_var,
 
       // Control structures
       $.while,
@@ -377,7 +376,7 @@ module.exports = grammar({
 
     param: $ => {
       const extern_name = field('extern_name', $.identifier)
-      const name = field('name', $.identifier)
+      const name = field('name', choice($.identifier, $.instance_var, $.class_var))
       const type = field('type', seq(/[ \t]:\s/, $._type))
       const default_value = field('default', seq('=', $._expression))
 
@@ -420,6 +419,10 @@ module.exports = grammar({
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),
+
+    instance_var: $ => token(seq("@", ident_start, repeat(ident_part))),
+
+    class_var: $ => token(seq("@@", ident_start, repeat(ident_part))),
 
     self: $ => 'self',
 
@@ -526,7 +529,7 @@ module.exports = grammar({
     argument_list_with_trailing_comma: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)), optional(','))),
 
     assign: $ => {
-      const lhs = field('lhs', choice($.identifier, $.assign_call))
+      const lhs = field('lhs', choice($.identifier, $.instance_var, $.class_var, $.assign_call))
       const rhs = field('rhs', $._expression)
 
       return seq(

@@ -78,6 +78,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -103,6 +107,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -224,6 +232,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -249,6 +261,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -315,7 +331,15 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           }
         ]
@@ -369,6 +393,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -394,6 +422,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -515,6 +547,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -540,6 +576,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -647,6 +687,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -672,6 +716,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -777,6 +825,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -802,6 +854,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -912,6 +968,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -937,6 +997,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -1052,6 +1116,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -1077,6 +1145,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -1208,6 +1280,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -1233,6 +1309,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -1349,6 +1429,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -1374,6 +1458,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -1539,6 +1627,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -1564,6 +1656,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -1706,6 +1802,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -1731,6 +1831,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -1836,6 +1940,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -1861,6 +1969,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -1955,6 +2067,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -1980,6 +2096,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -2090,6 +2210,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -2115,6 +2239,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -2182,7 +2310,15 @@
         "required": true,
         "types": [
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           }
         ]
@@ -2284,6 +2420,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -2309,6 +2449,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -2436,6 +2580,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -2461,6 +2609,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -2555,6 +2707,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -2580,6 +2736,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -2697,6 +2857,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -2722,6 +2886,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -2843,6 +3011,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -2868,6 +3040,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -2958,6 +3134,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -2983,6 +3163,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -3089,6 +3273,10 @@
             "named": true
           },
           {
+            "type": "class_var",
+            "named": true
+          },
+          {
             "type": "const_assign",
             "named": true
           },
@@ -3114,6 +3302,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
             "named": true
           },
           {
@@ -3204,6 +3396,10 @@
           "named": true
         },
         {
+          "type": "class_var",
+          "named": true
+        },
+        {
           "type": "const_assign",
           "named": true
         },
@@ -3229,6 +3425,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "instance_var",
           "named": true
         },
         {
@@ -3383,6 +3583,10 @@
     "named": false
   },
   {
+    "type": "class_var",
+    "named": true
+  },
+  {
     "type": "comment",
     "named": true
   },
@@ -3408,6 +3612,10 @@
   },
   {
     "type": "ignored_backslash",
+    "named": true
+  },
+  {
+    "type": "instance_var",
     "named": true
   },
   {

@@ -15,6 +15,43 @@ f_0___
   (identifier)
   (identifier))
 
+============================
+instance and class variables
+============================
+
+class Klass
+  @a = 87
+  @@b = "hjkl"
+
+  def initialize(@a)
+    puts @a + 2
+  end
+
+  def set_class_var(@@b)
+  end
+end
+
+---
+(source_file
+  (class_def name: (constant)
+    (assign lhs: (instance_var) rhs: (integer))
+    (assign lhs: (class_var) rhs: (string))
+
+    (method_def
+      name: (identifier)
+      params: (param_list (param name: (instance_var)))
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (call
+            receiver: (instance_var)
+            method: (identifier)
+            arguments: (integer)))))
+
+    (method_def
+      name: (identifier)
+      params: (param_list (param name: (class_var))))))
+
 ====
 self
 ====
