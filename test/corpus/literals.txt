@@ -435,3 +435,50 @@ arrays
       (integer) (integer))
     (array
       (integer) (integer))))
+
+======
+hashes
+======
+
+{} of
+  Int16 |
+    Int32 =>
+      Bool |
+        Char
+
+{'a'=>'b','c'=>'d'}of Char=>Char
+
+{ "one" => 1, "two" => 2, }
+
+{
+  1 + 2 => { '3' => [3.0] }
+}
+
+---
+
+(source_file
+  (hash
+    of_key: (union_type (constant) (constant))
+    of_value: (union_type (constant) (constant)))
+
+  (hash
+    (hash_pair (char) (char))
+    (hash_pair (char) (char))
+    of_key: (constant)
+    of_value: (constant)
+  )
+
+  (hash
+    (hash_pair (string) (integer))
+    (hash_pair (string) (integer)))
+
+  (hash
+    (hash_pair
+      (call
+        receiver: (integer)
+        method: (identifier)
+        arguments: (integer))
+      (hash
+        (hash_pair
+          (char)
+          (array (float)))))))

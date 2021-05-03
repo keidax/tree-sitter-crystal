@@ -83,10 +83,10 @@ module.exports = grammar({
       $.float,
       $.char,
       $.array,
+      $.hash,
       $.string,
       // TODO: other expressions
       // symbol
-      // hash
       // tuple
       // named tuple
       // range
@@ -311,6 +311,28 @@ module.exports = grammar({
         ),
       )
     },
+
+    hash: $ => {
+      const of_type = seq('of', field('of_key', $._type), '=>', field('of_value', $._type))
+
+      return choice(
+        seq(
+          '{',
+          $.hash_pair,
+          repeat(seq(',', $.hash_pair)),
+          optional(','),
+          '}',
+          optional(of_type),
+        ),
+        seq(
+          '{',
+          '}',
+          of_type,
+        ),
+      )
+    },
+
+    hash_pair: $ => seq($._expression, "=>", $._expression),
 
     module_def: $ => seq(
       'module',
