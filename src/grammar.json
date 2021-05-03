@@ -1,5 +1,6 @@
 {
   "name": "crystal",
+  "word": "identifier",
   "rules": {
     "source_file": {
       "type": "SEQ",
@@ -22,11 +23,8 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_line_break"
-          }
+          "type": "SYMBOL",
+          "name": "_line_break"
         },
         {
           "type": "STRING",
@@ -2112,7 +2110,7 @@
                   "members": [
                     {
                       "type": "PATTERN",
-                      "value": "\\s:\\s"
+                      "value": "[ \\t]:\\s"
                     },
                     {
                       "type": "SYMBOL",
@@ -2223,7 +2221,7 @@
                   "members": [
                     {
                       "type": "PATTERN",
-                      "value": "\\s:\\s"
+                      "value": "[ \\t]:\\s"
                     },
                     {
                       "type": "SYMBOL",

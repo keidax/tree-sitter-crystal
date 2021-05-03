@@ -26,12 +26,14 @@ module.exports = grammar({
     $.comment,
   ],
 
+  word: $ => $.identifier,
+
   rules: {
     source_file: $ => seq(
       optional($._statements)
     ),
 
-    _terminator: $ => choice(repeat1($._line_break), ';'),
+    _terminator: $ => choice($._line_break, ';'),
 
     _statements: $ => choice(
       seq(
@@ -335,7 +337,7 @@ module.exports = grammar({
       // class methods
       const name = field('name', choice($.identifier, alias($.identifier_method_call, $.identifier)))
       const params = seq('(', field('params', optional($.param_list)), ')')
-      const return_type = field('type', seq(/\s:\s/, $._type))
+      const return_type = field('type', seq(/[ \t]:\s/, $._type))
 
 
       return prec(1, seq(
@@ -353,7 +355,7 @@ module.exports = grammar({
     param: $ => {
       const extern_name = field('extern_name', $.identifier)
       const name = field('name', $.identifier)
-      const type = field('type', seq(/\s:\s/, $._type))
+      const type = field('type', seq(/[ \t]:\s/, $._type))
       const default_value = field('default', seq('=', $._expression))
 
       return prec(1, seq(

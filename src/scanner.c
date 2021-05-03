@@ -17,7 +17,7 @@ enum Token {
 	BINARY_PLUS,
 	BINARY_MINUS,
 
-	NONE
+	NONE,
 };
 
 void *tree_sitter_crystal_external_scanner_create() {
@@ -74,6 +74,7 @@ const bool *valid_symbols) {
 	// if (valid_symbols[UNARY_MINUS]) printf("UNARY_MINUS,");
 	// if (valid_symbols[BINARY_PLUS]) printf("BINARY_PLUS,");
 	// if (valid_symbols[BINARY_MINUS]) printf("BINARY_MINUS,");
+	// if (valid_symbols[NONE]) printf("NONE");
 	// printf("\n");
 
 	State * state = (State*)payload;

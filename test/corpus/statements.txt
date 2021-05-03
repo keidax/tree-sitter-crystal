@@ -274,7 +274,7 @@ end
 
 def fizz() : Bool return true end
 
-def qux(a, b : Bool, c : Int32 = 7, d = nil) : Stuff
+def qux(a, b	: Bool, c : Int32 = 7, d = nil) : Stuff
 end
 
 def buzz(
