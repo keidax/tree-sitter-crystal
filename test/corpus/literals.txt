@@ -499,6 +499,7 @@ a..1
 5...7
 0..
 ..60
+...
 
 foo! .. 2
 foo 1...2
@@ -509,6 +510,8 @@ foo .. 6 + 7
 foo .. - bar
 
 foo bar... 8
+
+puts(..)
 
 ---
 
@@ -523,6 +526,7 @@ foo bar... 8
     begin: (integer))
   (range
     end: (integer))
+  (range)
 
   (range
     begin: (call
@@ -560,4 +564,9 @@ foo bar... 8
     arguments: (argument_list
       (range
         begin: (identifier)
-        end: (integer)))))
+        end: (integer))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (range))))

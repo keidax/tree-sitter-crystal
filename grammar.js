@@ -364,7 +364,7 @@ module.exports = grammar({
 
       return prec.left(PREC.RANGE, seq(
         range_op,
-        end,
+        optional(end),
       ))
     },
 

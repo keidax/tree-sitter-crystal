@@ -2177,8 +2177,16 @@
             }
           },
           {
-            "type": "SYMBOL",
-            "name": "_range_end"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_range_end"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
