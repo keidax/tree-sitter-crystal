@@ -151,9 +151,9 @@ a(b(c()))
     receiver: (constant)
     method: (identifier))
 
+  (call method: (identifier) arguments: (argument_list))
   (call method: (identifier))
-  (call method: (identifier))
-  (call method: (identifier))
+  (call method: (identifier) arguments: (argument_list))
 
   (call
     receiver: (true)
@@ -196,7 +196,8 @@ a(b(c()))
         method: (identifier)
         arguments: (argument_list
           (call
-            method: (identifier)))))))
+            method: (identifier)
+            arguments: (argument_list)))))))
 
 ====================================
 method calls with multiple arguments

@@ -416,6 +416,8 @@ arrays
 
 [[1,2],[3,4]]
 
+[foo 1, 2, 3]
+
 ---
 
 (source_file
@@ -436,7 +438,12 @@ arrays
     (array
       (integer) (integer))
     (array
-      (integer) (integer))))
+      (integer) (integer)))
+
+  (array
+    (call
+      method: (identifier)
+      arguments: (argument_list (integer) (integer) (integer)))))
 
 ======
 hashes

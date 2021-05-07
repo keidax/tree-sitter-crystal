@@ -6,7 +6,7 @@ const
 const PREC = {
   ADDITIVE: 75,
   UNARY: 90,
-  CALL: 100,
+  DOT: 100,
 }
 
 module.exports = grammar({
@@ -459,22 +459,26 @@ module.exports = grammar({
       $._nested_union_type, "|", $._nested_union_type, repeat(seq("|", $._nested_union_type))
     )),
 
-    call: $ => {
-      const receiver = field('receiver', seq($._expression, '.'))
+    _dot_call: $ => prec(PREC.DOT, seq(
+      field('receiver', $._expression),
+      '.',
+      field('method', choice(
+        $.identifier,
+        alias($.identifier_method_call, $.identifier),
+        // TODO: include operator calls
+      )),
+    )),
 
-      const method_identifier = field('method', alias($.identifier_method_call, $.identifier))
-      const optional_method_identifier = field('method', choice($.identifier, alias($.identifier_method_call, $.identifier)))
+    call: $ => {
+      const receiver_call = choice(
+        $._dot_call,
+        field('method', alias($.identifier_method_call, $.identifier)),
+      )
+      const ambiguous_call = field('method', $.identifier)
 
       const argument_list = field('arguments', choice(
-        seq(
-          '(',
-          optional(alias(
-            $.argument_list_with_trailing_comma,
-            $.argument_list,
-          )),
-          ')'
-        ),
-        $.argument_list
+        alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_no_parens, $.argument_list),
       ))
 
       // how do we distingush a method call from a variable?
@@ -488,19 +492,18 @@ module.exports = grammar({
       // TODO:
       // named arguments
       // blocks
-      return prec(PREC.CALL, seq(choice(
-        seq(receiver, optional_method_identifier, optional(argument_list)),
-        seq(optional(receiver), method_identifier, optional(argument_list)),
-        seq(optional(receiver), optional_method_identifier, argument_list),
-      )))
+      return choice(
+        seq(receiver_call, optional(argument_list)),
+        seq(ambiguous_call, argument_list),
+      )
     },
 
     // A subset of method calls that can be the LHS of an assignment
     assign_call: $ => {
-      const receiver = field('receiver', seq($._expression, '.'))
+      const receiver = field('receiver', $._expression)
       const method_identifier = field('method', $.identifier)
 
-      return prec(PREC.CALL, seq(receiver, method_identifier))
+      return prec(PREC.DOT, seq(receiver, '.', method_identifier))
     },
 
     additive_operator: $ => {
@@ -525,8 +528,20 @@ module.exports = grammar({
       ))
     },
 
-    argument_list: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)))),
-    argument_list_with_trailing_comma: $ => prec.right(1, seq($._expression, repeat(seq(',', $._expression)), optional(','))),
+    argument_list_no_parens: $ => prec.right(seq(
+      $._expression,
+      repeat(seq(',', $._expression))
+    )),
+
+    argument_list_with_parens: $ => prec.right(seq(
+      token.immediate('('),
+      optional(seq(
+        $._expression,
+        repeat(seq(',', $._expression)),
+        optional(','),
+      )),
+      ')'
+    )),
 
     assign: $ => {
       const lhs = field('lhs', choice($.identifier, $.instance_var, $.class_var, $.assign_call))
