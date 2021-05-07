@@ -144,6 +144,12 @@ a b.c
 
 a(b(c()))
 
+pp a
+
+   .
+
+   b
+
 ---
 
 (source_file
@@ -197,7 +203,15 @@ a(b(c()))
         arguments: (argument_list
           (call
             method: (identifier)
-            arguments: (argument_list)))))))
+            arguments: (argument_list))))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        receiver: (identifier)
+        method: (identifier ))))
+            )
 
 ====================================
 method calls with multiple arguments

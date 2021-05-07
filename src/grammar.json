@@ -186,6 +186,19 @@
         },
         {
           "type": "SYMBOL",
+          "name": "range"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "beginless_range"
+          },
+          "named": true,
+          "value": "range"
+        },
+        {
+          "type": "SYMBOL",
           "name": "empty_braces"
         },
         {
@@ -2086,6 +2099,90 @@
         }
       ]
     },
+    "_range_end": {
+      "type": "FIELD",
+      "name": "end",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_expression"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_end_of_range"
+          }
+        ]
+      }
+    },
+    "range": {
+      "type": "PREC_LEFT",
+      "value": 35,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "begin",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ".."
+                },
+                {
+                  "type": "STRING",
+                  "value": "..."
+                }
+              ]
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_range_end"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "beginless_range": {
+      "type": "PREC_LEFT",
+      "value": 35,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_beginless_range_operator"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_range_end"
+          }
+        ]
+      }
+    },
     "module_def": {
       "type": "SEQ",
       "members": [
@@ -3100,8 +3197,17 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_expression"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_start_of_parenless_args"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_expression"
+              }
+            ]
           },
           {
             "type": "REPEAT",
@@ -3530,6 +3636,18 @@
     {
       "type": "SYMBOL",
       "name": "binary_minus"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_beginless_range_operator"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_start_of_parenless_args"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_end_of_range"
     }
   ],
   "inline": [],

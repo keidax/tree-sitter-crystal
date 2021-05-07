@@ -491,3 +491,73 @@ hashes
         (hash_pair
           (char)
           (array (float)))))))
+
+======
+ranges
+======
+a..1
+5...7
+0..
+..60
+
+foo! .. 2
+foo 1...2
+
+foo 1, ...2
+
+foo .. 6 + 7
+foo .. - bar
+
+foo bar... 8
+
+---
+
+(source_file
+  (range
+    begin: (identifier)
+    end: (integer))
+  (range
+    begin: (integer)
+    end: (integer))
+  (range
+    begin: (integer))
+  (range
+    end: (integer))
+
+  (range
+    begin: (call
+      method: (identifier))
+    end: (integer))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (range
+        begin: (integer)
+        end: (integer))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (integer)
+      (range
+        end: (integer))))
+
+  (range
+    begin: (identifier)
+    end: (call
+      receiver: (integer)
+      method: (identifier)
+      arguments: (integer)))
+
+  (range
+    begin: (identifier)
+    end: (call
+      method: (identifier)
+      receiver: (identifier)))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (range
+        begin: (identifier)
+        end: (integer)))))

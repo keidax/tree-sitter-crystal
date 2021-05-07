@@ -23,6 +23,11 @@ enum Token {
 	BINARY_PLUS,
 	BINARY_MINUS,
 
+	BEGINLESS_RANGE_OPERATOR,
+
+	// Never returned
+	START_OF_PARENLESS_ARGS,
+	END_OF_RANGE,
 	NONE,
 };
 
@@ -62,8 +67,19 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 				break;
 
 			default:
-				if (crossed_newline && lexer->lookahead != '.') {
-					lexer->result_symbol = LINE_BREAK;
+				if (crossed_newline) {
+					if (lexer->lookahead == '.') {
+						// Check if this is the continuation of a method call,
+						// or the start of a beginless range literal.
+						lexer->advance(lexer, false);
+						if (lexer->lookahead == '.') {
+							DEBUG(" ==> returning LINE_BREAK\n");
+							lexer->result_symbol = LINE_BREAK;
+						}
+					} else {
+						DEBUG(" ==> returning LINE_BREAK\n");
+						lexer->result_symbol = LINE_BREAK;
+					}
 				}
 				return true;
 		}
@@ -80,6 +96,9 @@ const bool *valid_symbols) {
 	if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
 	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
 	if (valid_symbols[BINARY_MINUS]) DEBUG("\tBINARY_MINUS\n");
+	if (valid_symbols[START_OF_PARENLESS_ARGS]) DEBUG("\tSTART_OF_PARENLESS_ARGS\n");
+	if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
+	if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
 	if (valid_symbols[NONE]) DEBUG("\tNONE\n");
 
 	State * state = (State*)payload;
@@ -104,7 +123,15 @@ const bool *valid_symbols) {
 					return false;
 				}
 
-				if(valid_symbols[UNARY_PLUS] && state->has_leading_whitespace && !isspace(lexer->lookahead)) {
+				// Give precendence to the unary operator if:
+				// - there is space before but not after, e.g.
+				//		puts +foo
+				// - we are just after a range operator, e.g.
+				//		-5 .. + foo
+				bool unary_priority = (state->has_leading_whitespace && !isspace(lexer->lookahead))
+					|| valid_symbols[END_OF_RANGE];
+
+				if(valid_symbols[UNARY_PLUS] && unary_priority) {
 					lexer->result_symbol = UNARY_PLUS;
 					DEBUG(" ==> returning UNARY_PLUS\n");
 				} else if (valid_symbols[BINARY_PLUS]) {
@@ -126,7 +153,10 @@ const bool *valid_symbols) {
 					return false;
 				}
 
-				if(valid_symbols[UNARY_MINUS] && state->has_leading_whitespace && !isspace(lexer->lookahead)) {
+				bool unary_priority = (state->has_leading_whitespace && !isspace(lexer->lookahead))
+					|| valid_symbols[END_OF_RANGE];
+
+				if(valid_symbols[UNARY_MINUS] && unary_priority) {
 					lexer->result_symbol = UNARY_MINUS;
 					DEBUG(" ==> returning UNARY_MINUS\n");
 				} else if (valid_symbols[BINARY_MINUS]) {
@@ -137,6 +167,22 @@ const bool *valid_symbols) {
 					DEBUG(" ==> returning UNARY_MINUS\n");
 				}
 
+				return true;
+			}
+			break;
+		case '.':
+			if (valid_symbols[BEGINLESS_RANGE_OPERATOR] && !valid_symbols[START_OF_PARENLESS_ARGS]) {
+				lexer->advance(lexer, true);
+				if (lexer->lookahead != '.') {
+					return false;
+				}
+				lexer->advance(lexer, true);
+				if (lexer->lookahead == '.') {
+					lexer->advance(lexer, true);
+				}
+
+				DEBUG(" ==> returning BEGINLESS_RANGE_OPERATOR\n");
+				lexer->result_symbol = BEGINLESS_RANGE_OPERATOR;
 				return true;
 			}
 			break;

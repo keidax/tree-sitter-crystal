@@ -4,6 +4,7 @@ const
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
 const PREC = {
+  RANGE: 35,
   ADDITIVE: 75,
   UNARY: 90,
   DOT: 100,
@@ -19,6 +20,13 @@ module.exports = grammar({
     $.unary_minus,
     $.binary_plus,
     $.binary_minus,
+
+    $._beginless_range_operator,
+
+    // These symbols are never actually returned. They signal the current scope
+    // to the scanner.
+    $._start_of_parenless_args,
+    $._end_of_range,
   ],
 
   extras: $ => [
@@ -85,6 +93,8 @@ module.exports = grammar({
       $.array,
       $.hash,
       $.string,
+      $.range,
+      alias($.beginless_range, $.range),
       // TODO: other expressions
       // symbol
       // tuple
@@ -334,6 +344,30 @@ module.exports = grammar({
 
     hash_pair: $ => seq($._expression, "=>", $._expression),
 
+    _range_end: $ => field('end', choice($._expression, $._end_of_range)),
+
+    range: $ => {
+      const begin = field('begin', $._expression)
+      const range_op = field('operator', choice('..', '...'))
+      const end = $._range_end
+
+      return prec.left(PREC.RANGE, seq(
+        begin,
+        range_op,
+        optional(end),
+      ))
+    },
+
+    beginless_range: $ => {
+      const range_op = field('operator', $._beginless_range_operator)
+      const end = $._range_end
+
+      return prec.left(PREC.RANGE, seq(
+        range_op,
+        end,
+      ))
+    },
+
     module_def: $ => seq(
       'module',
       field('name', $.constant), // TODO: generics
@@ -529,7 +563,10 @@ module.exports = grammar({
     },
 
     argument_list_no_parens: $ => prec.right(seq(
-      $._expression,
+      choice(
+        $._start_of_parenless_args,
+        $._expression,
+      ),
       repeat(seq(',', $._expression))
     )),
 
