@@ -2,12 +2,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 
 struct State {
 	bool has_leading_whitespace;
 };
 typedef struct State State;
+
+#define DEBUG(...) if (getenv("TS_CRYSTAL_DEBUG") && \
+	strncmp(getenv("TS_CRYSTAL_DEBUG"), "1", 1) == 0) { \
+		fprintf(stderr, __VA_ARGS__); \
+}
 
 enum Token {
 	LINE_BREAK,
@@ -66,16 +72,15 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer,
 const bool *valid_symbols) {
-
-	// printf(" ==> calling scan with char '%c'\n", lexer->lookahead);
-	// printf(" ==> valid symbols are ");
-	// if (valid_symbols[LINE_BREAK]) printf("LINE_BREAK,");
-	// if (valid_symbols[UNARY_PLUS]) printf("UNARY_PLUS,");
-	// if (valid_symbols[UNARY_MINUS]) printf("UNARY_MINUS,");
-	// if (valid_symbols[BINARY_PLUS]) printf("BINARY_PLUS,");
-	// if (valid_symbols[BINARY_MINUS]) printf("BINARY_MINUS,");
-	// if (valid_symbols[NONE]) printf("NONE");
-	// printf("\n");
+	DEBUG("\n ==> starting external scan\n");
+	DEBUG(" ==> char is '%c'\n", lexer->lookahead);
+	DEBUG(" ==> valid symbols are:\n");
+	if (valid_symbols[LINE_BREAK]) DEBUG("\tLINE_BREAK\n");
+	if (valid_symbols[UNARY_PLUS]) DEBUG("\tUNARY_PLUS\n");
+	if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
+	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
+	if (valid_symbols[BINARY_MINUS]) DEBUG("\tBINARY_MINUS\n");
+	if (valid_symbols[NONE]) DEBUG("\tNONE\n");
 
 	State * state = (State*)payload;
 	state->has_leading_whitespace = false;
@@ -101,10 +106,13 @@ const bool *valid_symbols) {
 
 				if(valid_symbols[UNARY_PLUS] && state->has_leading_whitespace && !isspace(lexer->lookahead)) {
 					lexer->result_symbol = UNARY_PLUS;
+					DEBUG(" ==> returning UNARY_PLUS\n");
 				} else if (valid_symbols[BINARY_PLUS]) {
 					lexer->result_symbol = BINARY_PLUS;
+					DEBUG(" ==> returning BINARY_PLUS\n");
 				} else {
 					lexer->result_symbol = UNARY_PLUS;
+					DEBUG(" ==> returning UNARY_PLUS\n");
 				}
 
 				return true;
@@ -120,10 +128,13 @@ const bool *valid_symbols) {
 
 				if(valid_symbols[UNARY_MINUS] && state->has_leading_whitespace && !isspace(lexer->lookahead)) {
 					lexer->result_symbol = UNARY_MINUS;
+					DEBUG(" ==> returning UNARY_MINUS\n");
 				} else if (valid_symbols[BINARY_MINUS]) {
 					lexer->result_symbol = BINARY_MINUS;
+					DEBUG(" ==> returning BINARY_MINUS\n");
 				} else {
 					lexer->result_symbol = UNARY_MINUS;
+					DEBUG(" ==> returning UNARY_MINUS\n");
 				}
 
 				return true;
@@ -131,6 +142,7 @@ const bool *valid_symbols) {
 			break;
 	}
 
+	DEBUG(" ==> returning nothing at end\n");
 	return false;
 }
 
