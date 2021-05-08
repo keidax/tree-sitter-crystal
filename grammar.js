@@ -122,8 +122,8 @@ module.exports = grammar({
       // Control structures
       $.while,
       $.until,
+      $.if,
       // TODO
-      // if
       // if modifier
       // unless
       // unless modifier
@@ -664,6 +664,40 @@ module.exports = grammar({
       optional($._statements),
       'end'
     ),
+
+    if: $ => {
+      const cond = field('cond', $._expression)
+      const then = field('then', $.then)
+      const else_ = field('else', choice($.elsif, $.else))
+
+      return seq(
+        'if',
+        cond,
+        $._terminator,
+        optional(then),
+        optional(else_),
+        'end',
+      )
+    },
+
+    then: $ => seq($._statements),
+
+    elsif: $ => {
+      const cond = field('cond', $._expression)
+      const then = field('then', $.then)
+      const else_ = field('else', choice($.elsif, $.else))
+
+      return seq(
+        'elsif',
+        cond,
+        $._terminator,
+        optional(then),
+        optional(else_),
+      )
+
+    },
+
+    else: $ => seq('else', optional($._statements)),
 
     require: $ => seq('require', $.string),
   }

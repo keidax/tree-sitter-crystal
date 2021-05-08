@@ -634,3 +634,86 @@ d && e || f && g
   (or (identifier) (and (identifier) (identifier)))
 
   (or (and (identifier) (identifier)) (and (identifier) (identifier))))
+
+=============
+if/elsif/else
+=============
+if true;end
+
+if ABC
+  return 5
+end
+
+if cond1
+elsif cond2
+elsif cond3
+else
+end
+
+if a "a"; puts "a" elsif b "b"; puts "b" else puts "c" end
+
+if you
+  puts "shouldn't"
+else if DO
+    puts "this"
+  end
+end
+
+---
+(source_file
+  (if cond: (true))
+
+  (if
+    cond: (constant)
+    then: (then
+      (return (integer))))
+
+  (if
+    cond: (identifier)
+    else: (elsif
+      cond: (identifier)
+      else: (elsif
+        cond: (identifier)
+        else: (else))))
+
+  (if
+    cond: (call
+      method: (identifier)
+      arguments: (argument_list
+        (string)))
+    then: (then
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (string))))
+    else: (elsif
+      cond: (call
+        method: (identifier)
+        arguments: (argument_list
+          (string)))
+      then: (then
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (string))))
+      else: (else
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (string))))))
+
+  (if
+    cond: (identifier)
+    then: (then
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (string))))
+    else: (else
+      (if
+        cond: (constant)
+        then: (then
+          (call
+            method: (identifier)
+            arguments: (argument_list
+              (string))))))))
