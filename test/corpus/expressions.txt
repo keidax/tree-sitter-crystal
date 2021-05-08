@@ -144,11 +144,11 @@ a b.c
 
 a(b(c()))
 
-pp a
-
-   .
-
-   b
+pp a # comment
+     # comment
+  .  # asdf
+     # comment
+  b  # one more comment
 
 ---
 
@@ -210,8 +210,12 @@ pp a
     arguments: (argument_list
       (call
         receiver: (identifier)
-        method: (identifier ))))
-            )
+        (comment)
+        (comment)
+        (comment)
+        (comment)
+        method: (identifier))))
+  (comment))
 
 ====================================
 method calls with multiple arguments

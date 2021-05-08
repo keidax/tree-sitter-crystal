@@ -76,6 +76,8 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 							DEBUG(" ==> returning LINE_BREAK\n");
 							lexer->result_symbol = LINE_BREAK;
 						}
+					} else if (lexer->lookahead == '#') {
+						// Comments don't interrupt line continuations
 					} else {
 						DEBUG(" ==> returning LINE_BREAK\n");
 						lexer->result_symbol = LINE_BREAK;
