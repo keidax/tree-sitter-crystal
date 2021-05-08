@@ -4,6 +4,7 @@ const
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
 const PREC = {
+  CONDITIONAL: 30,
   RANGE: 35,
   OR: 40,
   AND: 45,
@@ -124,10 +125,10 @@ module.exports = grammar({
       $.until,
       $.if,
       $.unless,
+      $.conditional,
       // TODO
       // if modifier
       // unless modifier
-      // ternary if
       // rescue modifier
       // case
       // &&
@@ -713,6 +714,14 @@ module.exports = grammar({
     },
 
     else: $ => seq('else', optional($._statements)),
+
+    conditional: $ => prec.right(PREC.CONDITIONAL,seq(
+      field('cond', $._expression),
+      '?',
+      field('then', $._expression),
+      ':',
+      field('else', $._expression)
+    )),
 
     require: $ => seq('require', $.string),
   }

@@ -744,3 +744,41 @@ end
         method: (identifier)
         arguments: (argument_list
           (string))))))
+
+==========
+ternary if
+==========
+thingy? ? 1 : 2.0
+
+puts true ?
+"a"
+:
+# something
+'b'
+
+ans = foo ? "foo" : bar ? "bar" : nil
+---
+(source_file
+  (conditional
+    cond: (call method: (identifier))
+    then: (integer)
+    else: (float))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (conditional
+        cond: (true)
+        then: (string)
+        (comment)
+        else: (char))))
+
+  (assign
+    lhs: (identifier)
+    rhs: (conditional
+      cond: (identifier)
+      then: (string)
+      else: (conditional
+        cond: (identifier)
+        then: (string)
+        else: (nil)))))
