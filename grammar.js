@@ -123,9 +123,9 @@ module.exports = grammar({
       $.while,
       $.until,
       $.if,
+      $.unless,
       // TODO
       // if modifier
-      // unless
       // unless modifier
       // ternary if
       // rescue modifier
@@ -672,6 +672,21 @@ module.exports = grammar({
 
       return seq(
         'if',
+        cond,
+        $._terminator,
+        optional(then),
+        optional(else_),
+        'end',
+      )
+    },
+
+    unless: $ => {
+      const cond = field('cond', $._expression)
+      const then = field('then', $.then)
+      const else_ = field('else', $.else)
+
+      return seq(
+        'unless',
         cond,
         $._terminator,
         optional(then),

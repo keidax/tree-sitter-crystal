@@ -255,6 +255,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "unless"
+        },
+        {
+          "type": "SYMBOL",
           "name": "call"
         },
         {
@@ -3817,6 +3821,63 @@
                     "name": "else"
                   }
                 ]
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "end"
+        }
+      ]
+    },
+    "unless": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "unless"
+        },
+        {
+          "type": "FIELD",
+          "name": "cond",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_terminator"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "then",
+              "content": {
+                "type": "SYMBOL",
+                "name": "then"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "else",
+              "content": {
+                "type": "SYMBOL",
+                "name": "else"
               }
             },
             {

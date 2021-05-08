@@ -717,3 +717,30 @@ end
             method: (identifier)
             arguments: (argument_list
               (string))))))))
+
+======
+unless
+======
+unless a; end
+
+unless true
+  pp "asdf"
+else
+  pp "hjkl"
+end
+---
+(source_file
+  (unless cond: (identifier))
+
+  (unless
+    cond: (true)
+    then: (then
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (string))))
+    else: (else
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (string))))))
