@@ -256,7 +256,7 @@
             "name": "additive_operator"
           },
           "named": true,
-          "value": "call"
+          "value": "op_call"
         },
         {
           "type": "ALIAS",
@@ -265,7 +265,7 @@
             "name": "unary_additive_operator"
           },
           "named": true,
-          "value": "call"
+          "value": "op_call"
         },
         {
           "type": "SYMBOL",
@@ -3169,7 +3169,7 @@
           },
           {
             "type": "FIELD",
-            "name": "method",
+            "name": "operator",
             "content": {
               "type": "ALIAS",
               "content": {
@@ -3194,12 +3194,12 @@
                 ]
               },
               "named": true,
-              "value": "identifier"
+              "value": "operator"
             }
           },
           {
             "type": "FIELD",
-            "name": "arguments",
+            "name": "argument",
             "content": {
               "type": "SYMBOL",
               "name": "_expression"
@@ -3216,7 +3216,7 @@
         "members": [
           {
             "type": "FIELD",
-            "name": "method",
+            "name": "operator",
             "content": {
               "type": "ALIAS",
               "content": {
@@ -3233,7 +3233,7 @@
                 ]
               },
               "named": true,
-              "value": "identifier"
+              "value": "operator"
             }
           },
           {

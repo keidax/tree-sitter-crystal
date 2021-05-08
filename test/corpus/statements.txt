@@ -65,15 +65,15 @@ a + # asdf
 (source_file
   (comment)
 
-  (call
+  (op_call
     receiver: (identifier)
-    method: (identifier)
+    operator: (operator)
     (comment)
-    arguments: (integer))
+    argument: (integer))
 
   (integer) (comment)
-  (call
-    method: (identifier)
+  (op_call
+    operator: (operator)
     (comment)
     receiver: (integer)
   )
@@ -320,7 +320,7 @@ end
     (call
       method: (identifier)
       arguments: (argument_list
-        (call
+        (op_call
           receiver: (identifier)
-          method: (identifier)
-          arguments: (identifier))))))
+          operator: (operator)
+          argument: (identifier))))))

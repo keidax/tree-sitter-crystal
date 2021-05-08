@@ -395,10 +395,10 @@ string interpolation
     (string_interpolation
       (identifier))
     (string_interpolation
-      (call
+      (op_call
         receiver: (identifier)
-        method: (identifier)
-        arguments: (identifier)))))
+        operator: (operator)
+        argument: (identifier)))))
 
 ======
 arrays
@@ -483,10 +483,10 @@ hashes
 
   (hash
     (hash_pair
-      (call
+      (op_call
         receiver: (integer)
-        method: (identifier)
-        arguments: (integer))
+        operator: (operator)
+        argument: (integer))
       (hash
         (hash_pair
           (char)
@@ -548,15 +548,15 @@ puts(..)
 
   (range
     begin: (identifier)
-    end: (call
+    end: (op_call
       receiver: (integer)
-      method: (identifier)
-      arguments: (integer)))
+      operator: (operator)
+      argument: (integer)))
 
   (range
     begin: (identifier)
-    end: (call
-      method: (identifier)
+    end: (op_call
+      operator: (operator)
       receiver: (identifier)))
 
   (call

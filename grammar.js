@@ -137,8 +137,8 @@ module.exports = grammar({
 
       // Methods
       $.call,
-      alias($.additive_operator, $.call),
-      alias($.unary_additive_operator, $.call),
+      alias($.additive_operator, $.op_call),
+      alias($.unary_additive_operator, $.op_call),
       $.assign,
       // TODO:
       // multi assignment
@@ -552,8 +552,8 @@ module.exports = grammar({
       const whitespace = /\s+/
 
       const receiver = field('receiver', $._expression)
-      const method = field('method', alias(operator, $.identifier))
-      const arg = field('arguments', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
 
       return prec.left(PREC.ADDITIVE,
         seq(receiver, method, arg),
@@ -564,7 +564,7 @@ module.exports = grammar({
       const operator = choice($.unary_plus, $.unary_minus) // TODO: &+ and &-
 
       return prec(PREC.UNARY, seq(
-        field('method', alias(operator, $.identifier)),
+        field('operator', alias(operator, $.operator)),
         field('receiver', $._expression)
       ))
     },

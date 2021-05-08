@@ -12,7 +12,7 @@
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 70
 #define EXTERNAL_TOKEN_COUNT 8
-#define FIELD_COUNT 21
+#define FIELD_COUNT 22
 #define MAX_ALIAS_SEQUENCE_LENGTH 9
 #define PRODUCTION_ID_COUNT 50
 
@@ -195,8 +195,8 @@ static const char *ts_symbol_names[] = {
   [sym_self] = "self",
   [anon_sym_PIPE] = "|",
   [anon_sym_DOT] = ".",
-  [anon_sym_AMP_PLUS] = "identifier",
-  [anon_sym_AMP_DASH] = "identifier",
+  [anon_sym_AMP_PLUS] = "operator",
+  [anon_sym_AMP_DASH] = "operator",
   [anon_sym_LPAREN2] = "(",
   [anon_sym_alias] = "alias",
   [anon_sym_begin] = "begin",
@@ -207,8 +207,8 @@ static const char *ts_symbol_names[] = {
   [sym__line_break] = "_line_break",
   [sym_unary_plus] = "+",
   [sym_unary_minus] = "-",
-  [sym_binary_plus] = "identifier",
-  [sym_binary_minus] = "identifier",
+  [sym_binary_plus] = "operator",
+  [sym_binary_minus] = "operator",
   [sym__beginless_range_operator] = "_beginless_range_operator",
   [sym__start_of_parenless_args] = "_start_of_parenless_args",
   [sym__end_of_range] = "_end_of_range",
@@ -247,8 +247,8 @@ static const char *ts_symbol_names[] = {
   [sym__dot_call] = "_dot_call",
   [sym_call] = "call",
   [sym_assign_call] = "assign_call",
-  [sym_additive_operator] = "call",
-  [sym_unary_additive_operator] = "call",
+  [sym_additive_operator] = "op_call",
+  [sym_unary_additive_operator] = "op_call",
   [sym_argument_list_no_parens] = "argument_list",
   [sym_argument_list_with_parens] = "argument_list",
   [sym_assign] = "assign",
@@ -321,8 +321,8 @@ static TSSymbol ts_symbol_map[] = {
   [sym_self] = sym_self,
   [anon_sym_PIPE] = anon_sym_PIPE,
   [anon_sym_DOT] = anon_sym_DOT,
-  [anon_sym_AMP_PLUS] = sym_identifier,
-  [anon_sym_AMP_DASH] = sym_identifier,
+  [anon_sym_AMP_PLUS] = sym_binary_plus,
+  [anon_sym_AMP_DASH] = sym_binary_plus,
   [anon_sym_LPAREN2] = anon_sym_LPAREN,
   [anon_sym_alias] = anon_sym_alias,
   [anon_sym_begin] = anon_sym_begin,
@@ -333,8 +333,8 @@ static TSSymbol ts_symbol_map[] = {
   [sym__line_break] = sym__line_break,
   [sym_unary_plus] = sym_unary_plus,
   [sym_unary_minus] = sym_unary_minus,
-  [sym_binary_plus] = sym_identifier,
-  [sym_binary_minus] = sym_identifier,
+  [sym_binary_plus] = sym_binary_plus,
+  [sym_binary_minus] = sym_binary_plus,
   [sym__beginless_range_operator] = sym__beginless_range_operator,
   [sym__start_of_parenless_args] = sym__start_of_parenless_args,
   [sym__end_of_range] = sym__end_of_range,
@@ -373,8 +373,8 @@ static TSSymbol ts_symbol_map[] = {
   [sym__dot_call] = sym__dot_call,
   [sym_call] = sym_call,
   [sym_assign_call] = sym_assign_call,
-  [sym_additive_operator] = sym_call,
-  [sym_unary_additive_operator] = sym_call,
+  [sym_additive_operator] = sym_additive_operator,
+  [sym_unary_additive_operator] = sym_additive_operator,
   [sym_argument_list_no_parens] = sym_argument_list_no_parens,
   [sym_argument_list_with_parens] = sym_argument_list_no_parens,
   [sym_assign] = sym_assign,
@@ -889,31 +889,33 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
 };
 
 enum {
-  field_arguments = 1,
-  field_begin = 2,
-  field_body = 3,
-  field_condition = 4,
-  field_default = 5,
-  field_end = 6,
-  field_extern_name = 7,
-  field_lhs = 8,
-  field_method = 9,
-  field_name = 10,
-  field_of = 11,
-  field_of_key = 12,
-  field_of_value = 13,
-  field_operator = 14,
-  field_params = 15,
-  field_receiver = 16,
-  field_rescue = 17,
-  field_rhs = 18,
-  field_superclass = 19,
-  field_type = 20,
-  field_variable = 21,
+  field_argument = 1,
+  field_arguments = 2,
+  field_begin = 3,
+  field_body = 4,
+  field_condition = 5,
+  field_default = 6,
+  field_end = 7,
+  field_extern_name = 8,
+  field_lhs = 9,
+  field_method = 10,
+  field_name = 11,
+  field_of = 12,
+  field_of_key = 13,
+  field_of_value = 14,
+  field_operator = 15,
+  field_params = 16,
+  field_receiver = 17,
+  field_rescue = 18,
+  field_rhs = 19,
+  field_superclass = 20,
+  field_type = 21,
+  field_variable = 22,
 };
 
 static const char *ts_field_names[] = {
   [0] = NULL,
+  [field_argument] = "argument",
   [field_arguments] = "arguments",
   [field_begin] = "begin",
   [field_body] = "body",
@@ -998,7 +1000,7 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_method, 0, .inherited = true},
     {field_receiver, 0, .inherited = true},
   [4] =
-    {field_method, 0},
+    {field_operator, 0},
     {field_receiver, 1},
   [6] =
     {field_end, 0},
@@ -1025,8 +1027,8 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
   [20] =
     {field_rescue, 1},
   [21] =
-    {field_arguments, 2},
-    {field_method, 1},
+    {field_argument, 2},
+    {field_operator, 1},
     {field_receiver, 0},
   [24] =
     {field_begin, 0},
@@ -1151,7 +1153,7 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
 static TSSymbol ts_alias_sequences[PRODUCTION_ID_COUNT][MAX_ALIAS_SEQUENCE_LENGTH] = {
   [0] = {0},
   [4] = {
-    [0] = sym_identifier,
+    [0] = sym_binary_plus,
   },
 };
 

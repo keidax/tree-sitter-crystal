@@ -45,10 +45,10 @@ end
       (call
         method: (identifier)
         arguments: (argument_list
-          (call
+          (op_call
             receiver: (instance_var)
-            method: (identifier)
-            arguments: (integer)))))
+            operator: (operator)
+            argument: (integer)))))
 
     (method_def
       name: (identifier)
@@ -487,37 +487,34 @@ puts "a" + "b".upcase
 ---
 
 (source_file
-  (call
+  (op_call
     receiver: (integer)
-    method: (identifier)
-    arguments: (float))
+    operator: (operator)
+    argument: (float))
 
-  (call
-    receiver: (call
+  (op_call
+    receiver: (op_call
       receiver: (identifier)
-      method: (identifier)
-      arguments: (call
+      operator: (operator)
+      argument: (call
         method: (identifier)))
-    method: (identifier)
-    arguments: (constant))
+    operator: (operator)
+    argument: (constant))
 
-  (call
+  (op_call
     receiver: (constant)
-    method: (identifier)
-    arguments: (constant))
+    operator: (operator)
+    argument: (constant))
 
   (call
     method: (identifier)
     arguments: (argument_list
-
-  (call
-    receiver: (string)
-    method: (identifier)
-    arguments: (call
-      receiver: (string)
-      method: (identifier)))
-
-    ))
+      (op_call
+        receiver: (string)
+        operator: (operator)
+        argument: (call
+          receiver: (string)
+          method: (identifier)))))
 
     )
 
@@ -547,67 +544,67 @@ d_ (- 2)
 
 ---
 (source_file
-  (call
+  (op_call
     receiver: (identifier)
-    method: (identifier)
-    arguments: (integer))
+    operator: (operator)
+    argument: (integer))
   (call
     method: (identifier)
     arguments: (argument_list (integer)))
-  (call
+  (op_call
     receiver: (identifier)
-    method: (identifier)
-    arguments: (integer))
+    operator: (operator)
+    argument: (integer))
   (call
     method: (identifier)
     arguments: (argument_list
-      (call
-        method: (identifier)
+      (op_call
+        operator: (operator)
         receiver: (integer))))
 
-  (call
+  (op_call
     receiver: (call
       method: (identifier))
-    method: (identifier)
-    arguments: (integer))
+    operator: (operator)
+    argument: (integer))
   (call
     method: (identifier)
     arguments: (argument_list (integer)))
-  (call
+  (op_call
     receiver: (identifier)
-    method: (identifier)
-    arguments: (integer))
+    operator: (operator)
+    argument: (integer))
   (call
     method: (identifier)
     arguments: (argument_list
-      (call
-        method: (identifier)
+      (op_call
+        operator: (operator)
         receiver: (integer))))
 
-  (call
-    method: (identifier)
-    receiver: (call
-      method: (identifier)
+  (op_call
+    operator: (operator)
+    receiver: (op_call
+      operator: (operator)
       receiver: (integer)))
-  (call
-    method: (identifier)
-    receiver: (call
-      method: (identifier)
+  (op_call
+    operator: (operator)
+    receiver: (op_call
+      operator: (operator)
       receiver: (float)))
 
-  (call
+  (op_call
     receiver: (integer)
-    method: (identifier)
-    arguments: (integer))
-  (call
+    operator: (operator)
+    argument: (integer))
+  (op_call
     receiver: (integer)
-    method: (identifier)
-    arguments: (call
-      method: (identifier)
+    operator: (operator)
+    argument: (op_call
+      operator: (operator)
       receiver: (integer)))
 
-  (call
-    method: (identifier)
+  (op_call
+    operator: (operator)
     receiver: (call
       receiver: (integer)
       method: (identifier))))
