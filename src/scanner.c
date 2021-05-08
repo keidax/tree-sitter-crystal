@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+#include <wctype.h>
 
 struct State {
 	bool has_leading_whitespace;
@@ -130,7 +130,7 @@ const bool *valid_symbols) {
 				//		puts +foo
 				// - we are just after a range operator, e.g.
 				//		-5 .. + foo
-				bool unary_priority = (state->has_leading_whitespace && !isspace(lexer->lookahead))
+				bool unary_priority = (state->has_leading_whitespace && !iswspace(lexer->lookahead))
 					|| valid_symbols[END_OF_RANGE];
 
 				if(valid_symbols[UNARY_PLUS] && unary_priority) {
@@ -155,7 +155,7 @@ const bool *valid_symbols) {
 					return false;
 				}
 
-				bool unary_priority = (state->has_leading_whitespace && !isspace(lexer->lookahead))
+				bool unary_priority = (state->has_leading_whitespace && !iswspace(lexer->lookahead))
 					|| valid_symbols[END_OF_RANGE];
 
 				if(valid_symbols[UNARY_MINUS] && unary_priority) {
