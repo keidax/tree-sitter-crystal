@@ -95,11 +95,10 @@ module.exports = grammar({
       $.string,
       $.range,
       alias($.beginless_range, $.range),
+      $.tuple,
       // TODO: other expressions
       // symbol
-      // tuple
       // named tuple
-      // range
       // regex
       // proc
       // `command`
@@ -343,6 +342,14 @@ module.exports = grammar({
     },
 
     hash_pair: $ => seq($._expression, "=>", $._expression),
+
+    tuple: $ => seq(
+      '{',
+      $._expression,
+      repeat(seq(',', $._expression)),
+      optional(','),
+      '}'
+    ),
 
     _range_end: $ => field('end', choice($._expression, $._end_of_range)),
 

@@ -570,3 +570,32 @@ puts(..)
     method: (identifier)
     arguments: (argument_list
       (range))))
+
+======
+tuples
+======
+{1, "foo", 'a'}
+
+{(),}
+
+{
+{
+1
+}
+}
+
+{ {} of TypeA => TypeB}
+---
+(source_file
+  (tuple
+    (integer)
+    (string)
+    (char))
+
+  (tuple (empty_braces))
+
+  (tuple
+    (tuple (integer)))
+
+  (tuple
+    (hash of_key: (constant) of_value: (constant))))
