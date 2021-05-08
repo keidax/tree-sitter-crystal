@@ -5,6 +5,8 @@ const
 
 const PREC = {
   RANGE: 35,
+  OR: 40,
+  AND: 45,
   ADDITIVE: 75,
   UNARY: 90,
   DOT: 100,
@@ -147,6 +149,11 @@ module.exports = grammar({
       // index operator
       // index assignment
       // annotations
+
+      // Logical operators
+      $.not,
+      $.and,
+      $.or,
 
       // Keywords and special methods
       // TODO
@@ -546,6 +553,10 @@ module.exports = grammar({
 
       return prec(PREC.DOT, seq(receiver, '.', method_identifier))
     },
+
+    not: $ => prec(PREC.UNARY, seq('!', $._expression)),
+    and: $ => prec.left(PREC.AND, seq($._expression, '&&', $._expression)),
+    or: $ => prec.left(PREC.OR, seq($._expression, '||', $._expression)),
 
     additive_operator: $ => {
       const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')

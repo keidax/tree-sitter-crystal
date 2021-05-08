@@ -608,3 +608,29 @@ d_ (- 2)
     receiver: (call
       receiver: (integer)
       method: (identifier))))
+
+=================
+logical operators
+=================
+!thingy
+a.nil? || b
+foo && bar
+
+!
+true ||
+false
+
+a || b && c
+
+d && e || f && g
+----
+(source_file
+  (not (identifier))
+  (or (call receiver: (identifier) method: (identifier)) (identifier))
+  (and (identifier) (identifier))
+
+  (or (not (true)) (false))
+
+  (or (identifier) (and (identifier) (identifier)))
+
+  (or (and (identifier) (identifier)) (and (identifier) (identifier))))
