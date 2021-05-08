@@ -146,6 +146,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -309,6 +313,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -485,6 +493,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -647,6 +659,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -799,6 +815,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -946,6 +966,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -1117,6 +1141,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
             "named": true
           },
           {
@@ -1296,6 +1324,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1454,6 +1486,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
             "named": true
           },
           {
@@ -1667,6 +1703,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -1854,6 +1894,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -2004,6 +2048,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -2140,6 +2188,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -2291,6 +2343,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
             "named": true
           },
           {
@@ -2450,6 +2506,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -2603,6 +2663,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
             "named": true
           },
           {
@@ -2828,6 +2892,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -2974,6 +3042,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -3013,6 +3085,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "require",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -3133,6 +3220,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
             "named": true
           },
           {
@@ -3308,6 +3399,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -3444,6 +3539,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -3609,6 +3708,10 @@
           "named": true
         },
         {
+          "type": "require",
+          "named": true
+        },
+        {
           "type": "return",
           "named": true
         },
@@ -3745,6 +3848,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -3914,6 +4021,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -4046,6 +4157,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -4200,6 +4315,10 @@
             "named": true
           },
           {
+            "type": "require",
+            "named": true
+          },
+          {
             "type": "return",
             "named": true
           },
@@ -4332,6 +4451,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "require",
           "named": true
         },
         {
@@ -4520,6 +4643,10 @@
   {
     "type": "operator",
     "named": true
+  },
+  {
+    "type": "require",
+    "named": false
   },
   {
     "type": "rescue",

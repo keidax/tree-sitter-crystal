@@ -82,6 +82,19 @@ a + # asdf
   (comment)
   (comment))
 
+=======
+require
+=======
+require "colorize"
+require "#{__DIR__}/relative_file"
+---
+(source_file
+  (require (string))
+  (require
+    (string
+      (string_interpolation
+        (pseudo_constant)))))
+
 ===================
 compound statements
 ===================

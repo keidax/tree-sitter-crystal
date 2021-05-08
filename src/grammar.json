@@ -133,6 +133,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "require"
+        },
+        {
+          "type": "SYMBOL",
           "name": "return"
         },
         {
@@ -3682,6 +3686,19 @@
         {
           "type": "STRING",
           "value": "end"
+        }
+      ]
+    },
+    "require": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "require"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
         }
       ]
     }

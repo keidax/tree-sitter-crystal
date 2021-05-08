@@ -67,6 +67,7 @@ module.exports = grammar({
       $.class_def,
       $.alias,
       $.method_def,
+      $.require,
 
       $.return,
       $.next,
@@ -149,7 +150,6 @@ module.exports = grammar({
 
       // Keywords and special methods
       // TODO
-      // require
       // super
       // previous_def
       // typeof
@@ -653,5 +653,7 @@ module.exports = grammar({
       optional($._statements),
       'end'
     ),
+
+    require: $ => seq('require', $.string),
   }
 });
