@@ -3005,15 +3005,11 @@
       },
       "operator": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
-            "type": "..",
-            "named": false
-          },
-          {
-            "type": "...",
-            "named": false
+            "type": "operator",
+            "named": true
           }
         ]
       }
@@ -4403,14 +4399,6 @@
   },
   {
     "type": ".",
-    "named": false
-  },
-  {
-    "type": "..",
-    "named": false
-  },
-  {
-    "type": "...",
     "named": false
   },
   {

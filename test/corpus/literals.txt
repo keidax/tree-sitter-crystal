@@ -501,6 +501,12 @@ a..1
 ..60
 ...
 
+1..2..3
+4..5..
+..6..7
+..8...
+...(..)
+
 foo! .. 2
 foo 1...2
 
@@ -518,25 +524,59 @@ puts(..)
 (source_file
   (range
     begin: (identifier)
+    operator: (operator)
     end: (integer))
   (range
     begin: (integer)
+    operator: (operator)
     end: (integer))
   (range
-    begin: (integer))
+    begin: (integer)
+    operator: (operator))
   (range
+    operator: (operator)
     end: (integer))
-  (range)
+  (range operator: (operator))
+
+  (range
+    begin: (range
+      begin: (integer)
+      operator: (operator)
+      end: (integer))
+    operator: (operator)
+    end: (integer))
+  (range
+    begin: (range
+      begin: (integer)
+      operator: (operator)
+      end: (integer))
+    operator: (operator))
+  (range
+    begin: (range
+      operator: (operator)
+      end: (integer))
+    operator: (operator)
+    end: (integer))
+  (range
+    begin: (range
+      operator: (operator)
+      end: (integer))
+    operator: (operator))
+  (range
+    operator: (operator)
+    end: (range operator: (operator)))
 
   (range
     begin: (call
       method: (identifier))
+    operator: (operator)
     end: (integer))
   (call
     method: (identifier)
     arguments: (argument_list
       (range
         begin: (integer)
+        operator: (operator)
         end: (integer))))
 
   (call
@@ -544,10 +584,12 @@ puts(..)
     arguments: (argument_list
       (integer)
       (range
+        operator: (operator)
         end: (integer))))
 
   (range
     begin: (identifier)
+    operator: (operator)
     end: (op_call
       receiver: (integer)
       operator: (operator)
@@ -555,6 +597,7 @@ puts(..)
 
   (range
     begin: (identifier)
+    operator: (operator)
     end: (op_call
       operator: (operator)
       receiver: (identifier)))
@@ -564,12 +607,13 @@ puts(..)
     arguments: (argument_list
       (range
         begin: (identifier)
+        operator: (operator)
         end: (integer))))
 
   (call
     method: (identifier)
     arguments: (argument_list
-      (range))))
+      (range operator: (operator)))))
 
 ======
 tuples

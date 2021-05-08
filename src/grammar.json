@@ -2148,23 +2148,6 @@
         }
       ]
     },
-    "_range_end": {
-      "type": "FIELD",
-      "name": "end",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "_expression"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_end_of_range"
-          }
-        ]
-      }
-    },
     "range": {
       "type": "PREC_LEFT",
       "value": 35,
@@ -2183,17 +2166,22 @@
             "type": "FIELD",
             "name": "operator",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": ".."
-                },
-                {
-                  "type": "STRING",
-                  "value": "..."
-                }
-              ]
+              "type": "ALIAS",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ".."
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "..."
+                  }
+                ]
+              },
+              "named": true,
+              "value": "operator"
             }
           },
           {
@@ -2201,7 +2189,23 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_range_end"
+                "name": "_end_of_range"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "end",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
               },
               {
                 "type": "BLANK"
@@ -2221,8 +2225,13 @@
             "type": "FIELD",
             "name": "operator",
             "content": {
-              "type": "SYMBOL",
-              "name": "_beginless_range_operator"
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_beginless_range_operator"
+              },
+              "named": true,
+              "value": "operator"
             }
           },
           {
@@ -2230,7 +2239,23 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_range_end"
+                "name": "_end_of_range"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "end",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
               },
               {
                 "type": "BLANK"

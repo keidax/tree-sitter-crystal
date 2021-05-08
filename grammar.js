@@ -351,26 +351,26 @@ module.exports = grammar({
       '}'
     ),
 
-    _range_end: $ => field('end', choice($._expression, $._end_of_range)),
-
     range: $ => {
       const begin = field('begin', $._expression)
-      const range_op = field('operator', choice('..', '...'))
-      const end = $._range_end
+      const range_op = field('operator', alias(choice('..', '...'), $.operator))
+      const end = field('end', $._expression)
 
       return prec.left(PREC.RANGE, seq(
         begin,
         range_op,
+        optional($._end_of_range),
         optional(end),
       ))
     },
 
     beginless_range: $ => {
-      const range_op = field('operator', $._beginless_range_operator)
-      const end = $._range_end
+      const range_op = field('operator', alias($._beginless_range_operator, $.operator))
+      const end = field('end', $._expression)
 
       return prec.left(PREC.RANGE, seq(
         range_op,
+        optional($._end_of_range),
         optional(end),
       ))
     },
