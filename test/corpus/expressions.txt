@@ -373,6 +373,8 @@ assignment with modifiers
 a = 5 if c
 
 foo.bar = 0.8 if true if false
+
+baz = 7 unless qux?
 ---
 (source_file
   (modifier_if
@@ -389,7 +391,14 @@ foo.bar = 0.8 if true if false
           method: (identifier))
         rhs: (float))
       cond: (true))
-    cond: (false)))
+    cond: (false))
+
+  (modifier_unless
+    then: (assign
+      lhs: (identifier)
+      rhs: (integer))
+    cond: (call
+      method: (identifier))))
 
 ===============
 while and until
@@ -825,7 +834,9 @@ def foo
         "no"
       end
 
+  puts i nil
   puts if? true
+  puts iff false
 end
 ---
 (source_file
@@ -854,4 +865,81 @@ end
         (call
           method: (identifier)
           arguments: (argument_list
-            (true)))))))
+            (nil)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (true)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (false)))))))
+
+================
+unless modifiers
+================
+def foo
+  return 7 unless foo?
+  puts 'c' unless bar
+  8 unless
+    unless
+      true
+        "yes"
+      else
+        "no"
+      end
+
+  puts unles nil
+  puts unless? true
+  puts unlesss false
+end
+---
+
+(source_file
+  (method_def
+    name: (identifier)
+    (modifier_unless
+      then: (return (integer))
+      cond: (call
+        method: (identifier)))
+    (modifier_unless
+      then: (call
+        method: (identifier)
+        arguments: (argument_list
+          (char)))
+      cond: (identifier))
+    (modifier_unless
+      then: (integer)
+      cond: (unless
+        cond: (true)
+        then: (then (string))
+        else: (else (string))))
+
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (nil)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (true)))))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (false)))))))
+

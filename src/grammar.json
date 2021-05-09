@@ -141,6 +141,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "modifier_unless"
+        },
+        {
+          "type": "SYMBOL",
           "name": "return"
         },
         {
@@ -3850,8 +3854,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "unless"
+          "type": "SYMBOL",
+          "name": "_regular_unless_keyword"
         },
         {
           "type": "FIELD",
@@ -4061,6 +4065,31 @@
         }
       ]
     },
+    "modifier_unless": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "then",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_statement"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_modifier_unless_keyword"
+        },
+        {
+          "type": "FIELD",
+          "name": "cond",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        }
+      ]
+    },
     "require": {
       "type": "SEQ",
       "members": [
@@ -4119,6 +4148,14 @@
     {
       "type": "SYMBOL",
       "name": "_modifier_if_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_regular_unless_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_modifier_unless_keyword"
     },
     {
       "type": "SYMBOL",

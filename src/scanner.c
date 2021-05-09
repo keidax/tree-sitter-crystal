@@ -24,8 +24,12 @@ enum Token {
 	BINARY_MINUS,
 
 	BEGINLESS_RANGE_OPERATOR,
+
 	REGULAR_IF_KEYWORD,
 	MODIFIER_IF_KEYWORD,
+
+	REGULAR_UNLESS_KEYWORD,
+	MODIFIER_UNLESS_KEYWORD,
 
 	// Never returned
 	START_OF_PARENLESS_ARGS,
@@ -119,6 +123,8 @@ const bool *valid_symbols) {
 	if (valid_symbols[START_OF_PARENLESS_ARGS]) DEBUG("\tSTART_OF_PARENLESS_ARGS\n");
 	if (valid_symbols[REGULAR_IF_KEYWORD]) DEBUG("\tREGULAR_IF_KEYWORD\n");
 	if (valid_symbols[MODIFIER_IF_KEYWORD]) DEBUG("\tMODIFIER_IF_KEYWORD\n");
+	if (valid_symbols[REGULAR_UNLESS_KEYWORD]) DEBUG("\tREGULAR_UNLESS_KEYWORD\n");
+	if (valid_symbols[MODIFIER_UNLESS_KEYWORD]) DEBUG("\tMODIFIER_UNLESS_KEYWORD\n");
 	if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
 	if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
 	if (valid_symbols[NONE]) DEBUG("\tNONE\n");
@@ -229,6 +235,41 @@ const bool *valid_symbols) {
 					// Both are valid
 					if (valid_symbols[START_OF_PARENLESS_ARGS]) {
 						lexer->result_symbol = MODIFIER_IF_KEYWORD;
+					} else {
+						// probably this shouldn't be reached in valid code?
+						return false;
+					}
+				}
+				return true;
+			}
+			break;
+		case 'u':
+			if (valid_symbols[REGULAR_UNLESS_KEYWORD] || valid_symbols[MODIFIER_UNLESS_KEYWORD]) {
+				lex_advance(lexer);
+				if(lexer->lookahead != 'n') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 'l') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 'e') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 's') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 's') { return false; }
+
+				lex_advance(lexer);
+				if (next_char_is_identifier(lexer)) {
+					// This is some other identifier, not 'unless'
+					return false;
+				}
+
+				if (valid_symbols[MODIFIER_UNLESS_KEYWORD] && !valid_symbols[REGULAR_UNLESS_KEYWORD]) {
+					lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
+				} else if (valid_symbols[REGULAR_UNLESS_KEYWORD] && !valid_symbols[MODIFIER_UNLESS_KEYWORD]) {
+					lexer->result_symbol = REGULAR_UNLESS_KEYWORD;
+				} else {
+					// Both are valid
+					if (valid_symbols[START_OF_PARENLESS_ARGS]) {
+						lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
 					} else {
 						// probably this shouldn't be reached in valid code?
 						return false;

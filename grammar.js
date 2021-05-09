@@ -25,8 +25,12 @@ module.exports = grammar({
     $.binary_minus,
 
     $._beginless_range_operator,
+
     $._regular_if_keyword,
     $._modifier_if_keyword,
+
+    $._regular_unless_keyword,
+    $._modifier_unless_keyword,
 
     // These symbols are never actually returned. They signal the current scope
     // to the scanner.
@@ -74,6 +78,7 @@ module.exports = grammar({
       $.method_def,
       $.require,
       $.modifier_if,
+      $.modifier_unless,
 
       $.return,
       $.next,
@@ -689,7 +694,7 @@ module.exports = grammar({
       const else_ = field('else', $.else)
 
       return seq(
-        'unless',
+        $._regular_unless_keyword,
         cond,
         $._terminator,
         optional(then),
@@ -728,6 +733,12 @@ module.exports = grammar({
     modifier_if: $ => seq(
       field('then', $._statement),
       $._modifier_if_keyword,
+      field('cond', $._expression)
+    ),
+
+    modifier_unless: $ => seq(
+      field('then', $._statement),
+      $._modifier_unless_keyword,
       field('cond', $._expression)
     ),
 
