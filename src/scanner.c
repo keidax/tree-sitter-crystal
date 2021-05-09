@@ -42,9 +42,15 @@ void *tree_sitter_crystal_external_scanner_create() {
 	return state;
 }
 
-void skip(State *state, TSLexer *lexer) {
+void lex_skip(State *state, TSLexer *lexer) {
 	state->has_leading_whitespace = true;
 	lexer->advance(lexer, true);
+}
+
+// NOTE: apparently this can't be called `advance` because it conflicts with a
+// symbol in glibc
+void lex_advance(TSLexer *lexer) {
+	lexer->advance(lexer, false);
 }
 
 bool next_char_is_identifier(TSLexer *lexer) {
@@ -65,16 +71,16 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 			case ' ':
 			case '\t':
 			case '\r':
-				skip(state, lexer);
+				lex_skip(state, lexer);
 				break;
 
 			case '\n':
 				if (valid_symbols[LINE_BREAK] && !crossed_newline) {
-					lexer->advance(lexer, false);
+					lex_advance(lexer);
 					lexer->mark_end(lexer);
 					crossed_newline = true;
 				} else {
-					skip(state, lexer);
+					lex_skip(state, lexer);
 				}
 				break;
 
@@ -83,7 +89,7 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 					if (lexer->lookahead == '.') {
 						// Check if this is the continuation of a method call,
 						// or the start of a beginless range literal.
-						lexer->advance(lexer, false);
+						lex_advance(lexer);
 						if (lexer->lookahead == '.') {
 							DEBUG(" ==> returning LINE_BREAK\n");
 							lexer->result_symbol = LINE_BREAK;
@@ -133,7 +139,7 @@ const bool *valid_symbols) {
 	switch(lexer->lookahead) {
 		case '+':
 			if (valid_symbols[UNARY_PLUS] || valid_symbols[BINARY_PLUS]) {
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 
 				if (lexer->lookahead == '=') {
 					return false;
@@ -163,7 +169,7 @@ const bool *valid_symbols) {
 			break;
 		case '-':
 			if (valid_symbols[UNARY_PLUS] || valid_symbols[BINARY_PLUS]) {
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 
 				if (lexer->lookahead == '=' || lexer->lookahead == '>') {
 					return false;
@@ -188,13 +194,13 @@ const bool *valid_symbols) {
 			break;
 		case '.':
 			if (valid_symbols[BEGINLESS_RANGE_OPERATOR] && !valid_symbols[START_OF_PARENLESS_ARGS]) {
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 				if (lexer->lookahead != '.') {
 					return false;
 				}
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 				if (lexer->lookahead == '.') {
-					lexer->advance(lexer, true);
+					lex_advance(lexer);
 				}
 
 				DEBUG(" ==> returning BEGINLESS_RANGE_OPERATOR\n");
@@ -204,12 +210,12 @@ const bool *valid_symbols) {
 			break;
 		case 'i':
 			if (valid_symbols[REGULAR_IF_KEYWORD] || valid_symbols[MODIFIER_IF_KEYWORD]) {
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 				if (lexer->lookahead != 'f') {
 					return false;
 				}
 
-				lexer->advance(lexer, true);
+				lex_advance(lexer);
 				if (next_char_is_identifier(lexer)) {
 					// This is some other identifier, not 'if'
 					return false;
