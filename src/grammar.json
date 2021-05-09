@@ -137,6 +137,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "modifier_if"
+        },
+        {
+          "type": "SYMBOL",
           "name": "return"
         },
         {
@@ -3505,29 +3509,33 @@
       ]
     },
     "const_assign": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "lhs",
-          "content": {
-            "type": "SYMBOL",
-            "name": "constant"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "lhs",
+            "content": {
+              "type": "SYMBOL",
+              "name": "constant"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "="
+          },
+          {
+            "type": "FIELD",
+            "name": "rhs",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_statement"
+            }
           }
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "FIELD",
-          "name": "rhs",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_statement"
-          }
-        }
-      ]
+        ]
+      }
     },
     "alias": {
       "type": "SEQ",
@@ -3776,8 +3784,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "if"
+          "type": "SYMBOL",
+          "name": "_regular_if_keyword"
         },
         {
           "type": "FIELD",
@@ -4028,6 +4036,31 @@
         ]
       }
     },
+    "modifier_if": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "then",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_statement"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_modifier_if_keyword"
+        },
+        {
+          "type": "FIELD",
+          "name": "cond",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        }
+      ]
+    },
     "require": {
       "type": "SEQ",
       "members": [
@@ -4078,6 +4111,14 @@
     {
       "type": "SYMBOL",
       "name": "_beginless_range_operator"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_regular_if_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_modifier_if_keyword"
     },
     {
       "type": "SYMBOL",

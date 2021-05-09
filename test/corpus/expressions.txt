@@ -367,6 +367,30 @@ c.foo.bar = d.baz!.quz = 8
         method: (identifier))
       rhs: (integer))))
 
+=========================
+assignment with modifiers
+=========================
+a = 5 if c
+
+foo.bar = 0.8 if true if false
+---
+(source_file
+  (modifier_if
+    then: (assign
+      lhs: (identifier)
+      rhs: (integer))
+    cond: (identifier))
+
+  (modifier_if
+    then: (modifier_if
+      then: (assign
+        lhs: (assign_call
+          receiver: (identifier)
+          method: (identifier))
+        rhs: (float))
+      cond: (true))
+    cond: (false)))
+
 ===============
 while and until
 ===============
@@ -786,3 +810,48 @@ ans = foo ? "foo" : bar ? "bar" : nil
         cond: (identifier)
         then: (string)
         else: (nil)))))
+
+============
+if modifiers
+============
+def foo
+  return 7 if foo?
+  puts 'c' if bar
+  8 if
+    if
+      true
+        "yes"
+      else
+        "no"
+      end
+
+  puts if? true
+end
+---
+(source_file
+  (method_def
+    name: (identifier)
+    (modifier_if
+      then: (return (integer))
+      cond: (call
+        method: (identifier)))
+    (modifier_if
+      then: (call
+        method: (identifier)
+        arguments: (argument_list
+          (char)))
+      cond: (identifier))
+    (modifier_if
+      then: (integer)
+      cond: (if
+        cond: (true)
+        then: (then (string))
+        else: (else (string))))
+
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (true)))))))

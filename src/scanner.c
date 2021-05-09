@@ -24,6 +24,8 @@ enum Token {
 	BINARY_MINUS,
 
 	BEGINLESS_RANGE_OPERATOR,
+	REGULAR_IF_KEYWORD,
+	MODIFIER_IF_KEYWORD,
 
 	// Never returned
 	START_OF_PARENLESS_ARGS,
@@ -43,6 +45,16 @@ void *tree_sitter_crystal_external_scanner_create() {
 void skip(State *state, TSLexer *lexer) {
 	state->has_leading_whitespace = true;
 	lexer->advance(lexer, true);
+}
+
+bool next_char_is_identifier(TSLexer *lexer) {
+	int32_t lookahead = lexer->lookahead;
+
+	return iswalnum(lookahead)
+		|| lookahead == '_'
+		|| lookahead == '?'
+		|| lookahead == '!'
+		|| lookahead >= 0xa0;
 }
 
 bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
@@ -99,6 +111,8 @@ const bool *valid_symbols) {
 	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
 	if (valid_symbols[BINARY_MINUS]) DEBUG("\tBINARY_MINUS\n");
 	if (valid_symbols[START_OF_PARENLESS_ARGS]) DEBUG("\tSTART_OF_PARENLESS_ARGS\n");
+	if (valid_symbols[REGULAR_IF_KEYWORD]) DEBUG("\tREGULAR_IF_KEYWORD\n");
+	if (valid_symbols[MODIFIER_IF_KEYWORD]) DEBUG("\tMODIFIER_IF_KEYWORD\n");
 	if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
 	if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
 	if (valid_symbols[NONE]) DEBUG("\tNONE\n");
@@ -185,6 +199,35 @@ const bool *valid_symbols) {
 
 				DEBUG(" ==> returning BEGINLESS_RANGE_OPERATOR\n");
 				lexer->result_symbol = BEGINLESS_RANGE_OPERATOR;
+				return true;
+			}
+			break;
+		case 'i':
+			if (valid_symbols[REGULAR_IF_KEYWORD] || valid_symbols[MODIFIER_IF_KEYWORD]) {
+				lexer->advance(lexer, true);
+				if (lexer->lookahead != 'f') {
+					return false;
+				}
+
+				lexer->advance(lexer, true);
+				if (next_char_is_identifier(lexer)) {
+					// This is some other identifier, not 'if'
+					return false;
+				}
+
+				if (valid_symbols[MODIFIER_IF_KEYWORD] && !valid_symbols[REGULAR_IF_KEYWORD]) {
+					lexer->result_symbol = MODIFIER_IF_KEYWORD;
+				} else if (valid_symbols[REGULAR_IF_KEYWORD] && !valid_symbols[MODIFIER_IF_KEYWORD]) {
+					lexer->result_symbol = REGULAR_IF_KEYWORD;
+				} else {
+					// Both are valid
+					if (valid_symbols[START_OF_PARENLESS_ARGS]) {
+						lexer->result_symbol = MODIFIER_IF_KEYWORD;
+					} else {
+						// probably this shouldn't be reached in valid code?
+						return false;
+					}
+				}
 				return true;
 			}
 			break;
