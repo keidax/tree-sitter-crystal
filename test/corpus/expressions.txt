@@ -646,6 +646,61 @@ d_ (- 2)
       receiver: (integer)
       method: (identifier))))
 
+========================
+multiplicative operators
+========================
+1 * 2 &* 3.0 / 4.5 // 6 % asdf
+
+pp 2*7..3/1.5
+
+pp 7 +
+  4.0 //
+    3
+
+---
+(source_file
+  (op_call
+    receiver: (op_call
+      receiver: (op_call
+        receiver: (op_call
+          receiver: (op_call
+            receiver: (integer)
+            operator: (operator)
+            argument: (integer))
+          operator: (operator)
+          argument: (float))
+        operator: (operator)
+        argument: (float))
+      operator: (operator)
+      argument: (integer))
+    operator: (operator)
+    argument: (identifier))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (range
+        begin: (op_call
+          receiver: (integer)
+          operator: (operator)
+          argument: (integer))
+        operator: (operator)
+        end: (op_call
+          receiver: (integer)
+          operator: (operator)
+          argument: (float)))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        receiver: (integer)
+        operator: (operator)
+        argument: (op_call
+          receiver: (float)
+          operator: (operator)
+          argument: (integer))))))
+
 =================
 logical operators
 =================

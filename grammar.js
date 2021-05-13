@@ -9,6 +9,7 @@ const PREC = {
   OR: 40,
   AND: 45,
   ADDITIVE: 75,
+  MULTIPLICATIVE: 80,
   UNARY: 90,
   DOT: 100,
 }
@@ -138,8 +139,6 @@ module.exports = grammar({
       // unless modifier
       // rescue modifier
       // case
-      // &&
-      // ||
       // macro interpolation
       // macro if
       // macro for
@@ -150,6 +149,7 @@ module.exports = grammar({
       $.call,
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
+      alias($.multiplicative_operator, $.op_call),
       $.assign,
       // TODO:
       // multi assignment
@@ -568,7 +568,6 @@ module.exports = grammar({
 
     additive_operator: $ => {
       const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')
-      const whitespace = /\s+/
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))
@@ -585,6 +584,18 @@ module.exports = grammar({
       return prec(PREC.UNARY, seq(
         field('operator', alias(operator, $.operator)),
         field('receiver', $._expression)
+      ))
+    },
+
+    multiplicative_operator: $ => {
+      const operator = choice('*', '&*', '/', '//', '%')
+
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.left(PREC.MULTIPLICATIVE, seq(
+        receiver, method, arg
       ))
     },
 
