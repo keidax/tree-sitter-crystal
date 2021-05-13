@@ -3408,8 +3408,8 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": "*"
+                    "type": "SYMBOL",
+                    "name": "_binary_star"
                   },
                   {
                     "type": "STRING",
@@ -3491,6 +3491,19 @@
         ]
       }
     },
+    "splat": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_unary_star"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        }
+      ]
+    },
     "argument_list_no_parens": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -3507,6 +3520,10 @@
               {
                 "type": "SYMBOL",
                 "name": "_expression"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "splat"
               }
             ]
           },
@@ -3520,8 +3537,17 @@
                   "value": ","
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "_expression"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_expression"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "splat"
+                    }
+                  ]
                 }
               ]
             }
@@ -3549,8 +3575,17 @@
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_expression"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_expression"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "splat"
+                      }
+                    ]
                   },
                   {
                     "type": "REPEAT",
@@ -3562,8 +3597,17 @@
                           "value": ","
                         },
                         {
-                          "type": "SYMBOL",
-                          "name": "_expression"
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SYMBOL",
+                              "name": "_expression"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "splat"
+                            }
+                          ]
                         }
                       ]
                     }
@@ -4260,6 +4304,14 @@
     {
       "type": "SYMBOL",
       "name": "binary_minus"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_unary_star"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_binary_star"
     },
     {
       "type": "SYMBOL",

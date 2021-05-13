@@ -256,6 +256,51 @@ puts(
     method: (identifier)
     arguments: (argument_list (true) (false) (nil))))
 
+===============
+splat arguments
+===============
+puts *a
+puts*a
+
+pp *a, 2, *{3}
+
+pp(*a+b, *c*d)
+---
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (splat
+        (identifier))))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (splat
+        (identifier))
+      (integer)
+      (splat
+        (tuple
+          (integer)))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (splat
+        (op_call
+          receiver: (identifier)
+          operator: (operator)
+          argument: (identifier)))
+      (splat
+        (op_call
+          receiver: (identifier)
+          operator: (operator)
+          argument: (identifier))))))
+
 ================
 plain assignment
 ================

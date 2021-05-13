@@ -23,6 +23,9 @@ enum Token {
 	BINARY_PLUS,
 	BINARY_MINUS,
 
+	UNARY_STAR,
+	BINARY_STAR,
+
 	BEGINLESS_RANGE_OPERATOR,
 
 	REGULAR_IF_KEYWORD,
@@ -120,6 +123,8 @@ const bool *valid_symbols) {
 	if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
 	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
 	if (valid_symbols[BINARY_MINUS]) DEBUG("\tBINARY_MINUS\n");
+	if (valid_symbols[UNARY_STAR]) DEBUG("\tUNARY_STAR\n");
+	if (valid_symbols[BINARY_STAR]) DEBUG("\tBINARY_STAR\n");
 	if (valid_symbols[START_OF_PARENLESS_ARGS]) DEBUG("\tSTART_OF_PARENLESS_ARGS\n");
 	if (valid_symbols[REGULAR_IF_KEYWORD]) DEBUG("\tREGULAR_IF_KEYWORD\n");
 	if (valid_symbols[MODIFIER_IF_KEYWORD]) DEBUG("\tMODIFIER_IF_KEYWORD\n");
@@ -198,6 +203,32 @@ const bool *valid_symbols) {
 				return true;
 			}
 			break;
+
+		case '*':
+			if (valid_symbols[UNARY_STAR] || valid_symbols[BINARY_STAR]) {
+				lex_advance(lexer);
+
+				if (lexer->lookahead == '*') {
+					// TODO
+					return false;
+				}
+
+				bool unary_priority = state->has_leading_whitespace && !iswspace(lexer->lookahead);
+
+				if (valid_symbols[UNARY_STAR] && unary_priority) {
+					lexer->result_symbol = UNARY_STAR;
+					return true;
+				} else if (valid_symbols[BINARY_STAR]) {
+					lexer->result_symbol = BINARY_STAR;
+					return true;
+				} else if (valid_symbols[UNARY_STAR] && !iswspace(lexer->lookahead)) {
+					// A splat _cannot_ have whitespace after the *
+					lexer->result_symbol = UNARY_STAR;
+					return true;
+				}
+			}
+			break;
+
 		case '.':
 			if (valid_symbols[BEGINLESS_RANGE_OPERATOR] && !valid_symbols[START_OF_PARENLESS_ARGS]) {
 				lex_advance(lexer);

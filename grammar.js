@@ -26,6 +26,9 @@ module.exports = grammar({
     $.binary_plus,
     $.binary_minus,
 
+    $._unary_star,
+    $._binary_star,
+
     $._beginless_range_operator,
 
     $._regular_if_keyword,
@@ -590,7 +593,7 @@ module.exports = grammar({
     },
 
     multiplicative_operator: $ => {
-      const operator = choice('*', '&*', '/', '//', '%')
+      const operator = choice($._binary_star, '&*', '/', '//', '%')
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))
@@ -613,23 +616,34 @@ module.exports = grammar({
       ))
     },
 
-    argument_list_no_parens: $ => prec.right(seq(
-      choice(
-        $._start_of_parenless_args,
-        $._expression,
-      ),
-      repeat(seq(',', $._expression))
-    )),
+    // TODO: does this need prec?
+    splat: $ => seq($._unary_star, $._expression),
 
-    argument_list_with_parens: $ => prec.right(seq(
-      token.immediate('('),
-      optional(seq(
-        $._expression,
-        repeat(seq(',', $._expression)),
-        optional(','),
-      )),
-      ')'
-    )),
+    argument_list_no_parens: $ => {
+      const arguments = [$._expression, $.splat]
+
+      return prec.right(seq(
+        choice(
+          $._start_of_parenless_args,
+          ...arguments,
+        ),
+        repeat(seq(',', choice(...arguments)))
+      ))
+    },
+
+    argument_list_with_parens: $ => {
+      const arguments = [$._expression, $.splat]
+
+      return prec.right(seq(
+        token.immediate('('),
+        optional(seq(
+          choice(...arguments),
+          repeat(seq(',', choice(...arguments))),
+          optional(','),
+        )),
+        ')'
+      ))
+    },
 
     assign: $ => {
       const lhs = field('lhs', choice($.identifier, $.instance_var, $.class_var, $.assign_call))
