@@ -10,6 +10,7 @@ const PREC = {
   AND: 45,
   ADDITIVE: 75,
   MULTIPLICATIVE: 80,
+  EXPONENTIAL: 85,
   UNARY: 90,
   DOT: 100,
 }
@@ -150,6 +151,7 @@ module.exports = grammar({
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
       alias($.multiplicative_operator, $.op_call),
+      alias($.exponential_operator, $.op_call),
       $.assign,
       // TODO:
       // multi assignment
@@ -595,6 +597,18 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left(PREC.MULTIPLICATIVE, seq(
+        receiver, method, arg
+      ))
+    },
+
+    exponential_operator: $ => {
+      const operator = choice('**', '&**')
+
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.right(PREC.EXPONENTIAL, seq(
         receiver, method, arg
       ))
     },

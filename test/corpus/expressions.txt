@@ -701,6 +701,41 @@ pp 7 +
           operator: (operator)
           argument: (integer))))))
 
+=====================
+exponential operators
+=====================
+a ** B &** 7
+
+puts 2 **
+10
+
+42.0 % 2 ** EXP
+---
+(source_file
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (op_call
+      receiver: (constant)
+      operator: (operator)
+      argument: (integer)))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        receiver: (integer)
+        operator: (operator)
+        argument: (integer))))
+
+  (op_call
+    receiver: (float)
+    operator: (operator)
+    argument: (op_call
+      receiver: (integer)
+      operator: (operator)
+      argument: (constant))))
+
 =================
 logical operators
 =================

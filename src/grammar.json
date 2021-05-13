@@ -301,6 +301,15 @@
           "value": "op_call"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "exponential_operator"
+          },
+          "named": true,
+          "value": "op_call"
+        },
+        {
           "type": "SYMBOL",
           "name": "assign"
         },
@@ -3417,6 +3426,53 @@
                   {
                     "type": "STRING",
                     "value": "%"
+                  }
+                ]
+              },
+              "named": true,
+              "value": "operator"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "argument",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          }
+        ]
+      }
+    },
+    "exponential_operator": {
+      "type": "PREC_RIGHT",
+      "value": 85,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "receiver",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "**"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "&**"
                   }
                 ]
               },
