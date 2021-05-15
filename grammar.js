@@ -8,6 +8,8 @@ const PREC = {
   RANGE: 35,
   OR: 40,
   AND: 45,
+  BINARY_OR: 60,
+  BINARY_AND: 65,
   SHIFT: 70,
   ADDITIVE: 75,
   MULTIPLICATIVE: 80,
@@ -159,6 +161,9 @@ module.exports = grammar({
       alias($.multiplicative_operator, $.op_call),
       alias($.exponential_operator, $.op_call),
       alias($.shift_operator, $.op_call),
+      alias($.complement_operator, $.op_call),
+      alias($.binary_and_operator, $.op_call),
+      alias($.binary_or_operator, $.op_call),
       $.assign,
       // TODO:
       // multi assignment
@@ -647,6 +652,37 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left(PREC.SHIFT, seq(
+        receiver, method, arg
+      ))
+    },
+
+    complement_operator: $ => {
+      const operator = '~'
+
+      return prec(PREC.UNARY, seq(
+        field('operator', alias(operator, $.operator)),
+        field('receiver', $._expression)
+      ))
+    },
+
+    binary_and_operator: $ => {
+      const operator = '&'
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.left(PREC.BINARY_AND, seq(
+        receiver, method, arg
+      ))
+    },
+
+    binary_or_operator: $ => {
+      const operator = choice('|', '^')
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.left(PREC.BINARY_OR, seq(
         receiver, method, arg
       ))
     },
