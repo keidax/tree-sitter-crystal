@@ -816,6 +816,43 @@ puts 2 **
       operator: (operator)
       argument: (constant))))
 
+===============
+shift operators
+===============
+a << "asdf"
+b << c >> D
+
+array << 1 << 2
+array << (13 >> 2)
+---
+(source_file
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (string))
+  (op_call
+    receiver: (op_call
+      receiver: (identifier)
+      operator: (operator)
+      argument: (identifier))
+    operator: (operator)
+    argument: (constant))
+
+  (op_call
+    receiver: (op_call
+      receiver: (identifier)
+      operator: (operator)
+      argument: (integer))
+    operator: (operator)
+    argument: (integer))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (op_call
+      receiver: (integer)
+      operator: (operator)
+      argument: (integer))))
+
 =================
 logical operators
 =================
