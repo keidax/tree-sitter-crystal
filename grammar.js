@@ -347,8 +347,8 @@ module.exports = grammar({
       return choice(
         seq(
           '{',
-          $.hash_pair,
-          repeat(seq(',', $.hash_pair)),
+          $.hash_entry,
+          repeat(seq(',', $.hash_entry)),
           optional(','),
           '}',
           optional(of_type),
@@ -361,7 +361,7 @@ module.exports = grammar({
       )
     },
 
-    hash_pair: $ => seq($._expression, "=>", $._expression),
+    hash_entry: $ => seq($._expression, "=>", $._expression),
 
     tuple: $ => seq(
       '{',

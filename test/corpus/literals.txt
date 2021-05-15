@@ -471,24 +471,24 @@ hashes
     of_value: (union_type (constant) (constant)))
 
   (hash
-    (hash_pair (char) (char))
-    (hash_pair (char) (char))
+    (hash_entry (char) (char))
+    (hash_entry (char) (char))
     of_key: (constant)
     of_value: (constant)
   )
 
   (hash
-    (hash_pair (string) (integer))
-    (hash_pair (string) (integer)))
+    (hash_entry (string) (integer))
+    (hash_entry (string) (integer)))
 
   (hash
-    (hash_pair
+    (hash_entry
       (op_call
         receiver: (integer)
         operator: (operator)
         argument: (integer))
       (hash
-        (hash_pair
+        (hash_entry
           (char)
           (array (float)))))))
 

@@ -2027,7 +2027,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "hash_pair"
+              "name": "hash_entry"
             },
             {
               "type": "REPEAT",
@@ -2040,7 +2040,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "hash_pair"
+                    "name": "hash_entry"
                   }
                 ]
               }
@@ -2144,7 +2144,7 @@
         }
       ]
     },
-    "hash_pair": {
+    "hash_entry": {
       "type": "SEQ",
       "members": [
         {

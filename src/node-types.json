@@ -3054,14 +3054,14 @@
       "required": false,
       "types": [
         {
-          "type": "hash_pair",
+          "type": "hash_entry",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "hash_pair",
+    "type": "hash_entry",
     "named": true,
     "fields": {},
     "children": {
