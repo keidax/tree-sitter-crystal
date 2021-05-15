@@ -643,3 +643,44 @@ tuples
 
   (tuple
     (hash of_key: (constant) of_value: (constant))))
+
+============
+named tuples
+============
+{a: 123}
+
+named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
+":7, fooB_r: {abc: 5.8},}
+---
+(source_file
+  (named_tuple
+    (named_tuple_entry
+      (identifier)
+      (integer)))
+
+  (assign
+    lhs: (identifier)
+    rhs: (named_tuple
+      (named_tuple_entry
+        (identifier)
+        (string))
+      (named_tuple_entry
+        (string)
+        (char))
+      (named_tuple_entry
+        (identifier)
+        (string
+          (string_interpolation
+            (identifier))))
+      (named_tuple_entry
+        (identifier)
+        (integer))
+      (named_tuple_entry
+        (string)
+        (integer))
+      (named_tuple_entry
+        (identifier)
+        (named_tuple
+          (named_tuple_entry
+            (identifier)
+            (float)))))))

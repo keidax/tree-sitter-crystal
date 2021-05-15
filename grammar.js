@@ -113,9 +113,9 @@ module.exports = grammar({
       $.range,
       alias($.beginless_range, $.range),
       $.tuple,
+      $.named_tuple,
       // TODO: other expressions
       // symbol
-      // named tuple
       // regex
       // proc
       // `command`
@@ -367,6 +367,25 @@ module.exports = grammar({
       '{',
       $._expression,
       repeat(seq(',', $._expression)),
+      optional(','),
+      '}'
+    ),
+
+    named_tuple_entry: $ => {
+      const symbol_name = alias(token(seq(choice(const_start, ident_start), repeat(ident_part))), $.identifier)
+      const string_name = $.string
+
+      return seq(
+        choice(symbol_name, string_name),
+        token.immediate(':'),
+        $._expression,
+      )
+    },
+
+    named_tuple: $ => seq(
+      '{',
+      $.named_tuple_entry,
+      repeat(seq(',', $.named_tuple_entry)),
       optional(','),
       '}'
     ),
