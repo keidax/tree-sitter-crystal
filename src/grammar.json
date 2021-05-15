@@ -3574,8 +3574,8 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": "**"
+                    "type": "SYMBOL",
+                    "name": "_binary_double_star"
                   },
                   {
                     "type": "STRING",
@@ -3611,6 +3611,19 @@
         }
       ]
     },
+    "double_splat": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_unary_double_star"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        }
+      ]
+    },
     "argument_list_no_parens": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -3631,6 +3644,10 @@
               {
                 "type": "SYMBOL",
                 "name": "splat"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "double_splat"
               }
             ]
           },
@@ -3653,6 +3670,10 @@
                     {
                       "type": "SYMBOL",
                       "name": "splat"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "double_splat"
                     }
                   ]
                 }
@@ -4419,6 +4440,14 @@
     {
       "type": "SYMBOL",
       "name": "_binary_star"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_unary_double_star"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_binary_double_star"
     },
     {
       "type": "SYMBOL",

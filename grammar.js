@@ -28,6 +28,8 @@ module.exports = grammar({
 
     $._unary_star,
     $._binary_star,
+    $._unary_double_star,
+    $._binary_double_star,
 
     $._beginless_range_operator,
 
@@ -624,7 +626,7 @@ module.exports = grammar({
     },
 
     exponential_operator: $ => {
-      const operator = choice('**', '&**')
+      const operator = choice($._binary_double_star, '&**')
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))
@@ -638,8 +640,10 @@ module.exports = grammar({
     // TODO: does this need prec?
     splat: $ => seq($._unary_star, $._expression),
 
+    double_splat: $ => seq($._unary_double_star, $._expression),
+
     argument_list_no_parens: $ => {
-      const arguments = [$._expression, $.splat]
+      const arguments = [$._expression, $.splat, $.double_splat]
 
       return prec.right(seq(
         choice(

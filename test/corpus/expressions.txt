@@ -301,6 +301,41 @@ pp(*a+b, *c*d)
           operator: (operator)
           argument: (identifier))))))
 
+======================
+double splat arguments
+======================
+puts ** kwargs
+puts **kwargs
+puts**kwargs
+
+pp **{a: 1, "b": 2.0}, **{c: nil}
+---
+(source_file
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (double_splat
+        (identifier))))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (double_splat
+        (named_tuple
+          (named_tuple_entry (identifier) (integer))
+          (named_tuple_entry (string) (float))))
+      (double_splat
+        (named_tuple
+          (named_tuple_entry (identifier) (nil)))))))
+
 ================
 plain assignment
 ================

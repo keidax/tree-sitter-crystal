@@ -26,6 +26,9 @@ enum Token {
 	UNARY_STAR,
 	BINARY_STAR,
 
+	UNARY_DOUBLE_STAR,
+	BINARY_DOUBLE_STAR,
+
 	BEGINLESS_RANGE_OPERATOR,
 
 	REGULAR_IF_KEYWORD,
@@ -205,11 +208,26 @@ const bool *valid_symbols) {
 			break;
 
 		case '*':
-			if (valid_symbols[UNARY_STAR] || valid_symbols[BINARY_STAR]) {
+			if (valid_symbols[UNARY_STAR] || valid_symbols[BINARY_STAR] || valid_symbols[UNARY_DOUBLE_STAR] || valid_symbols[BINARY_DOUBLE_STAR]) {
 				lex_advance(lexer);
 
 				if (lexer->lookahead == '*') {
-					// TODO
+					lex_advance(lexer);
+
+					bool unary_priority = state->has_leading_whitespace && !iswspace(lexer->lookahead);
+
+					if (valid_symbols[UNARY_DOUBLE_STAR] && unary_priority) {
+						lexer->result_symbol = UNARY_DOUBLE_STAR;
+						return true;
+					} else if (valid_symbols[BINARY_DOUBLE_STAR]) {
+						lexer->result_symbol = BINARY_DOUBLE_STAR;
+						return true;
+					} else if (valid_symbols[UNARY_DOUBLE_STAR] && !iswspace(lexer->lookahead)) {
+						// A splat _cannot_ have whitespace after the *
+						lexer->result_symbol = UNARY_DOUBLE_STAR;
+						return true;
+					}
+
 					return false;
 				}
 
