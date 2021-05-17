@@ -373,28 +373,28 @@ string interpolation
   (string (ignored_backslash))
 
   (string
-    (string_interpolation
+    (interpolation
       (integer)))
   (string
-    (string_interpolation
+    (interpolation
       (string
-        (string_interpolation
+        (interpolation
           (string
-            (string_interpolation
+            (interpolation
               (char)))))))
 
   (string
-    (string_interpolation
+    (interpolation
       (call
         receiver: (identifier)
         method: (identifier))))
 
   (string
-    (string_interpolation
+    (interpolation
       (identifier))
-    (string_interpolation
+    (interpolation
       (identifier))
-    (string_interpolation
+    (interpolation
       (op_call
         receiver: (identifier)
         operator: (operator)
@@ -670,7 +670,7 @@ named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
       (named_tuple_entry
         (identifier)
         (string
-          (string_interpolation
+          (interpolation
             (identifier))))
       (named_tuple_entry
         (identifier)

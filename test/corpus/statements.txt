@@ -92,7 +92,7 @@ require "#{__DIR__}/relative_file"
   (require (string))
   (require
     (string
-      (string_interpolation
+      (interpolation
         (pseudo_constant)))))
 
 ===================

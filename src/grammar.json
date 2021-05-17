@@ -1758,7 +1758,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "string_interpolation"
+                "name": "interpolation"
               }
             ]
           }
@@ -1922,7 +1922,7 @@
         ]
       }
     },
-    "string_interpolation": {
+    "interpolation": {
       "type": "SEQ",
       "members": [
         {

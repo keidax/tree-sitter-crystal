@@ -93,31 +93,31 @@ end
       method: (identifier)
       arguments: (argument_list
         (string
-          (string_interpolation
+          (interpolation
             (identifier)))))
     (call
       method: (identifier)
       arguments: (argument_list
         (string
-          (string_interpolation
+          (interpolation
             (pseudo_constant)))))
     (call
       method: (identifier)
       arguments: (argument_list
         (string
-          (string_interpolation
+          (interpolation
             (identifier)))))
     (call
       method: (identifier)
       arguments: (argument_list
         (string
-          (string_interpolation
+          (interpolation
             (pseudo_constant)))))
     (call
       method: (identifier)
       arguments: (argument_list
         (string
-          (string_interpolation
+          (interpolation
             (pseudo_constant)))))))
 
 ============

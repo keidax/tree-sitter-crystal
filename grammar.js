@@ -299,7 +299,7 @@ module.exports = grammar({
         token.immediate(prec(1, /[^\\"]/)),
         $.string_escape_sequence,
         $.ignored_backslash,
-        $.string_interpolation,
+        $.interpolation,
       )),
       token.immediate('"'),
     ),
@@ -326,7 +326,7 @@ module.exports = grammar({
       )))
     },
 
-    string_interpolation: $ => seq(
+    interpolation: $ => seq(
       token.immediate(prec(1, '#{')), $._expression, '}'
     ),
 
