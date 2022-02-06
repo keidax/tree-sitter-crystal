@@ -194,6 +194,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -378,6 +382,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -584,6 +592,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -800,6 +812,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -1002,6 +1018,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -1194,6 +1214,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -1381,6 +1405,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -1592,6 +1620,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -1811,6 +1843,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -2002,6 +2038,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -2188,6 +2228,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -2371,6 +2415,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -2576,6 +2624,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -2756,6 +2808,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -2932,6 +2988,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -3123,6 +3183,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -3400,6 +3464,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -3588,6 +3656,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -3797,6 +3869,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -4022,6 +4098,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -4213,6 +4293,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -4396,6 +4480,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -4591,6 +4679,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -4774,6 +4866,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -4965,6 +5061,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -5162,6 +5262,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -5341,6 +5445,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -5517,6 +5625,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -5708,6 +5820,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -5907,6 +6023,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -6084,6 +6204,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -6279,6 +6403,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -6544,6 +6672,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -6727,6 +6859,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -6947,6 +7083,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -7159,6 +7299,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -7335,6 +7479,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -7517,6 +7665,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -7553,6 +7705,25 @@
         },
         {
           "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "string_escape_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "symbol",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "ignored_backslash",
           "named": true
         },
         {
@@ -7716,6 +7887,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -7895,6 +8070,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -8101,6 +8280,10 @@
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           },
           {
@@ -8316,6 +8499,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -8488,6 +8675,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "symbol",
           "named": true
         },
         {
@@ -8682,6 +8873,10 @@
             "named": true
           },
           {
+            "type": "symbol",
+            "named": true
+          },
+          {
             "type": "true",
             "named": true
           },
@@ -8857,6 +9052,10 @@
           "named": true
         },
         {
+          "type": "symbol",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         },
@@ -8929,6 +9128,10 @@
   },
   {
     "type": ": ",
+    "named": false
+  },
+  {
+    "type": ":\"",
     "named": false
   },
   {

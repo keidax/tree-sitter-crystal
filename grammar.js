@@ -115,12 +115,14 @@ module.exports = grammar({
       $.array,
       $.hash,
       $.string,
+      alias($.operator_symbol, $.symbol),
+      alias($.unquoted_symbol, $.symbol),
+      alias($.quoted_symbol, $.symbol),
       $.range,
       alias($.beginless_range, $.range),
       $.tuple,
       $.named_tuple,
       // TODO: other expressions
-      // symbol
       // regex
       // proc
       // `command`
@@ -328,6 +330,63 @@ module.exports = grammar({
 
     interpolation: $ => seq(
       token.immediate(prec(1, '#{')), $._expression, '}'
+    ),
+
+    operator_symbol: $ => token(seq(
+      ':',
+      token.immediate(
+        choice(
+          '+',
+          '-',
+          '*',
+          '/',
+          '%',
+          '&',
+          '|',
+          '^',
+          '**',
+          '>>',
+          '<<',
+          '==',
+          '!=',
+          '<',
+          '<=',
+          '>',
+          '>=',
+          '<=>',
+          '===',
+          '[]',
+          '[]?',
+          '[]=',
+          '!',
+          '~',
+          '!~',
+          '=~',
+        )
+      )
+    )),
+
+    unquoted_symbol: $ => token(seq(
+      ':',
+      token.immediate(
+        seq(
+          choice(ident_start, const_start),
+          repeat(ident_part),
+          optional(/[?!]/)
+        )
+      )
+    )),
+
+    quoted_symbol: $ => seq(
+      ':"',
+      seq(
+        repeat(choice(
+          token.immediate(prec(1, /[^\\"]/)),
+          $.string_escape_sequence,
+          $.ignored_backslash,
+        )),
+        token.immediate('"'),
+      ),
     ),
 
     array: $ => {

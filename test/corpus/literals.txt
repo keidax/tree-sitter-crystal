@@ -400,6 +400,54 @@ string interpolation
         operator: (operator)
         argument: (identifier)))))
 
+=======
+symbols
+=======
+:a
+:stuff!
+:Q_Q
+:💯
+:!
+:>
+:>>
+:"'"
+:"123"
+:"\'"
+:"#{asdf}"
+
+:a ? :b : :c
+
+:"😀" ? puts :"\u{1234}" : :"
+"
+
+---
+
+(source_file
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol)
+  (symbol (ignored_backslash))
+  (symbol)
+
+  (conditional
+    cond: (symbol)
+    then: (symbol)
+    else: (symbol))
+
+  (conditional
+    cond: (symbol)
+    then: (call
+      method: (identifier)
+      arguments: (argument_list
+        (symbol (string_escape_sequence))))
+    else: (symbol)))
+
 ======
 arrays
 ======

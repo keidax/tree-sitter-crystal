@@ -197,6 +197,33 @@
           "name": "string"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "operator_symbol"
+          },
+          "named": true,
+          "value": "symbol"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "unquoted_symbol"
+          },
+          "named": true,
+          "value": "symbol"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "quoted_symbol"
+          },
+          "named": true,
+          "value": "symbol"
+        },
+        {
           "type": "SYMBOL",
           "name": "range"
         },
@@ -1943,6 +1970,230 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "operator_symbol": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "IMMEDIATE_TOKEN",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "+"
+                },
+                {
+                  "type": "STRING",
+                  "value": "-"
+                },
+                {
+                  "type": "STRING",
+                  "value": "*"
+                },
+                {
+                  "type": "STRING",
+                  "value": "/"
+                },
+                {
+                  "type": "STRING",
+                  "value": "%"
+                },
+                {
+                  "type": "STRING",
+                  "value": "&"
+                },
+                {
+                  "type": "STRING",
+                  "value": "|"
+                },
+                {
+                  "type": "STRING",
+                  "value": "^"
+                },
+                {
+                  "type": "STRING",
+                  "value": "**"
+                },
+                {
+                  "type": "STRING",
+                  "value": ">>"
+                },
+                {
+                  "type": "STRING",
+                  "value": "<<"
+                },
+                {
+                  "type": "STRING",
+                  "value": "=="
+                },
+                {
+                  "type": "STRING",
+                  "value": "!="
+                },
+                {
+                  "type": "STRING",
+                  "value": "<"
+                },
+                {
+                  "type": "STRING",
+                  "value": "<="
+                },
+                {
+                  "type": "STRING",
+                  "value": ">"
+                },
+                {
+                  "type": "STRING",
+                  "value": ">="
+                },
+                {
+                  "type": "STRING",
+                  "value": "<=>"
+                },
+                {
+                  "type": "STRING",
+                  "value": "==="
+                },
+                {
+                  "type": "STRING",
+                  "value": "[]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "[]?"
+                },
+                {
+                  "type": "STRING",
+                  "value": "[]="
+                },
+                {
+                  "type": "STRING",
+                  "value": "!"
+                },
+                {
+                  "type": "STRING",
+                  "value": "~"
+                },
+                {
+                  "type": "STRING",
+                  "value": "!~"
+                },
+                {
+                  "type": "STRING",
+                  "value": "=~"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "unquoted_symbol": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "IMMEDIATE_TOKEN",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[a-z_\\u{00a0}-\\u{10ffff}]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[A-Z]"
+                    }
+                  ]
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "[0-9A-Za-z_\\u{00a0}-\\u{10ffff}]"
+                  }
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[?!]"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "quoted_symbol": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ":\""
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "IMMEDIATE_TOKEN",
+                    "content": {
+                      "type": "PREC",
+                      "value": 1,
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "[^\\\\\"]"
+                      }
+                    }
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "string_escape_sequence"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "ignored_backslash"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "IMMEDIATE_TOKEN",
+              "content": {
+                "type": "STRING",
+                "value": "\""
+              }
+            }
+          ]
         }
       ]
     },
