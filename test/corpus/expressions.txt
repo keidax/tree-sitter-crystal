@@ -1208,3 +1208,64 @@ end
           arguments: (argument_list
             (false)))))))
 
+
+========================
+calls with do/end blocks
+========================
+
+a do end
+
+a b do end
+
+a b() do end
+
+a b c do
+d do end; f g do end
+end
+
+---
+
+(source_file
+  (call_with_block
+    (identifier)
+    (do_end_block)
+  )
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (identifier))
+    (do_end_block)
+  )
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (call
+        (identifier)
+        (argument_list)))
+    (do_end_block)
+  )
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (call
+        (identifier)
+        (argument_list
+          (identifier))
+        ))
+    (do_end_block
+      (call_with_block
+        (identifier)
+        (do_end_block))
+
+      (call_with_block
+        (identifier)
+        (argument_list
+          (identifier))
+        (do_end_block)
+      )
+    )
+  )
+)

@@ -158,6 +158,7 @@ module.exports = grammar({
 
       // Methods
       $.call,
+      $.call_with_block,
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
       alias($.multiplicative_operator, $.op_call),
@@ -646,6 +647,25 @@ module.exports = grammar({
       )
     },
 
+    call_with_block: $ => {
+      const receiver_call = choice(
+        $._dot_call,
+        field('method', alias($.identifier_method_call, $.identifier)),
+      )
+      const ambiguous_call = field('method', $.identifier)
+
+      const argument_list = field('arguments', choice(
+        alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_no_parens, $.argument_list),
+      ))
+
+      return prec(-1, choice(
+        seq(receiver_call, optional(argument_list), $.do_end_block),
+        seq(ambiguous_call, argument_list, $.do_end_block),
+        seq(ambiguous_call, $.do_end_block),
+      ))
+    },
+
     // A subset of method calls that can be the LHS of an assignment
     assign_call: $ => {
       const receiver = field('receiver', $._expression)
@@ -800,6 +820,13 @@ module.exports = grammar({
       field('name', $.constant),
       '=',
       field('type', $._type)
+    ),
+
+
+    do_end_block: $ => seq(
+      'do',
+      optional($._statements),
+      'end',
     ),
 
     begin_block: $ => seq(
