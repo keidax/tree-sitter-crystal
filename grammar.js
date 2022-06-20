@@ -3,21 +3,6 @@ const
   ident_start = /[a-z_\u{00a0}-\u{10ffff}]/u,
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
-const PREC = {
-  CONDITIONAL: 30,
-  RANGE: 35,
-  OR: 40,
-  AND: 45,
-  BINARY_OR: 60,
-  BINARY_AND: 65,
-  SHIFT: 70,
-  ADDITIVE: 75,
-  MULTIPLICATIVE: 80,
-  EXPONENTIAL: 85,
-  UNARY: 90,
-  DOT: 100,
-}
-
 module.exports = grammar({
   name: 'crystal',
 
@@ -56,6 +41,52 @@ module.exports = grammar({
   ],
 
   word: $ => $.identifier,
+
+  precedences: $ => [
+    // Operator precedence, as defined by
+    // https://crystal-lang.org/reference/1.4/syntax_and_semantics/operators.html#operator-precedence
+    [
+      'dot_operator',
+      'unary_operator',
+      'exponential_operator',
+      'multiplicative_operator',
+      'additive_operator',
+      'shift_operator',
+      'binary_and_operator',
+      'binary_or_operator',
+      'logical_and_operator',
+      'logical_or_operator',
+      'range_operator',
+      'ternary_operator',
+      'assignment_operator',
+      'splat_operator',
+      'comma',
+    ],
+
+    // Ensure `a b { 1 }` parses as `a(b { 1 })`
+    [
+      $.call_with_brace_block,
+      $._expression,
+    ],
+
+    // Ensure `a b do 1 end` parses as `a(b) do 1 end`
+    [
+      $._expression,
+      $.call_with_block,
+    ],
+
+    // Ensure `a b() { 1 }` parses as `a(b() { 1 })`
+    [
+      $.call_with_brace_block,
+      $.call_without_block,
+    ],
+
+    // Ensure `a b() do 1 end` parses as `a(b()) do 1 end`
+    [
+      $.call_without_block,
+      $.call_with_block,
+    ],
+  ],
 
   rules: {
     source_file: $ => seq(
@@ -468,7 +499,7 @@ module.exports = grammar({
       const range_op = field('operator', alias(choice('..', '...'), $.operator))
       const end = field('end', $._expression)
 
-      return prec.left(PREC.RANGE, seq(
+      return prec.left('range_operator', seq(
         begin,
         range_op,
         optional($._end_of_range),
@@ -480,7 +511,7 @@ module.exports = grammar({
       const range_op = field('operator', alias($._beginless_range_operator, $.operator))
       const end = field('end', $._expression)
 
-      return prec.left(PREC.RANGE, seq(
+      return prec.left('range_operator', seq(
         range_op,
         optional($._end_of_range),
         optional(end),
@@ -514,15 +545,28 @@ module.exports = grammar({
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/[ \t]:\s/, $._type))
 
+      // Method defs require at least one of the following after the name
+      // - parameters wrapped in ()
+      // - a return type
+      // - a newline or semicolon
+      //
+      // In other words, these are all valid:
+      //   def foo(bar) end
+      //   def foo : Bool true end
+      //   def foo; end
+      const param_spec = choice(
+        seq(params, optional(return_type), optional($._terminator)),
+        seq(optional(params), return_type, optional($._terminator)),
+        seq(optional(params), optional(return_type), $._terminator),
+      )
 
-      return prec(1, seq(
+      return seq(
         'def',
         name,
-        optional(params),
-        optional(return_type),
+        param_spec,
         optional($._statements),
         'end'
-      ))
+      )
     },
 
     param_list: $ => seq($.param, repeat(seq(',', $.param)), optional(',')),
@@ -533,12 +577,12 @@ module.exports = grammar({
       const type = field('type', seq(/[ \t]:\s/, $._type))
       const default_value = field('default', seq('=', $._expression))
 
-      return prec(1, seq(
+      return seq(
         optional(extern_name),
         name,
         optional(type),
         optional(default_value)
-      ))
+      )
     },
 
     // TODO:
@@ -612,7 +656,7 @@ module.exports = grammar({
       $._nested_union_type, "|", $._nested_union_type, repeat(seq("|", $._nested_union_type))
     )),
 
-    _dot_call: $ => prec(PREC.DOT, seq(
+    _dot_call: $ => prec('dot_operator', seq(
       field('receiver', $._expression),
       '.',
       field('method', choice(
@@ -664,11 +708,11 @@ module.exports = grammar({
 
       const block = field('block', alias($.do_end_block, $.block))
 
-      return prec(-1, choice(
+      return choice(
         seq(receiver_call, optional(argument_list), block),
         seq(ambiguous_call, argument_list, block),
         seq(ambiguous_call, block),
-      ))
+      )
     },
 
     // A subset of method calls that can be the LHS of an assignment
@@ -676,7 +720,7 @@ module.exports = grammar({
       const receiver = field('receiver', $._expression)
       const method_identifier = field('method', $.identifier)
 
-      return prec(PREC.DOT, seq(receiver, '.', method_identifier))
+      return prec('dot_operator', seq(receiver, '.', method_identifier))
     },
 
     call_with_brace_block: $ => {
@@ -693,16 +737,16 @@ module.exports = grammar({
 
       const block = field('block', alias($.brace_block, $.block))
 
-      return prec(1, choice(
+      return choice(
         seq(receiver_call, optional(argument_list), block),
         seq(ambiguous_call, argument_list, block),
         seq(ambiguous_call, block),
-      ))
+      )
     },
 
-    not: $ => prec(PREC.UNARY, seq('!', $._expression)),
-    and: $ => prec.left(PREC.AND, seq($._expression, '&&', $._expression)),
-    or: $ => prec.left(PREC.OR, seq($._expression, '||', $._expression)),
+    not: $ => prec('unary_operator', seq('!', $._expression)),
+    and: $ => prec.left('logical_and_operator', seq($._expression, '&&', $._expression)),
+    or: $ => prec.left('logical_or_operator', seq($._expression, '||', $._expression)),
 
     additive_operator: $ => {
       const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')
@@ -711,7 +755,7 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.left(PREC.ADDITIVE,
+      return prec.left('additive_operator',
         seq(receiver, method, arg),
       )
     },
@@ -719,7 +763,7 @@ module.exports = grammar({
     unary_additive_operator: $ => {
       const operator = choice($.unary_plus, $.unary_minus) // TODO: &+ and &-
 
-      return prec(PREC.UNARY, seq(
+      return prec('unary_operator', seq(
         field('operator', alias(operator, $.operator)),
         field('receiver', $._expression)
       ))
@@ -732,7 +776,7 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.left(PREC.MULTIPLICATIVE, seq(
+      return prec.left('multiplicative_operator', seq(
         receiver, method, arg
       ))
     },
@@ -744,7 +788,7 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.right(PREC.EXPONENTIAL, seq(
+      return prec.right('exponential_operator', seq(
         receiver, method, arg
       ))
     },
@@ -756,7 +800,7 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.left(PREC.SHIFT, seq(
+      return prec.left('shift_operator', seq(
         receiver, method, arg
       ))
     },
@@ -764,7 +808,7 @@ module.exports = grammar({
     complement_operator: $ => {
       const operator = '~'
 
-      return prec(PREC.UNARY, seq(
+      return prec('unary_operator', seq(
         field('operator', alias(operator, $.operator)),
         field('receiver', $._expression)
       ))
@@ -776,7 +820,7 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.left(PREC.BINARY_AND, seq(
+      return prec.left('binary_and_operator', seq(
         receiver, method, arg
       ))
     },
@@ -787,25 +831,22 @@ module.exports = grammar({
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
 
-      return prec.left(PREC.BINARY_OR, seq(
+      return prec.left('binary_or_operator', seq(
         receiver, method, arg
       ))
     },
 
-    // TODO: does this need prec?
-    splat: $ => seq($._unary_star, $._expression),
+    splat: $ => prec('splat_operator', seq($._unary_star, $._expression)),
 
-    double_splat: $ => seq($._unary_double_star, $._expression),
+    double_splat: $ => prec('splat_operator', seq($._unary_double_star, $._expression)),
 
     argument_list_no_parens: $ => {
       const arguments = [$._expression, $.splat, $.double_splat]
 
       return prec.right(seq(
-        choice(
-          $._start_of_parenless_args,
-          ...arguments,
-        ),
-        repeat(seq(',', choice(...arguments)))
+        optional($._start_of_parenless_args),
+        choice(...arguments),
+        repeat(prec('comma', seq(',', choice(...arguments))))
       ))
     },
 
@@ -827,16 +868,16 @@ module.exports = grammar({
       const lhs = field('lhs', choice($.identifier, $.instance_var, $.class_var, $.assign_call))
       const rhs = field('rhs', $._expression)
 
-      return seq(
+      return prec('assignment_operator', seq(
         lhs, '=', rhs
-      )
+      ))
     },
 
     const_assign: $ => {
       const lhs = field('lhs', $.constant)
       const rhs = field('rhs', $._statement)
 
-      return prec.right(seq(
+      return prec.right('assignment_operator', seq(
         lhs, '=', rhs
       ))
     },
@@ -952,7 +993,7 @@ module.exports = grammar({
 
     else: $ => seq('else', optional($._statements)),
 
-    conditional: $ => prec.right(PREC.CONDITIONAL,seq(
+    conditional: $ => prec.right('ternary_operator',seq(
       field('cond', $._expression),
       '?',
       field('then', $._expression),
