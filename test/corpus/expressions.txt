@@ -1223,52 +1223,57 @@ a b c do
 d do end; f g do end
 end
 
+a (b do 1 end) do 2 end
+
 ---
 
 (source_file
-  (call_with_block
-    (identifier)
-    (do_end_block)
-  )
+  (call
+    method: (identifier)
+    block: (block))
 
-  (call_with_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (identifier))
-    (do_end_block)
-  )
+    block: (block))
 
-  (call_with_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (call
-        (identifier)
-        (argument_list)))
-    (do_end_block)
-  )
+        method: (identifier)
+        arguments: (argument_list)))
+    block: (block))
 
-  (call_with_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (call
-        (identifier)
-        (argument_list
+        method: (identifier)
+        arguments: (argument_list
           (identifier))
         ))
-    (do_end_block
-      (call_with_block
-        (identifier)
-        (do_end_block))
+    block: (block
+      (call
+        method: (identifier)
+        block: (block))
 
-      (call_with_block
-        (identifier)
-        (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
           (identifier))
-        (do_end_block)
-      )
-    )
-  )
-)
+        block: (block))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        block: (block
+          (integer))))
+    block: (block
+      (integer))))
 
 ====================
 calls with {} blocks
@@ -1307,123 +1312,123 @@ a 1, {2, b { 4 }} { 3 }
 ---
 
 (source_file
-  (call_with_brace_block
-    (identifier)
-    (brace_block))
+  (call
+    method: (identifier)
+    block: (block))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list)
-    (brace_block))
+  (call
+    method: (identifier)
+    arguments: (argument_list)
+    block: (block))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (integer))
-    (brace_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (integer))
-    (brace_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (brace_block
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    block: (block
+      (call
+        method: (identifier)
+        block: (block
           (identifier)))))
 
   (call
-    (identifier)
-    (argument_list
+    method: (identifier)
+    arguments: (argument_list
       (call
-        (identifier)
-        (argument_list
-          (call_with_brace_block
-            (identifier)
-            (brace_block
+        method: (identifier)
+        arguments: (argument_list
+          (call
+            method: (identifier)
+            block: (block
               (integer)))))))
 
-  (call_with_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (call
-        (identifier)
-        (argument_list
+        method: (identifier)
+        arguments: (argument_list
           (identifier))))
-    (do_end_block
+    block: (block
       (integer)))
 
-  (call_with_block
-    (identifier)
-    (argument_list
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        block: (block
           (integer))))
-    (do_end_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (brace_block
-      (call_with_block
-        (identifier)
-        (do_end_block
+  (call
+    method: (identifier)
+    block: (block
+      (call
+        method: (identifier)
+        block: (block
           (integer)))))
 
-  (call_with_block
-    (identifier)
-    (do_end_block
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    block: (block
+      (call
+        method: (identifier)
+        block: (block
           (integer)))))
 
-  (call_with_block
-    (identifier)
-    (argument_list
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        block: (block
           (integer))))
-    (do_end_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        block: (block
           (integer))))
-    (brace_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list
-      (call_with_brace_block
-        (identifier)
-        (brace_block
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        block: (block
           (integer))))
-    (brace_block
+    block: (block
       (integer)))
 
-  (call_with_brace_block
-    (identifier)
-    (argument_list
+  (call
+    method: (identifier)
+    arguments: (argument_list
       (integer)
       (tuple
         (integer)
-        (call_with_brace_block
-          (identifier)
-          (brace_block
+        (call
+          method: (identifier)
+          block: (block
             (integer)))))
-    (brace_block
+    block: (block
       (integer))))

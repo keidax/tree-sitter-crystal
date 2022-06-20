@@ -182,7 +182,7 @@ const bool *valid_symbols) {
 					return false;
 				}
 
-				// Give precendence to the unary operator if:
+				// Give precedence to the unary operator if:
 				// - there is space before but not after, e.g.
 				//		puts +foo
 				// - we are just after a range operator, e.g.

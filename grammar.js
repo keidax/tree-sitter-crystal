@@ -159,9 +159,10 @@ module.exports = grammar({
       // macro fresh variables
 
       // Methods
-      $.call,
-      $.call_with_block,
-      $.call_with_brace_block,
+      alias($.call_without_block, $.call),
+      alias($.call_with_block, $.call),
+      alias($.call_with_brace_block, $.call),
+
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
       alias($.multiplicative_operator, $.op_call),
@@ -621,7 +622,7 @@ module.exports = grammar({
       )),
     )),
 
-    call: $ => {
+    call_without_block: $ => {
       const receiver_call = choice(
         $._dot_call,
         field('method', alias($.identifier_method_call, $.identifier)),
@@ -643,7 +644,6 @@ module.exports = grammar({
 
       // TODO:
       // named arguments
-      // blocks
       return choice(
         seq(receiver_call, optional(argument_list)),
         seq(ambiguous_call, argument_list),
@@ -662,10 +662,12 @@ module.exports = grammar({
         alias($.argument_list_no_parens, $.argument_list),
       ))
 
+      const block = field('block', alias($.do_end_block, $.block))
+
       return prec(-1, choice(
-        seq(receiver_call, optional(argument_list), $.do_end_block),
-        seq(ambiguous_call, argument_list, $.do_end_block),
-        seq(ambiguous_call, $.do_end_block),
+        seq(receiver_call, optional(argument_list), block),
+        seq(ambiguous_call, argument_list, block),
+        seq(ambiguous_call, block),
       ))
     },
 
@@ -689,10 +691,12 @@ module.exports = grammar({
         alias($.argument_list_no_parens, $.argument_list),
       ))
 
+      const block = field('block', alias($.brace_block, $.block))
+
       return prec(1, choice(
-        seq(receiver_call, optional(argument_list), $.brace_block),
-        seq(ambiguous_call, argument_list, $.brace_block),
-        seq(ambiguous_call, $.brace_block),
+        seq(receiver_call, optional(argument_list), block),
+        seq(ambiguous_call, argument_list, block),
+        seq(ambiguous_call, block),
       ))
     },
 
