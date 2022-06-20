@@ -24,6 +24,8 @@ module.exports = grammar({
   externals: $ => [
     $._line_break,
 
+    $._start_of_brace_block,
+
     $.unary_plus,
     $.unary_minus,
     $.binary_plus,
@@ -159,6 +161,7 @@ module.exports = grammar({
       // Methods
       $.call,
       $.call_with_block,
+      $.call_with_brace_block,
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
       alias($.multiplicative_operator, $.op_call),
@@ -674,6 +677,25 @@ module.exports = grammar({
       return prec(PREC.DOT, seq(receiver, '.', method_identifier))
     },
 
+    call_with_brace_block: $ => {
+      const receiver_call = choice(
+        $._dot_call,
+        field('method', alias($.identifier_method_call, $.identifier)),
+      )
+      const ambiguous_call = field('method', $.identifier)
+
+      const argument_list = field('arguments', choice(
+        alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_no_parens, $.argument_list),
+      ))
+
+      return prec(1, choice(
+        seq(receiver_call, optional(argument_list), $.brace_block),
+        seq(ambiguous_call, argument_list, $.brace_block),
+        seq(ambiguous_call, $.brace_block),
+      ))
+    },
+
     not: $ => prec(PREC.UNARY, seq('!', $._expression)),
     and: $ => prec.left(PREC.AND, seq($._expression, '&&', $._expression)),
     or: $ => prec.left(PREC.OR, seq($._expression, '||', $._expression)),
@@ -827,6 +849,12 @@ module.exports = grammar({
       'do',
       optional($._statements),
       'end',
+    ),
+
+    brace_block: $ => seq(
+      $._start_of_brace_block,
+      optional($._statements),
+      '}',
     ),
 
     begin_block: $ => seq(

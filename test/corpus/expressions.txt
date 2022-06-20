@@ -1269,3 +1269,161 @@ end
     )
   )
 )
+
+====================
+calls with {} blocks
+====================
+
+a {}
+a() {}
+
+a 1 { 2 }
+a(1) { 2 }
+
+a { b { c } }
+
+a b c { 1 }
+a b c do 1 end
+
+a b { 1 } do 2 end
+
+a {
+  b do
+    1
+  end
+}
+
+a do
+  b { 2
+  } end
+
+a b { 1 } do 2 end
+
+a b { 1 } { 2 }
+a(b { 1 }) { 2 }
+
+a 1, {2, b { 4 }} { 3 }
+
+---
+
+(source_file
+  (call_with_brace_block
+    (identifier)
+    (brace_block))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list)
+    (brace_block))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list
+      (integer))
+    (brace_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list
+      (integer))
+    (brace_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (brace_block
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (identifier)))))
+
+  (call
+    (identifier)
+    (argument_list
+      (call
+        (identifier)
+        (argument_list
+          (call_with_brace_block
+            (identifier)
+            (brace_block
+              (integer)))))))
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (call
+        (identifier)
+        (argument_list
+          (identifier))))
+    (do_end_block
+      (integer)))
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (integer))))
+    (do_end_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (brace_block
+      (call_with_block
+        (identifier)
+        (do_end_block
+          (integer)))))
+
+  (call_with_block
+    (identifier)
+    (do_end_block
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (integer)))))
+
+  (call_with_block
+    (identifier)
+    (argument_list
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (integer))))
+    (do_end_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (integer))))
+    (brace_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list
+      (call_with_brace_block
+        (identifier)
+        (brace_block
+          (integer))))
+    (brace_block
+      (integer)))
+
+  (call_with_brace_block
+    (identifier)
+    (argument_list
+      (integer)
+      (tuple
+        (integer)
+        (call_with_brace_block
+          (identifier)
+          (brace_block
+            (integer)))))
+    (brace_block
+      (integer))))

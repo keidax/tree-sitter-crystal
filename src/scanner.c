@@ -18,6 +18,8 @@ typedef struct State State;
 enum Token {
 	LINE_BREAK,
 
+	START_OF_BRACE_BLOCK,
+
 	UNARY_PLUS,
 	UNARY_MINUS,
 	BINARY_PLUS,
@@ -122,6 +124,7 @@ const bool *valid_symbols) {
 	DEBUG(" ==> char is '%c'\n", lexer->lookahead);
 	DEBUG(" ==> valid symbols are:\n");
 	if (valid_symbols[LINE_BREAK]) DEBUG("\tLINE_BREAK\n");
+	if (valid_symbols[START_OF_BRACE_BLOCK]) DEBUG("\tSTART_OF_BRACE_BLOCK\n");
 	if (valid_symbols[UNARY_PLUS]) DEBUG("\tUNARY_PLUS\n");
 	if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
 	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
@@ -151,6 +154,26 @@ const bool *valid_symbols) {
 	}
 
 	switch(lexer->lookahead) {
+		case '{':
+			// In Crystal, the '{' token may be used as the start of a block,
+			// or the start of another literal like a tuple. The language
+			// resolves this potential ambiguity by requiring that the first
+			// non-block argument to a method invoked without parentheses may
+			// not start with a '{'. In other words, if you want to pass a
+			// tuple as the first argument, the method call _must_ use
+			// parentheses.
+			//
+			// This means, if we see a '{' and we're in a context where a block
+			// could be valid, it must be the start of a block.
+
+			// TODO: do we need to check START_OF_PARENLESS_ARGS here?
+			/* if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_PARENLESS_ARGS]) { */
+			if (valid_symbols[START_OF_BRACE_BLOCK]) {
+				lex_advance(lexer);
+				lexer->result_symbol = START_OF_BRACE_BLOCK;
+				return true;
+			}
+			break;
 		case '+':
 			if (valid_symbols[UNARY_PLUS] || valid_symbols[BINARY_PLUS]) {
 				lex_advance(lexer);
