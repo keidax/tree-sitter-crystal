@@ -477,8 +477,8 @@ arrays
     (integer))
 
   (array
-    (empty_braces)
-    (empty_braces)
+    (nil)
+    (nil)
     (nil)
     of: (union_type (constant) (constant)))
 
@@ -684,7 +684,7 @@ tuples
     (string)
     (char))
 
-  (tuple (empty_braces))
+  (tuple (nil))
 
   (tuple
     (tuple (integer)))

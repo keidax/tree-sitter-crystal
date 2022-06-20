@@ -234,6 +234,8 @@ puts(
   nil,
 )
 
+puts (), ()
+
 ---
 (source_file
   (call
@@ -254,7 +256,11 @@ puts(
     arguments: (argument_list (true) (false) (nil)))
   (call
     method: (identifier)
-    arguments: (argument_list (true) (false) (nil))))
+    arguments: (argument_list (true) (false) (nil)))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list (nil) (nil))))
 
 ===============
 splat arguments

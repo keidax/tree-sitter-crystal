@@ -128,7 +128,7 @@ module.exports = grammar({
       // `command`
 
       // Groupings
-      $.empty_braces,
+      alias($.empty_parens, $.nil),
       $._parenthesized_statements,
       $.begin_block,
 
@@ -198,7 +198,7 @@ module.exports = grammar({
 
     comment: $ => /#.*/,
 
-    empty_braces: $ => seq('(',')'),
+    empty_parens: $ => seq('(',')'),
 
     nil: $ => 'nil',
 
