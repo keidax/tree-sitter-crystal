@@ -265,14 +265,20 @@ puts (), ()
 ===============
 splat arguments
 ===============
+puts * a
 puts *a
 puts*a
+puts(*a)
 
 pp *a, 2, *{3}
 
 pp(*a+b, *c*d)
 ---
 (source_file
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
   (call
     method: (identifier)
     arguments: (argument_list
@@ -282,6 +288,11 @@ pp(*a+b, *c*d)
     receiver: (identifier)
     operator: (operator)
     argument: (identifier))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (splat
+        (identifier))))
 
   (call
     method: (identifier)
@@ -313,6 +324,7 @@ double splat arguments
 puts ** kwargs
 puts **kwargs
 puts**kwargs
+puts(**kwargs)
 
 pp **{a: 1, "b": 2.0}, **{c: nil}
 ---
@@ -330,6 +342,11 @@ pp **{a: 1, "b": 2.0}, **{c: nil}
     receiver: (identifier)
     operator: (operator)
     argument: (identifier))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (double_splat
+        (identifier))))
 
   (call
     method: (identifier)

@@ -841,23 +841,23 @@ module.exports = grammar({
     double_splat: $ => prec('splat_operator', seq($._unary_double_star, $._expression)),
 
     argument_list_no_parens: $ => {
-      const arguments = [$._expression, $.splat, $.double_splat]
+      const args = choice($._expression, $.splat, $.double_splat)
 
       return prec.right(seq(
         optional($._start_of_parenless_args),
-        choice(...arguments),
-        repeat(prec('comma', seq(',', choice(...arguments))))
+        args,
+        repeat(prec('comma', seq(',', args)))
       ))
     },
 
     argument_list_with_parens: $ => {
-      const arguments = [$._expression, $.splat]
+      const args = choice($._expression, $.splat, $.double_splat)
 
       return prec.right(seq(
         token.immediate('('),
         optional(seq(
-          choice(...arguments),
-          repeat(seq(',', choice(...arguments))),
+          args,
+          repeat(seq(',', args)),
           optional(','),
         )),
         ')'
