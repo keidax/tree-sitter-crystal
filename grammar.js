@@ -86,6 +86,18 @@ module.exports = grammar({
       $.call_without_block,
       $.call_with_block,
     ],
+
+    // Ensure `[] of A | B` parses as `[] of (A | B)`
+    [
+      $.union_type,
+      $.array
+    ],
+
+    // Ensure `{} of K => A | B` parses as `{} of K => (A | B)`
+    [
+      $.union_type,
+      $.hash
+    ],
   ],
 
   rules: {
@@ -638,23 +650,11 @@ module.exports = grammar({
       // class
       // underscore
       // typeof
-      // Any types added here should also be added to _nested_union
     ),
 
     union_type: $ => prec.right(seq(
-      $._nested_union_type, "|", $._nested_union_type, repeat(prec(1, seq("|", $._nested_union_type)))
-    )),
-
-    // Any nested union types are flattened
-    _nested_union_type: $ => prec(1, choice(
-      seq('(', $._nested_union_type, ')'),
-      $.constant,
-      $._inner_union_type,
-    )),
-
-    _inner_union_type: $ => prec.right(-1, seq(
-      $._nested_union_type, "|", $._nested_union_type, repeat(seq("|", $._nested_union_type))
-    )),
+      $._type, repeat1(prec.left(seq("|", $._type))))
+    ),
 
     _dot_call: $ => prec('dot_operator', seq(
       field('receiver', $._expression),

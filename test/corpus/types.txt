@@ -31,7 +31,8 @@ alias AOrB = A | B
 alias AOrBCOrD = A|B::C|D
 
 alias NestedUnion = (A)|( B::C|D )
-alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F))
+
+alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F) | G | H)
 
 ---
 
@@ -46,7 +47,21 @@ alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F))
 
   (alias
     name: (constant)
-    type: (union_type (constant) (constant) (constant)))
+    type: (union_type
+      (constant)
+      (union_type (constant) (constant))))
+
   (alias
     name: (constant)
-    type: (union_type (constant) (constant) (constant) (constant) (constant) (constant))))
+    type: (union_type
+      (constant)
+      (union_type
+        (constant)
+        (union_type
+          (constant)
+          (constant))
+        (constant))
+      (union_type
+        (constant)
+        (constant)
+        (constant)))))

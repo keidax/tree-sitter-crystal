@@ -8139,6 +8139,10 @@
         {
           "type": "constant",
           "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
         }
       ]
     }
