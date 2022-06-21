@@ -711,6 +711,7 @@ module.exports = grammar({
     _type: $ => choice(
       seq('(', $._type, ')'),
       $.constant,
+      $.generic_type,
       $.union_type,
       $.proc_type,
       // TODO: rest of type grammar
@@ -737,13 +738,25 @@ module.exports = grammar({
 
       const return_type = field('return', $._type)
 
-      const full = seq('Proc(', optional(seq(param_types, ',')), return_type,')')
-      const shorthand = prec.left(seq(optional(param_types), '->', optional(return_type)))
-
-      return choice(
-        full, shorthand
-      )
+      return prec.left(seq(
+        optional(param_types),
+        '->',
+        optional(return_type),
+      ))
     },
+
+    generic_type: $ => seq(
+      $.constant,
+      token.immediate('('),
+      field('params', optional(alias($.type_param_list, $.param_list))),
+      ')'
+    ),
+
+    type_param_list: $ => seq(
+      $._type,
+      repeat(prec.left(seq(',', $._type))),
+      optional(',')
+    ),
 
     _dot_call: $ => prec('dot_operator', seq(
       field('receiver', $._expression),

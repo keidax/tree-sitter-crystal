@@ -758,6 +758,9 @@ String |
 
 -> do -> {  } end
 
+-> : Gen(A, B, C, D) {  }
+-> : Gen(A, B, C -> D) {  }
+
 ---
 (source_file
   (proc
@@ -796,4 +799,24 @@ String |
   (proc
     block: (block
       (proc
-        block: (block)))))
+        block: (block))))
+
+  (proc
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (constant)
+        (constant)
+        (constant)
+        (constant)))
+    block: (block))
+  (proc
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (proc_type
+          (constant)
+          (constant)
+          (constant)
+          return: (constant))))
+    block: (block)))

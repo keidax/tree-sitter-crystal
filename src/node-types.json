@@ -30,6 +30,10 @@
             "named": true
           },
           {
+            "type": "generic_type",
+            "named": true
+          },
+          {
             "type": "proc_type",
             "named": true
           },
@@ -433,6 +437,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -1478,6 +1486,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -3494,6 +3506,32 @@
     "fields": {}
   },
   {
+    "type": "generic_type",
+    "named": true,
+    "fields": {
+      "params": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "param_list",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "constant",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "hash",
     "named": true,
     "fields": {
@@ -3511,6 +3549,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -3537,6 +3579,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -4190,6 +4236,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -6739,6 +6789,10 @@
             "named": true
           },
           {
+            "type": "generic_type",
+            "named": true
+          },
+          {
             "type": "proc_type",
             "named": true
           },
@@ -6763,7 +6817,23 @@
           "named": true
         },
         {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_type",
+          "named": true
+        },
+        {
           "type": "param",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
           "named": true
         }
       ]
@@ -6810,6 +6880,10 @@
             "named": true
           },
           {
+            "type": "generic_type",
+            "named": true
+          },
+          {
             "type": "proc_type",
             "named": true
           },
@@ -6842,6 +6916,10 @@
             "named": true
           },
           {
+            "type": "generic_type",
+            "named": true
+          },
+          {
             "type": "proc_type",
             "named": true
           },
@@ -6858,6 +6936,10 @@
       "types": [
         {
           "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_type",
           "named": true
         },
         {
@@ -7495,6 +7577,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "generic_type",
             "named": true
           },
           {
@@ -8486,6 +8572,10 @@
       "types": [
         {
           "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_type",
           "named": true
         },
         {
@@ -9545,10 +9635,6 @@
   },
   {
     "type": "?",
-    "named": false
-  },
-  {
-    "type": "Proc(",
     "named": false
   },
   {

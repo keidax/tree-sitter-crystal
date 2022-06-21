@@ -374,8 +374,10 @@ def worst_syntax(b, &:
     params: (param_list
       (block_param
         name: (identifier)
-        type: (proc_type
-          return: (constant)))))
+        type: (generic_type
+          (constant)
+          params: (param_list
+           (constant))))))
 
   (method_def
     name: (identifier)

@@ -111,8 +111,9 @@ alias Foo = A | B -> C | D
     of: (proc_type
       return: (union_type (constant) (constant))))
   (array
-    of: (proc_type
-      return: (union_type (constant) (constant))))
+    of: (generic_type
+      (constant)
+      params: (param_list (union_type (constant) (constant)))))
 
   (array
     (array
@@ -122,10 +123,12 @@ alias Foo = A | B -> C | D
         return: (constant))))
   (array
     (array
-      of: (proc_type
+      of: (generic_type
         (constant)
-        (constant)
-        return: (constant))))
+        params: (param_list
+          (constant)
+          (constant)
+          (constant)))))
 
   (array
     (hash
@@ -137,10 +140,12 @@ alias Foo = A | B -> C | D
   (array
     (hash
       of_key: (constant)
-      of_value: (proc_type
+      of_value: (generic_type
         (constant)
-        (constant)
-        return: (constant))))
+        params: (param_list
+          (constant)
+          (constant)
+          (constant)))))
 
   (tuple
     (hash
@@ -157,17 +162,21 @@ alias Foo = A | B -> C | D
   (tuple
     (hash
       of_key: (constant)
-      of_value: (proc_type
+      of_value: (generic_type
         (constant)
-        (constant)
-        return: (constant))))
+        params: (param_list
+          (constant)
+          (constant)
+          (constant)))))
 
   (array
-    of: (proc_type
-      return: (proc_type
-        (constant)
-        (constant)
-        return: (constant))))
+    of: (generic_type
+      (constant)
+      params: (param_list
+          (proc_type
+            (constant)
+            (constant)
+            return: (constant)))))
 
   (array
     of: (proc_type
@@ -199,3 +208,56 @@ alias Foo = A | B -> C | D
     type: (proc_type
       (union_type (constant) (constant))
       return: (union_type (constant) (constant)))))
+
+=============
+generic types
+=============
+
+# class Gen(*U)
+# end
+
+alias Foo = Gen()
+alias Foo2 = Gen(Int32)
+alias Foo3 = Gen(Int32,)
+alias Foo4 = Gen(Int32,String)
+alias Foo5 = Gen(Int32,String|Char)
+
+---
+(source_file
+  (comment)
+  (comment)
+
+  (alias
+    name: (constant)
+    type: (generic_type
+      (constant)))
+
+  (alias
+    name: (constant)
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (constant))))
+
+  (alias
+    name: (constant)
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (constant))))
+
+  (alias
+    name: (constant)
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (constant)
+        (constant))))
+
+  (alias
+    name: (constant)
+    type: (generic_type
+      (constant)
+      params: (param_list
+        (constant)
+        (union_type (constant) (constant))))))
