@@ -337,3 +337,57 @@ end
           receiver: (identifier)
           operator: (operator)
           argument: (identifier))))))
+
+========================================
+method definitions with block parameters
+========================================
+
+def foo(&);end
+
+def bar(&thingy); end
+
+def baz(&asdf : Proc(Nil))
+end
+
+def qux(& : -> String | Int32)
+end
+
+
+def worst_syntax(b, &:
+->);end
+
+---
+(source_file
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (block_param)))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (block_param
+        name: (identifier))))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (block_param
+        name: (identifier)
+        type: (proc_type
+          return: (constant)))))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (block_param
+        type: (proc_type
+          return: (union_type (constant) (constant))))))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier))
+      (block_param
+        type: (proc_type)))))

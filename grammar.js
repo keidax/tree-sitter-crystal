@@ -620,7 +620,14 @@ module.exports = grammar({
       )
     },
 
-    param_list: $ => seq($.param, repeat(seq(',', $.param)), optional(',')),
+    param_list: $ => choice(
+      seq(
+        $.param,
+        repeat(seq(',', $.param)),
+        optional(seq(',', optional($.block_param)))
+      ),
+      $.block_param
+    ),
 
     param: $ => {
       const extern_name = field('extern_name', $.identifier)
@@ -636,10 +643,20 @@ module.exports = grammar({
       )
     },
 
+    block_param: $ => {
+      const name = field('name', choice($.identifier, $.instance_var, $.class_var))
+      const type = field('type', seq(/:\s/, $._type))
+
+      return seq(
+        '&',
+        optional(name),
+        optional(type)
+      )
+    },
+
     // TODO:
     // splat_param
     // double splat_param
-    // block param
 
     return: $ => seq('return', optional($._expression)),
 

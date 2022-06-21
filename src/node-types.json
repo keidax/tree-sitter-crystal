@@ -1415,6 +1415,56 @@
     }
   },
   {
+    "type": "block_param",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "class_var",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "instance_var",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "break",
     "named": true,
     "fields": {},
@@ -6577,6 +6627,10 @@
       "required": true,
       "types": [
         {
+          "type": "block_param",
+          "named": true
+        },
+        {
           "type": "param",
           "named": true
         }
@@ -9183,6 +9237,10 @@
   },
   {
     "type": "#{",
+    "named": false
+  },
+  {
+    "type": "&",
     "named": false
   },
   {
