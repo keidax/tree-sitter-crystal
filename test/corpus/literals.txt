@@ -732,3 +732,68 @@ named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
           (named_tuple_entry
             (identifier)
             (float)))))))
+
+=============
+proc literals
+=============
+->{}
+
+->: Int32
+do 1 end
+
+->
+(
+a
+)
+:
+String |
+->
+{
+"a"
+}
+
+->(x : Int32, y : Int32) : Int32 do
+                                   x + y
+                                 end
+
+-> do -> {  } end
+
+---
+(source_file
+  (proc
+    block: (block))
+
+  (proc
+    type: (constant)
+    block: (block
+      (integer)))
+
+  (proc
+    params: (param_list
+      (param
+        name: (identifier)))
+    type: (union_type
+      (constant)
+      (proc_type))
+    block: (block
+      (string)))
+
+  (proc
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (constant))
+      (param
+        name: (identifier)
+        type: (constant)))
+    type: (constant)
+    block: (block
+      (op_call
+        receiver: (identifier)
+        operator: (operator)
+        argument: (identifier))))
+
+  (proc
+    block: (block
+      (proc
+        block: (block)))))

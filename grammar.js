@@ -206,9 +206,9 @@ module.exports = grammar({
       alias($.beginless_range, $.range),
       $.tuple,
       $.named_tuple,
+      $.proc,
       // TODO: other expressions
       // regex
-      // proc
       // `command`
 
       // Groupings
@@ -567,6 +567,23 @@ module.exports = grammar({
         optional($._end_of_range),
         optional(end),
       ))
+    },
+
+    proc: $ => {
+      // TODO: param_list without block param
+      const params = seq('(', field('params', optional($.param_list)), ')')
+      const return_type = field('type', seq(/:\s/, $._type))
+      const block = field('block', choice(
+        alias($.do_end_block, $.block),
+        alias($.brace_block, $.block)
+      ))
+
+      return seq(
+        '->',
+        optional(params),
+        optional(return_type),
+        block
+      )
     },
 
     module_def: $ => seq(
@@ -968,6 +985,7 @@ module.exports = grammar({
       'end',
     ),
 
+    // TODO: block parameters
     brace_block: $ => seq(
       $._start_of_brace_block,
       optional($._statements),

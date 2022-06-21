@@ -170,6 +170,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -350,6 +354,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -567,6 +575,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -780,6 +792,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -982,6 +998,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -1174,6 +1194,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -1361,6 +1385,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -1593,6 +1621,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -1814,6 +1846,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -2030,6 +2066,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -2221,6 +2261,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -2407,6 +2451,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -2590,6 +2638,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -2795,6 +2847,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -2975,6 +3031,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -3151,6 +3211,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -3342,6 +3406,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -3622,6 +3690,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -3810,6 +3882,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -4019,6 +4095,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -4248,6 +4328,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -4439,6 +4523,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -4622,6 +4710,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -4817,6 +4909,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -5000,6 +5096,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -5191,6 +5291,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -5388,6 +5492,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -5564,6 +5672,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -5748,6 +5860,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -5939,6 +6055,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -6138,6 +6258,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -6315,6 +6439,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -6513,6 +6641,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -6635,6 +6767,58 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "proc",
+    "named": true,
+    "fields": {
+      "block": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      },
+      "params": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "param_list",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -6833,6 +7017,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -7016,6 +7204,10 @@
           },
           {
             "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
             "named": true
           },
           {
@@ -7236,6 +7428,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -7452,6 +7648,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -7631,6 +7831,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -7807,6 +8011,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -8031,6 +8239,10 @@
           "named": true
         },
         {
+          "type": "proc",
+          "named": true
+        },
+        {
           "type": "pseudo_constant",
           "named": true
         },
@@ -8207,6 +8419,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -8424,6 +8640,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -8636,6 +8856,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -8808,6 +9032,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
@@ -9002,6 +9230,10 @@
             "named": true
           },
           {
+            "type": "proc",
+            "named": true
+          },
+          {
             "type": "pseudo_constant",
             "named": true
           },
@@ -9174,6 +9406,10 @@
         },
         {
           "type": "or",
+          "named": true
+        },
+        {
+          "type": "proc",
           "named": true
         },
         {
