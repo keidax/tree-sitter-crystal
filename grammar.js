@@ -63,6 +63,12 @@ module.exports = grammar({
       'comma',
     ],
 
+    // Operator precedence for the type grammar
+    [
+      $.union_type,
+      $.proc_type,
+    ],
+
     // Ensure `a b { 1 }` parses as `a(b { 1 })`
     [
       $.call_with_brace_block,
@@ -93,11 +99,44 @@ module.exports = grammar({
       $.array
     ],
 
+    // Ensure `[ [] of Int32, Int32 -> String ]` resolves to ` [ [] of (Int32, Int32 -> String) ]`
+    [
+      $.proc_type,
+      $.array,
+    ],
+
     // Ensure `{} of K => A | B` parses as `{} of K => (A | B)`
     [
       $.union_type,
       $.hash
     ],
+  ],
+
+  conflicts: $ => [
+    // When the parser is in this state:
+    //   def foo(bar : String,
+    //                       ^
+    // we need to consider both of these interpretations as legitimate:
+    //   def foo(bar : String, baz : String)
+    // and
+    //   def foo(bar : String, String -> Int32)
+    [
+      $.param, $.proc_type
+    ],
+
+
+    // When the parser is in this state:
+    //   { {} of A => B,
+    //                 ^
+    // we need to consider both of these interpretations as legitimate:
+    //   { {} of A => B, 77 }
+    // and
+    //   { {} of A => B, C -> D }
+    // (which is equivalent to)
+    //   { {} of A => Proc(B, C, D) }
+    [
+      $.hash, $.proc_type
+    ]
   ],
 
   rules: {
@@ -639,13 +678,13 @@ module.exports = grammar({
       seq('(', $._type, ')'),
       $.constant,
       $.union_type,
+      $.proc_type,
       // TODO: rest of type grammar
       // nilable
       // pointer
       // static array
       // tuple
       // named tuple
-      // proc
       // self
       // class
       // underscore
@@ -655,6 +694,22 @@ module.exports = grammar({
     union_type: $ => prec.right(seq(
       $._type, repeat1(prec.left(seq("|", $._type))))
     ),
+
+    proc_type: $ => {
+      const param_types = seq(
+        $._type,
+        repeat(prec.left(seq(',', $._type))
+      ))
+
+      const return_type = field('return', $._type)
+
+      const full = seq('Proc(', optional(seq(param_types, ',')), return_type,')')
+      const shorthand = prec.left(seq(optional(param_types), '->', optional(return_type)))
+
+      return choice(
+        full, shorthand
+      )
+    },
 
     _dot_call: $ => prec('dot_operator', seq(
       field('receiver', $._expression),

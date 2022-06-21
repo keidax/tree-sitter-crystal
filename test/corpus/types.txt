@@ -65,3 +65,137 @@ alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F) | G | H)
         (constant)
         (constant)
         (constant)))))
+
+==========
+proc types
+==========
+
+[] of ->
+{} of -> => ->
+
+[] of -> Int32 | String
+[] of Proc(Int32 | String)
+
+[ [] of Int32, Int32 -> String ]
+[ [] of Proc(Int32, Int32, String) ]
+
+
+[ {} of Int32 => Int32, Int32 -> String]
+[ {} of Int32 => Proc(Int32, Int32, String)]
+
+{ {} of Int32 => Int32, Int32 }
+
+{ {} of Int32 => Int32, Int32 ->}
+{ {} of Int32 => Proc(Int32, Int32, Nil)}
+
+[] of Proc(Int32, Int32 -> Int32)
+
+[] of (A -> B) -> C
+
+def x(y : A, b); end
+
+def x(y : A, B ->); end
+
+alias Foo = A | B -> C | D
+
+---
+
+(source_file
+  (array
+    of: (proc_type))
+  (hash
+    of_key: (proc_type)
+    of_value: (proc_type))
+
+  (array
+    of: (proc_type
+      return: (union_type (constant) (constant))))
+  (array
+    of: (proc_type
+      return: (union_type (constant) (constant))))
+
+  (array
+    (array
+      of: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+  (array
+    (array
+      of: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+
+  (array
+    (hash
+      of_key: (constant)
+      of_value: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+  (array
+    (hash
+      of_key: (constant)
+      of_value: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+
+  (tuple
+    (hash
+      of_key: (constant)
+      of_value: (constant))
+    (constant))
+
+  (tuple
+    (hash
+      of_key: (constant)
+      of_value: (proc_type
+        (constant)
+        (constant))))
+  (tuple
+    (hash
+      of_key: (constant)
+      of_value: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+
+  (array
+    of: (proc_type
+      return: (proc_type
+        (constant)
+        (constant)
+        return: (constant))))
+
+  (array
+    of: (proc_type
+      (proc_type
+        (constant)
+        return: (constant))
+      return: (constant)))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (constant))
+      (param
+        name: (identifier))))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (proc_type
+          (constant)
+          (constant)))))
+
+  (alias
+    name: (constant)
+    type: (proc_type
+      (union_type (constant) (constant))
+      return: (union_type (constant) (constant)))))

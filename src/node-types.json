@@ -30,6 +30,10 @@
             "named": true
           },
           {
+            "type": "proc_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -426,6 +430,10 @@
           {
             "type": "of",
             "named": false
+          },
+          {
+            "type": "proc_type",
+            "named": true
           },
           {
             "type": "union_type",
@@ -3388,6 +3396,10 @@
             "named": true
           },
           {
+            "type": "proc_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -3407,6 +3419,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
             "named": true
           },
           {
@@ -4044,6 +4060,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
             "named": true
           },
           {
@@ -6537,6 +6557,10 @@
             "named": true
           },
           {
+            "type": "proc_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -6554,6 +6578,56 @@
       "types": [
         {
           "type": "param",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "proc_type",
+    "named": true,
+    "fields": {
+      "return": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
+            "named": true
+          },
+          {
+            "type": "union_type",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
           "named": true
         }
       ]
@@ -7171,6 +7245,10 @@
           },
           {
             "type": "constant",
+            "named": true
+          },
+          {
+            "type": "proc_type",
             "named": true
           },
           {
@@ -8138,6 +8216,10 @@
       "types": [
         {
           "type": "constant",
+          "named": true
+        },
+        {
+          "type": "proc_type",
           "named": true
         },
         {
@@ -9132,6 +9214,10 @@
     "named": false
   },
   {
+    "type": "->",
+    "named": false
+  },
+  {
     "type": ".",
     "named": false
   },
@@ -9165,6 +9251,10 @@
   },
   {
     "type": "?",
+    "named": false
+  },
+  {
+    "type": "Proc(",
     "named": false
   },
   {
