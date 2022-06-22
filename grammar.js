@@ -570,8 +570,7 @@ module.exports = grammar({
     },
 
     proc: $ => {
-      // TODO: param_list without block param
-      const params = seq('(', field('params', optional($.param_list)), ')')
+      const params = seq('(', field('params', optional(alias($.proc_param_list, $.param_list))), ')')
       const return_type = field('type', seq(/:\s/, $._type))
       const block = field('block', choice(
         alias($.do_end_block, $.block),
@@ -585,6 +584,12 @@ module.exports = grammar({
         block
       )
     },
+
+    proc_param_list: $ => seq(
+      $.param,
+      repeat(seq(',', $.param)),
+      optional(',')
+    ),
 
     module_def: $ => seq(
       'module',
@@ -1016,7 +1021,7 @@ module.exports = grammar({
 
     rescue_block: $ => {
       const rescue_variable = field('variable', $.identifier)
-      const rescue_type = field('type', $._type) // TODO: the entire type grammar isn't really valid here
+      const rescue_type = field('type', $._type)
       const rescue_body = field('body', optional($._statements))
 
       return seq(

@@ -752,7 +752,7 @@ String |
 "a"
 }
 
-->(x : Int32, y : Int32) : Int32 do
+->(x : Int32,y : Int32,) : Int32 do
                                    x + y
                                  end
 
