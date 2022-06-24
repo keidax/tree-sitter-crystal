@@ -124,6 +124,14 @@ module.exports = grammar({
       $.param, $.proc_type
     ],
 
+    // Splat and double splat parameters are similar situations to above
+    [
+      $.splat_param, $.proc_type
+    ],
+    [
+      $.double_splat_param, $.proc_type
+    ],
+
 
     // When the parser is in this state:
     //   { {} of A => B,
@@ -642,14 +650,22 @@ module.exports = grammar({
       )
     },
 
-    param_list: $ => choice(
-      seq(
-        $.param,
-        repeat(seq(',', $.param)),
-        optional(seq(',', optional($.block_param)))
-      ),
-      $.block_param
-    ),
+    param_list: $ => {
+      // Splat and double splat params have restrictions on where they can appear in the parameter list:
+      // https://crystal-lang.org/reference/1.4/syntax_and_semantics/default_values_named_arguments_splats_tuples_and_overloading.html
+      // However, it's much simpler for the grammar to treat them interchangably. (Otherwise the
+      // repeats and comma placement would be ugly.) We'll leave the rest up to the compiler.
+      const param = choice($.param, $.splat_param, $.double_splat_param)
+
+      return choice(
+        seq(
+          param,
+          repeat(seq(',', param)),
+          optional(seq(',', optional($.block_param)))
+        ),
+        $.block_param
+      )
+    },
 
     param: $ => {
       const extern_name = field('extern_name', $.identifier)
@@ -665,6 +681,28 @@ module.exports = grammar({
       )
     },
 
+    splat_param: $ => {
+      const name = field('name', choice($.identifier, $.instance_var, $.class_var))
+      const type = field('type', seq(/[ \t]:\s/, $._type))
+
+      return seq(
+        '*',
+        optional(name),
+        optional(type),
+      )
+    },
+
+    double_splat_param: $ => {
+      const name = field('name', choice($.identifier, $.instance_var, $.class_var))
+      const type = field('type', seq(/[ \t]:\s/, $._type))
+
+      return seq(
+        '**',
+        name,
+        optional(type),
+      )
+    },
+
     block_param: $ => {
       const name = field('name', choice($.identifier, $.instance_var, $.class_var))
       const type = field('type', seq(/:\s/, $._type))
@@ -675,10 +713,6 @@ module.exports = grammar({
         optional(type)
       )
     },
-
-    // TODO:
-    // splat_param
-    // double splat_param
 
     return: $ => seq('return', optional($._expression)),
 

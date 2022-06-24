@@ -3263,8 +3263,21 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "param"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "param"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "splat_param"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "double_splat_param"
+                }
+              ]
             },
             {
               "type": "REPEAT",
@@ -3276,8 +3289,21 @@
                     "value": ","
                   },
                   {
-                    "type": "SYMBOL",
-                    "name": "param"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "param"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "splat_param"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "double_splat_param"
+                      }
+                    ]
                   }
                 ]
               }
@@ -3400,6 +3426,124 @@
                   {
                     "type": "SYMBOL",
                     "name": "_expression"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "splat_param": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "*"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "instance_var"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "class_var"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "type",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[ \\t]:\\s"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_type"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "double_splat_param": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "**"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "instance_var"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "class_var"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "type",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[ \\t]:\\s"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_type"
                   }
                 ]
               }
@@ -5748,6 +5892,14 @@
   "conflicts": [
     [
       "param",
+      "proc_type"
+    ],
+    [
+      "splat_param",
+      "proc_type"
+    ],
+    [
+      "double_splat_param",
       "proc_type"
     ],
     [

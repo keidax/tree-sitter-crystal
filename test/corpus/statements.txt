@@ -393,3 +393,44 @@ def worst_syntax(b, &:
         name: (identifier))
       (block_param
         type: (proc_type)))))
+
+========================================
+method definitions with splat parameters
+========================================
+
+def foo(*); end
+
+def bar(a, *b : Int32, c, **d : Bool); end
+
+def baz(*a, **b, &c); end
+
+---
+(source_file
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (splat_param)))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier))
+      (splat_param
+        name: (identifier)
+        type: (constant))
+      (param
+        name: (identifier))
+      (double_splat_param
+        name: (identifier)
+        type: (constant))))
+
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (splat_param
+        name: (identifier))
+      (double_splat_param
+        name: (identifier))
+      (block_param
+        name: (identifier)))))
