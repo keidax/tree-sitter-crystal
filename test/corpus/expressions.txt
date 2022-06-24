@@ -719,6 +719,12 @@ puts +2
 puts+2
 puts(+ 2)
 
+puts &+3
+puts(&+3)
+
+puts &-3
+puts(&-3)
+
 a! - 1
 b? -1
 c-
@@ -743,6 +749,28 @@ d_ (- 2)
   (call
     method: (identifier)
     arguments: (argument_list (integer)))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (integer))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (integer))))
+
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (integer))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (integer))))
+
   (op_call
     receiver: (identifier)
     operator: (operator)
@@ -1561,6 +1589,8 @@ def bar
   with yield 1 yield :"3", yield("2")
 
   with a yield! yield *something
+
+  yield &+ yield
 end
 
 ---
@@ -1596,4 +1626,50 @@ end
             method: (identifier))))
       arguments: (argument_list
         (splat
-          (identifier))))))
+          (identifier))))
+
+    (op_call
+      receiver: (yield)
+      operator: (operator)
+      argument: (yield))))
+
+=====================
+operator method calls
+=====================
+
+1.+
+1.+ 2
+
+false.|(true)
+nil.
+!()
+
+a.[]=(1, 2)
+
+---
+(source_file
+  (call
+    receiver: (integer)
+    method: (operator))
+  (call
+    receiver: (integer)
+    method: (operator)
+    arguments: (argument_list
+      (integer)))
+
+  (call
+    receiver: (false)
+    method: (operator)
+    arguments: (argument_list
+      (true)))
+  (call
+    receiver: (nil)
+    method: (operator)
+    arguments: (argument_list))
+
+  (call
+    receiver: (identifier)
+    method: (operator)
+    arguments: (argument_list
+      (integer)
+      (integer))))

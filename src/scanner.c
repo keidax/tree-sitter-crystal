@@ -31,6 +31,11 @@ enum Token {
 	BINARY_PLUS,
 	BINARY_MINUS,
 
+	UNARY_WRAPPING_PLUS,
+	UNARY_WRAPPING_MINUS,
+	BINARY_WRAPPING_PLUS,
+	BINARY_WRAPPING_MINUS,
+
 	UNARY_STAR,
 	BINARY_STAR,
 
@@ -273,6 +278,48 @@ const bool *valid_symbols) {
 					// A splat _cannot_ have whitespace after the *
 					lexer->result_symbol = UNARY_STAR;
 					return true;
+				}
+			}
+			break;
+
+		case '&':
+			if (
+				valid_symbols[UNARY_WRAPPING_PLUS] ||
+				valid_symbols[UNARY_WRAPPING_MINUS] ||
+				valid_symbols[BINARY_WRAPPING_PLUS] ||
+				valid_symbols[BINARY_WRAPPING_MINUS]
+			) {
+				lex_advance(lexer);
+
+				if(lexer->lookahead == '+') {
+					lex_advance(lexer);
+
+					// The binary form of &+ is alway preferred. E.g.
+					//   foo! &+bar
+					// is still binary.
+					if(valid_symbols[BINARY_WRAPPING_PLUS]) {
+						lexer->result_symbol = BINARY_WRAPPING_PLUS;
+						return true;
+					} else if(valid_symbols[UNARY_WRAPPING_PLUS]){
+						lexer->result_symbol = UNARY_WRAPPING_PLUS;
+						return true;
+					}
+
+					return false;
+				}
+
+				if(lexer->lookahead == '-') {
+					lex_advance(lexer);
+
+					if(valid_symbols[BINARY_WRAPPING_MINUS]) {
+						lexer->result_symbol = BINARY_WRAPPING_MINUS;
+						return true;
+					} else if(valid_symbols[UNARY_WRAPPING_MINUS]){
+						lexer->result_symbol = UNARY_WRAPPING_MINUS;
+						return true;
+					}
+
+					return false;
 				}
 			}
 			break;

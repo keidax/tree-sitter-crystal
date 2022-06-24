@@ -3,6 +3,42 @@ const
   ident_start = /[a-z_\u{00a0}-\u{10ffff}]/u,
   ident_part = /[0-9A-Za-z_\u{00a0}-\u{10ffff}]/u
 
+// All the operators that can used as unquoted symbols or in dot calls.
+// A few operators like '&&', '||', and '..' are not included here.
+const operator_tokens = [
+  '+',
+  '-',
+  '*',
+  '/',
+  '//',
+  '%',
+  '&',
+  '|',
+  '^',
+  '**',
+  '>>',
+  '<<',
+  '==',
+  '!=',
+  '<',
+  '<=',
+  '>',
+  '>=',
+  '<=>',
+  '===',
+  '[]',
+  '[]?',
+  '[]=',
+  '!',
+  '~',
+  '!~',
+  '=~',
+  '&+',
+  '&-',
+  '&*',
+  '&**',
+]
+
 module.exports = grammar({
   name: 'crystal',
 
@@ -21,6 +57,11 @@ module.exports = grammar({
     $.unary_minus,
     $.binary_plus,
     $.binary_minus,
+
+    $.unary_wrapping_plus,
+    $.unary_wrapping_minus,
+    $.binary_wrapping_plus,
+    $.binary_wrapping_minus,
 
     $._unary_star,
     $._binary_star,
@@ -438,34 +479,7 @@ module.exports = grammar({
     operator_symbol: $ => token(seq(
       ':',
       token.immediate(
-        choice(
-          '+',
-          '-',
-          '*',
-          '/',
-          '%',
-          '&',
-          '|',
-          '^',
-          '**',
-          '>>',
-          '<<',
-          '==',
-          '!=',
-          '<',
-          '<=',
-          '>',
-          '>=',
-          '<=>',
-          '===',
-          '[]',
-          '[]?',
-          '[]=',
-          '!',
-          '~',
-          '!~',
-          '=~',
-        )
+        choice(...operator_tokens)
       )
     )),
 
@@ -826,7 +840,7 @@ module.exports = grammar({
       field('method', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
-        // TODO: include operator calls
+        alias(choice(...operator_tokens), $.operator),
       )),
     )),
 
@@ -910,7 +924,12 @@ module.exports = grammar({
     or: $ => prec.left('logical_or_operator', seq($._expression, '||', $._expression)),
 
     additive_operator: $ => {
-      const operator = choice($.binary_plus, $.binary_minus, '&+', '&-')
+      const operator = choice(
+        $.binary_plus,
+        $.binary_minus,
+        $.binary_wrapping_plus,
+        $.binary_wrapping_minus,
+      )
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))
@@ -922,7 +941,12 @@ module.exports = grammar({
     },
 
     unary_additive_operator: $ => {
-      const operator = choice($.unary_plus, $.unary_minus) // TODO: &+ and &-
+      const operator = choice(
+        $.unary_plus,
+        $.unary_minus,
+        $.unary_wrapping_plus,
+        $.unary_wrapping_minus,
+      )
 
       return prec('unary_operator', seq(
         field('operator', alias(operator, $.operator)),
