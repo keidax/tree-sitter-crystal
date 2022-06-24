@@ -10,10 +10,14 @@ struct State {
 };
 typedef struct State State;
 
-#define DEBUG(...) if (getenv("TS_CRYSTAL_DEBUG") && \
-	strncmp(getenv("TS_CRYSTAL_DEBUG"), "1", 1) == 0) { \
-		fprintf(stderr, __VA_ARGS__); \
-}
+#ifdef TREE_SITTER_INTERNAL_BUILD
+	#define DEBUG(...) if (getenv("TREE_SITTER_DEBUG") && \
+		strncmp(getenv("TREE_SITTER_DEBUG"), "1", 1) == 0) { \
+			fprintf(stderr, __VA_ARGS__); \
+	}
+#else
+	#define DEBUG(...)
+#endif
 
 enum Token {
 	LINE_BREAK,
