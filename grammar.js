@@ -11,6 +11,12 @@ module.exports = grammar({
 
     $._start_of_brace_block,
 
+    // To help the parser deal with a state like
+    //   with foo yield yield
+    // we insert an invisible token just before the first yield, which signals
+    // the end of the "with" expression.
+    $._end_of_with_expression,
+
     $.unary_plus,
     $.unary_minus,
     $.binary_plus,
@@ -275,6 +281,7 @@ module.exports = grammar({
       $.or,
 
       // Keywords and special methods
+      $.yield,
       // TODO
       // super
       // previous_def
@@ -719,6 +726,21 @@ module.exports = grammar({
     next: $ => seq('next', optional($._expression)),
 
     break: $ => seq('break', optional($._expression)),
+
+    yield: $ => {
+      const with_expr = field('with', $._expression)
+
+      const argument_list = field('arguments', choice(
+        alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_no_parens, $.argument_list),
+      ))
+
+      return seq(
+        optional(seq('with', with_expr, $._end_of_with_expression)),
+        'yield',
+        optional(argument_list)
+      )
+    },
 
     constant: $ => {
       const constant_segment = seq(const_start, repeat(ident_part))

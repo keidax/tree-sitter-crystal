@@ -20,6 +20,8 @@ enum Token {
 
 	START_OF_BRACE_BLOCK,
 
+	END_OF_WITH_EXPRESSSION,
+
 	UNARY_PLUS,
 	UNARY_MINUS,
 	BINARY_PLUS,
@@ -125,6 +127,7 @@ const bool *valid_symbols) {
 	DEBUG(" ==> valid symbols are:\n");
 	if (valid_symbols[LINE_BREAK]) DEBUG("\tLINE_BREAK\n");
 	if (valid_symbols[START_OF_BRACE_BLOCK]) DEBUG("\tSTART_OF_BRACE_BLOCK\n");
+	if (valid_symbols[END_OF_WITH_EXPRESSSION]) DEBUG("\tEND_OF_WITH_EXPRESSSION\n");
 	if (valid_symbols[UNARY_PLUS]) DEBUG("\tUNARY_PLUS\n");
 	if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
 	if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
@@ -350,6 +353,29 @@ const bool *valid_symbols) {
 				return true;
 			}
 			break;
+		case 'y':
+			if (valid_symbols[END_OF_WITH_EXPRESSSION]) {
+				// We don't want to consume the yield keyword
+				lexer->mark_end(lexer);
+
+				lex_advance(lexer);
+				if(lexer->lookahead != 'i') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 'e') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 'l') { return false; }
+				lex_advance(lexer);
+				if(lexer->lookahead != 'd') { return false; }
+
+				lex_advance(lexer);
+				if (next_char_is_identifier(lexer)) {
+					// This is some other identifier, not 'yield'
+					return false;
+				}
+
+				lexer->result_symbol = END_OF_WITH_EXPRESSSION;
+				return true;
+			}
 	}
 
 	DEBUG(" ==> returning nothing at end\n");

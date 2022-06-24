@@ -423,6 +423,10 @@
         {
           "type": "SYMBOL",
           "name": "or"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "yield"
         }
       ]
     },
@@ -3681,6 +3685,79 @@
         }
       ]
     },
+    "yield": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "with"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "with",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_expression"
+                  }
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_end_of_with_expression"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "yield"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "arguments",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "argument_list_with_parens"
+                    },
+                    "named": true,
+                    "value": "argument_list"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "argument_list_no_parens"
+                    },
+                    "named": true,
+                    "value": "argument_list"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
     "constant": {
       "type": "TOKEN",
       "content": {
@@ -6290,6 +6367,10 @@
     {
       "type": "SYMBOL",
       "name": "_start_of_brace_block"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_end_of_with_expression"
     },
     {
       "type": "SYMBOL",

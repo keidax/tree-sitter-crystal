@@ -1496,3 +1496,52 @@ foo { |a, *b, (c, d,),| }
           name: (identifier))
         (param
           name: (identifier))))))
+
+=====
+yield
+=====
+
+def foo; yield; end
+
+def bar
+  with yield yield yield
+  # called in this order:
+  with yield 1 yield :"3", yield("2")
+
+  with a yield! yield *something
+end
+
+---
+(source_file
+  (method_def
+    name: (identifier)
+    (yield))
+
+  (method_def
+    name: (identifier)
+    (yield
+      with: (yield)
+      arguments: (argument_list
+        (yield)))
+
+    (comment)
+
+    (yield
+      with: (yield
+        arguments: (argument_list
+          (integer)))
+      arguments: (argument_list
+        (symbol)
+        (yield
+          arguments: (argument_list
+            (string)))))
+
+    (yield
+      with: (call
+        method: (identifier)
+        arguments: (argument_list
+          (call
+            method: (identifier))))
+      arguments: (argument_list
+        (splat
+          (identifier))))))
