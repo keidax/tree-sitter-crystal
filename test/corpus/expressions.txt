@@ -359,6 +359,58 @@ pp **{a: 1, "b": 2.0}, **{c: nil}
         (named_tuple
           (named_tuple_entry (identifier) (nil)))))))
 
+
+===============
+named arguments
+===============
+
+foo(named: 1)
+
+bar 1, *splat, a: 2 .. 3
+
+bar 1, c: + 2,
+  b:
+  3 {
+
+  }
+
+---
+
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (named_arg
+        name: (identifier)
+        (integer))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (integer)
+      (splat
+        (identifier))
+      (named_arg
+        name: (identifier)
+        (range
+          begin: (integer)
+          operator: (operator)
+          end: (integer)))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (integer)
+      (named_arg
+        name: (identifier)
+        (op_call
+          operator: (operator)
+          receiver: (integer)))
+      (named_arg
+        name: (identifier)
+        (integer)))
+    block: (block)))
+
 ================
 plain assignment
 ================

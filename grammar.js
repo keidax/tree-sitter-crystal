@@ -66,6 +66,7 @@ module.exports = grammar({
       'ternary_operator',
       'assignment_operator',
       'splat_operator',
+      $.named_arg,
       'comma',
     ],
 
@@ -848,9 +849,6 @@ module.exports = grammar({
       // - parentheses
       // - arguments
       // - block arg
-
-      // TODO:
-      // named arguments
       return choice(
         seq(receiver_call, optional(argument_list)),
         seq(ambiguous_call, argument_list),
@@ -1003,8 +1001,18 @@ module.exports = grammar({
 
     double_splat: $ => prec('splat_operator', seq($._unary_double_star, $._expression)),
 
+    named_arg: $ => {
+      const name = field('name', $.identifier)
+
+      return seq(
+        name,
+        token.immediate(':'),
+        $._expression,
+      )
+    },
+
     argument_list_no_parens: $ => {
-      const args = choice($._expression, $.splat, $.double_splat)
+      const args = choice($._expression, $.splat, $.double_splat, $.named_arg)
 
       return prec.right(seq(
         optional($._start_of_parenless_args),
@@ -1014,7 +1022,7 @@ module.exports = grammar({
     },
 
     argument_list_with_parens: $ => {
-      const args = choice($._expression, $.splat, $.double_splat)
+      const args = choice($._expression, $.splat, $.double_splat, $.named_arg)
 
       return prec.right(seq(
         token.immediate('('),
