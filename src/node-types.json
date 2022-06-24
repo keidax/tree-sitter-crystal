@@ -1270,7 +1270,18 @@
   {
     "type": "block",
     "named": true,
-    "fields": {},
+    "fields": {
+      "params": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "param_list",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,

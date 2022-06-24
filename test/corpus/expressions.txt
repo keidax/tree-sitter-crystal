@@ -1449,3 +1449,50 @@ a 1, {2, b { 4 }} { 3 }
             (integer)))))
     block: (block
       (integer))))
+
+================
+block parameters
+================
+
+foo{|_|}
+
+(
+  foo(
+  ) do |
+ _
+ |
+  end
+)
+
+foo { |a, *b, (c, d,),| }
+
+---
+(source_file
+  (call
+    method: (identifier)
+    block: (block
+      params: (param_list
+        (param
+          name: (identifier)))))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list)
+    block: (block
+      params: (param_list
+        (param
+          name: (identifier)))))
+
+
+  (call
+    method: (identifier)
+    block: (block
+      params: (param_list
+        (param
+          name: (identifier))
+        (splat_param
+          name: (identifier))
+        (param
+          name: (identifier))
+        (param
+          name: (identifier))))))

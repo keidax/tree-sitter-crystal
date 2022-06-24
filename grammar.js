@@ -1030,19 +1030,60 @@ module.exports = grammar({
       field('type', $._type)
     ),
 
+    block_body_param: $ => field('name', $.identifier),
 
-    do_end_block: $ => seq(
-      'do',
-      optional($._statements),
-      'end',
+    block_body_splat_param: $ => seq(
+      '*',
+      field('name', $.identifier),
     ),
 
-    // TODO: block parameters
-    brace_block: $ => seq(
-      $._start_of_brace_block,
-      optional($._statements),
-      '}',
-    ),
+    _block_body_nested_param: $ => {
+      const param = alias($.block_body_param, $.param)
+
+      return seq(
+        '(',
+        param,
+        repeat(seq(',', param)),
+        optional(','),
+        ')'
+      )
+    },
+
+    block_param_list: $ => {
+      const param = choice(
+        alias($.block_body_param, $.param),
+        alias($.block_body_splat_param, $.splat_param),
+        $._block_body_nested_param,
+      )
+
+      return seq(
+        param,
+        repeat(seq(',', param)),
+        optional(',')
+      )
+    },
+
+    do_end_block: $ => {
+      const params = seq('|', field('params', alias($.block_param_list, $.param_list)), '|')
+
+      return seq(
+        'do',
+        optional(params),
+        optional($._statements),
+        'end',
+      )
+    },
+
+    brace_block: $ => {
+      const params = seq('|', field('params', alias($.block_param_list, $.param_list)), '|')
+
+      return seq(
+        $._start_of_brace_block,
+        optional(params),
+        optional($._statements),
+        '}',
+      )
+    },
 
     begin_block: $ => seq(
       'begin',
