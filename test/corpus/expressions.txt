@@ -1673,3 +1673,76 @@ a.[]=(1, 2)
     arguments: (argument_list
       (integer)
       (integer))))
+
+===============
+index accessors
+===============
+
+foo[0]
+puts {0} [0]
+puts({0} [0]?)
+
+[0, 1, 2].[](-1)
+
+ary[*{0}, **{count: 1}]
+
+a.[count: 1, values: [5]] =0
+
+---
+
+(source_file
+  (index_call
+    receiver: (identifier)
+    arguments: (argument_list
+      (integer)))
+  (index_call
+    receiver: (call
+      method: (identifier)
+      block: (block
+        (integer)))
+    arguments: (argument_list
+      (integer)))
+
+  (call
+    method: (identifier)
+    arguments: (argument_list
+    (index_call
+      receiver: (tuple
+        (integer))
+      arguments: (argument_list
+        (integer)))))
+
+  (call
+    receiver: (array
+      (integer)
+      (integer)
+      (integer))
+      method: (operator)
+      arguments: (argument_list
+        (integer)))
+
+  (index_call
+    receiver: (identifier)
+    arguments: (argument_list
+      (splat
+        (tuple
+          (integer)))
+      (double_splat
+        (named_tuple
+          (named_tuple_entry
+            (identifier)
+            (integer))))))
+
+  (call
+    receiver: (identifier)
+    method: (operator)
+    (argument_list
+      (named_arg
+        name: (identifier)
+        (integer))
+      (named_arg
+        name: (identifier)
+        (array
+          (integer))))
+    arguments: (argument_list
+      (integer))))

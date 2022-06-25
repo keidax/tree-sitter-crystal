@@ -126,6 +126,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -314,6 +318,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -547,6 +555,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -768,6 +780,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -978,6 +994,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -1175,6 +1195,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -1384,6 +1408,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -1628,6 +1656,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -1861,6 +1893,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -1966,6 +2002,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "argument_list",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -2082,6 +2128,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -2284,6 +2334,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -2478,6 +2532,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -2669,6 +2727,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -2882,6 +2944,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -3067,6 +3133,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -3311,6 +3381,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -3507,6 +3581,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -3829,6 +3907,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -4028,6 +4110,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -4160,6 +4246,220 @@
     }
   },
   {
+    "type": "index_call",
+    "named": true,
+    "fields": {
+      "arguments": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "argument_list",
+            "named": true
+          }
+        ]
+      },
+      "receiver": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "alias",
+            "named": true
+          },
+          {
+            "type": "and",
+            "named": true
+          },
+          {
+            "type": "array",
+            "named": true
+          },
+          {
+            "type": "assign",
+            "named": true
+          },
+          {
+            "type": "begin_block",
+            "named": true
+          },
+          {
+            "type": "break",
+            "named": true
+          },
+          {
+            "type": "call",
+            "named": true
+          },
+          {
+            "type": "char",
+            "named": true
+          },
+          {
+            "type": "class_def",
+            "named": true
+          },
+          {
+            "type": "class_var",
+            "named": true
+          },
+          {
+            "type": "conditional",
+            "named": true
+          },
+          {
+            "type": "const_assign",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "hash",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
+            "named": true
+          },
+          {
+            "type": "instance_var",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "method_def",
+            "named": true
+          },
+          {
+            "type": "modifier_if",
+            "named": true
+          },
+          {
+            "type": "modifier_unless",
+            "named": true
+          },
+          {
+            "type": "module_def",
+            "named": true
+          },
+          {
+            "type": "named_tuple",
+            "named": true
+          },
+          {
+            "type": "next",
+            "named": true
+          },
+          {
+            "type": "nil",
+            "named": true
+          },
+          {
+            "type": "not",
+            "named": true
+          },
+          {
+            "type": "op_call",
+            "named": true
+          },
+          {
+            "type": "or",
+            "named": true
+          },
+          {
+            "type": "proc",
+            "named": true
+          },
+          {
+            "type": "pseudo_constant",
+            "named": true
+          },
+          {
+            "type": "range",
+            "named": true
+          },
+          {
+            "type": "require",
+            "named": true
+          },
+          {
+            "type": "return",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "symbol",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          },
+          {
+            "type": "tuple",
+            "named": true
+          },
+          {
+            "type": "unless",
+            "named": true
+          },
+          {
+            "type": "until",
+            "named": true
+          },
+          {
+            "type": "while",
+            "named": true
+          },
+          {
+            "type": "yield",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "integer",
     "named": true,
     "fields": {}
@@ -4242,6 +4542,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -4483,6 +4787,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -4682,6 +4990,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -4873,6 +5185,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -5076,6 +5392,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -5267,6 +5587,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -5469,6 +5793,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -5664,6 +5992,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -5869,6 +6201,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -6053,6 +6389,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -6245,6 +6585,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -6444,6 +6788,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -6651,6 +6999,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -6836,6 +7188,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -7039,6 +7395,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -7462,6 +7822,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -7653,6 +8017,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -7878,6 +8246,10 @@
           },
           {
             "type": "if",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
@@ -8109,6 +8481,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -8296,6 +8672,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -8480,6 +8860,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -8766,6 +9150,10 @@
           "named": true
         },
         {
+          "type": "index_call",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -8950,6 +9338,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -9179,6 +9571,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -9399,6 +9795,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -9579,6 +9979,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -9781,6 +10185,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -9961,6 +10369,10 @@
         },
         {
           "type": "if",
+          "named": true
+        },
+        {
+          "type": "index_call",
           "named": true
         },
         {
@@ -10173,6 +10585,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -10378,6 +10794,10 @@
   },
   {
     "type": "]",
+    "named": false
+  },
+  {
+    "type": "]?",
     "named": false
   },
   {

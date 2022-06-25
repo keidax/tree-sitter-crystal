@@ -24,6 +24,8 @@ enum Token {
 
 	START_OF_BRACE_BLOCK,
 
+	START_OF_INDEX_OPERATOR,
+
 	END_OF_WITH_EXPRESSSION,
 
 	UNARY_PLUS,
@@ -184,6 +186,26 @@ const bool *valid_symbols) {
 				lex_advance(lexer);
 				lexer->result_symbol = START_OF_BRACE_BLOCK;
 				return true;
+			}
+			break;
+		case '[':
+			if (valid_symbols[START_OF_INDEX_OPERATOR]) {
+				// If there's ambiguity whether '[' is the start of an index
+				// access or an array literal, we assume it's an array if
+				// there's leading whitespace and we're at the start of a
+				// potential method call:
+				//   foo [1]
+				// If there's no leading whitespace, or we know this isn't the
+				// first parameter of a method call, then it must be an intex
+				// operator:
+				//   puts({42} [0])
+				if (state->has_leading_whitespace && valid_symbols[START_OF_PARENLESS_ARGS]) {
+					return false;
+				} else {
+					lex_advance(lexer);
+					lexer->result_symbol = START_OF_INDEX_OPERATOR;
+					return true;
+				}
 			}
 			break;
 		case '+':

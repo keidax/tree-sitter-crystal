@@ -47,6 +47,8 @@ module.exports = grammar({
 
     $._start_of_brace_block,
 
+    $._start_of_index_operator,
+
     // To help the parser deal with a state like
     //   with foo yield yield
     // we insert an invisible token just before the first yield, which signals
@@ -93,6 +95,7 @@ module.exports = grammar({
     // Operator precedence, as defined by
     // https://crystal-lang.org/reference/1.4/syntax_and_semantics/operators.html#operator-precedence
     [
+      'index_operator',
       'dot_operator',
       'unary_operator',
       'exponential_operator',
@@ -309,11 +312,11 @@ module.exports = grammar({
       alias($.complement_operator, $.op_call),
       alias($.binary_and_operator, $.op_call),
       alias($.binary_or_operator, $.op_call),
+      alias($.index_operator, $.index_call),
       $.assign,
       // TODO:
       // multi assignment
       // operator assignment
-      // index operator
       // index assignment
       // annotations
 
@@ -834,15 +837,45 @@ module.exports = grammar({
       optional(',')
     ),
 
-    _dot_call: $ => prec('dot_operator', seq(
-      field('receiver', $._expression),
-      '.',
-      field('method', choice(
+    _dot_call: $ => {
+      const receiver = field('receiver', $._expression)
+
+      const method = field('method', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
         alias(choice(...operator_tokens), $.operator),
-      )),
-    )),
+      ))
+
+      // In the case of something like
+      //   a.[*{0}]
+      // we need to parse the arguments here, because they're embedded in the
+      // method "name".
+      const bracket_method = seq(
+        field('method', alias('[', $.operator)),
+        alias($.bracket_argument_list, $.argument_list),
+        ']',
+        optional(choice(
+          token.immediate('?'),
+          '='
+        ))
+      )
+
+      return prec('dot_operator', seq(
+        receiver,
+        '.',
+        choice(method, bracket_method),
+      ))
+    },
+
+    bracket_argument_list: $ => {
+      const args = choice($._expression, $.splat, $.double_splat, $.named_arg)
+
+      return seq(
+        args,
+        repeat(seq(',', args)),
+        optional(','),
+      )
+    },
 
     call_without_block: $ => {
       const receiver_call = choice(
@@ -917,6 +950,18 @@ module.exports = grammar({
         seq(ambiguous_call, argument_list, block),
         seq(ambiguous_call, block),
       )
+    },
+
+    index_operator: $ => {
+      const receiver = field('receiver', $._expression)
+      const args = field('arguments', alias($.bracket_argument_list, $.argument_list))
+
+      return prec('index_operator', seq(
+        receiver,
+        $._start_of_index_operator,
+        args,
+        choice(']', ']?')
+      ))
     },
 
     not: $ => prec('unary_operator', seq('!', $._expression)),
