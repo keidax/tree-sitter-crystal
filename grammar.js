@@ -147,7 +147,7 @@ module.exports = grammar({
     // Ensure `[] of A | B` parses as `[] of (A | B)`
     [
       $.union_type,
-      $.array
+      $.array,
     ],
 
     // Ensure `[ [] of Int32, Int32 -> String ]` resolves to ` [ [] of (Int32, Int32 -> String) ]`
@@ -159,7 +159,7 @@ module.exports = grammar({
     // Ensure `{} of K => A | B` parses as `{} of K => (A | B)`
     [
       $.union_type,
-      $.hash
+      $.hash,
     ],
   ],
 
@@ -172,15 +172,15 @@ module.exports = grammar({
     // and
     //   def foo(bar : String, String -> Int32)
     [
-      $.param, $.proc_type
+      $.param, $.proc_type,
     ],
 
     // Splat and double splat parameters are similar situations to above
     [
-      $.splat_param, $.proc_type
+      $.splat_param, $.proc_type,
     ],
     [
-      $.double_splat_param, $.proc_type
+      $.double_splat_param, $.proc_type,
     ],
 
 
@@ -194,13 +194,13 @@ module.exports = grammar({
     // (which is equivalent to)
     //   { {} of A => Proc(B, C, D) }
     [
-      $.hash, $.proc_type
-    ]
+      $.hash, $.proc_type,
+    ],
   ],
 
   rules: {
     source_file: $ => seq(
-      optional($._statements)
+      optional($._statements),
     ),
 
     _terminator: $ => choice($._line_break, ';'),
@@ -211,15 +211,15 @@ module.exports = grammar({
           choice(
             seq($._statement, $._terminator),
             prec(-1, ';'),
-          )
+          ),
         ),
-        optional($._statement)
+        optional($._statement),
       ),
-      $._statement
+      $._statement,
     ),
 
     _parenthesized_statements: $ => seq(
-      '(', $._statements, ')'
+      '(', $._statements, ')',
     ),
 
     _statement: $ => choice(
@@ -345,7 +345,7 @@ module.exports = grammar({
 
     comment: $ => /#.*/,
 
-    empty_parens: $ => seq('(',')'),
+    empty_parens: $ => seq('(', ')'),
 
     nil: $ => 'nil',
 
@@ -360,7 +360,7 @@ module.exports = grammar({
       const decimal = seq(/[1-9]/, repeat(/[0-9_]/))
       const leading_zero_decimal = choice(
         '0',
-        seq('0_', repeat(/[0-9_]/))
+        seq('0_', repeat(/[0-9_]/)),
       )
 
       const type_suffix = choice(
@@ -374,9 +374,9 @@ module.exports = grammar({
           octal_literal,
           hex_literal,
           leading_zero_decimal,
-          decimal
+          decimal,
         ),
-        optional(type_suffix)
+        optional(type_suffix),
       )
 
       const sign = choice(alias($.unary_minus, '-'), alias($.unary_plus, '+'))
@@ -393,11 +393,11 @@ module.exports = grammar({
       const leading_non_zero_value = seq(/[1-9]/, repeat(digit_or_underscore))
       const leading_zero_value = choice(
         '0',
-        seq('0_', repeat(/[0-9_]/))
+        seq('0_', repeat(/[0-9_]/)),
       )
       const leading_number = choice(
         leading_non_zero_value,
-        leading_zero_value
+        leading_zero_value,
       )
 
       const decimal_and_trailing_value = seq(/\.[0-9]/, repeat(digit_or_underscore))
@@ -417,24 +417,24 @@ module.exports = grammar({
 
       return choice(
         seq(sign, token.immediate(numeric_component)),
-        token(numeric_component)
+        token(numeric_component),
       )
     },
 
     char: $ => seq(
       '\'',
       choice(token.immediate(/[^\\]/), $.char_escape_sequence),
-      token.immediate('\'')
+      token.immediate('\''),
     ),
 
     char_escape_sequence: $ => {
       const char_unicode_escape = seq('u', choice(
         /[0-9a-fA-F]{4}/,
-        /\{[0-9a-fA-F]{1,6}\}/
+        /\{[0-9a-fA-F]{1,6}\}/,
       ))
 
       return token.immediate(seq('\\', choice(
-        '0' ,'\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape
+        '0', '\\', '\'', 'a', 'b', 'e', 'f', 'n', 'r', 't', 'v', char_unicode_escape,
       )))
     },
 
@@ -455,7 +455,7 @@ module.exports = grammar({
 
     ignored_backslash: $ => {
       return token.immediate(seq('\\',
-        /[^\n\\"abefnrtuvx0-7]/
+        /[^\n\\"abefnrtuvx0-7]/,
       ))
     },
 
@@ -466,7 +466,7 @@ module.exports = grammar({
       const long_unicode_character = /[0-9a-fA-F]{1,6}/
       const unicode_escape = seq('u', choice(
         /[0-9a-fA-F]{4}/,
-        seq('{', long_unicode_character, repeat(seq(' ', long_unicode_character)), '}')
+        seq('{', long_unicode_character, repeat(seq(' ', long_unicode_character)), '}'),
       ))
 
       return token.immediate(seq('\\', choice(
@@ -476,14 +476,14 @@ module.exports = grammar({
     },
 
     interpolation: $ => seq(
-      token.immediate(prec(1, '#{')), $._expression, '}'
+      token.immediate(prec(1, '#{')), $._expression, '}',
     ),
 
     operator_symbol: $ => token(seq(
       ':',
       token.immediate(
-        choice(...operator_tokens)
-      )
+        choice(...operator_tokens),
+      ),
     )),
 
     unquoted_symbol: $ => token(seq(
@@ -492,9 +492,9 @@ module.exports = grammar({
         seq(
           choice(ident_start, const_start),
           repeat(ident_part),
-          optional(/[?!]/)
-        )
-      )
+          optional(/[?!]/),
+        ),
+      ),
     )),
 
     quoted_symbol: $ => seq(
@@ -516,7 +516,7 @@ module.exports = grammar({
         seq(
           '[',
           $._expression,
-          repeat(seq(',', $._expression, )),
+          repeat(seq(',', $._expression)),
           optional(','),
           ']',
           optional(of_type),
@@ -549,18 +549,21 @@ module.exports = grammar({
       )
     },
 
-    hash_entry: $ => seq($._expression, "=>", $._expression),
+    hash_entry: $ => seq($._expression, '=>', $._expression),
 
     tuple: $ => seq(
       '{',
       $._expression,
       repeat(seq(',', $._expression)),
       optional(','),
-      '}'
+      '}',
     ),
 
     named_tuple_entry: $ => {
-      const symbol_name = alias(token(seq(choice(const_start, ident_start), repeat(ident_part))), $.identifier)
+      const symbol_name = alias(
+        token(seq(choice(const_start, ident_start), repeat(ident_part))),
+        $.identifier,
+      )
       const string_name = $.string
 
       return seq(
@@ -575,7 +578,7 @@ module.exports = grammar({
       $.named_tuple_entry,
       repeat(seq(',', $.named_tuple_entry)),
       optional(','),
-      '}'
+      '}',
     ),
 
     range: $ => {
@@ -603,42 +606,46 @@ module.exports = grammar({
     },
 
     proc: $ => {
-      const params = seq('(', field('params', optional(alias($.proc_param_list, $.param_list))), ')')
+      const params = seq(
+        '(',
+        field('params', optional(alias($.proc_param_list, $.param_list))),
+        ')',
+      )
       const return_type = field('type', seq(/:\s/, $._type))
       const block = field('block', choice(
         alias($.do_end_block, $.block),
-        alias($.brace_block, $.block)
+        alias($.brace_block, $.block),
       ))
 
       return seq(
         '->',
         optional(params),
         optional(return_type),
-        block
+        block,
       )
     },
 
     proc_param_list: $ => seq(
       $.param,
       repeat(seq(',', $.param)),
-      optional(',')
+      optional(','),
     ),
 
     module_def: $ => seq(
       'module',
       field('name', $.constant), // TODO: generics
       seq(optional($._statements)),
-      'end'
+      'end',
     ),
 
     class_def: $ => seq(
       'class',
       field('name', choice($.constant)), // TODO: generics
       optional(seq(
-        '<', field('superclass', $.constant)
+        '<', field('superclass', $.constant),
       )),
       seq(optional($._statements)),
-      'end'
+      'end',
     ),
 
     method_def: $ => {
@@ -647,7 +654,10 @@ module.exports = grammar({
       // abstract
       // forall
       // class methods
-      const name = field('name', choice($.identifier, alias($.identifier_method_call, $.identifier)))
+      const name = field('name', choice(
+        $.identifier,
+        alias($.identifier_method_call, $.identifier),
+      ))
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/[ \t]:\s/, $._type))
 
@@ -671,13 +681,13 @@ module.exports = grammar({
         name,
         param_spec,
         optional($._statements),
-        'end'
+        'end',
       )
     },
 
     param_list: $ => {
-      // Splat and double splat params have restrictions on where they can appear in the parameter list:
-      // https://crystal-lang.org/reference/1.4/syntax_and_semantics/default_values_named_arguments_splats_tuples_and_overloading.html
+      // Splat and double splat params have restrictions on where they can appear in the parameter
+      // list: https://crystal-lang.org/reference/1.4/syntax_and_semantics/default_values_named_arguments_splats_tuples_and_overloading.html
       // However, it's much simpler for the grammar to treat them interchangably. (Otherwise the
       // repeats and comma placement would be ugly.) We'll leave the rest up to the compiler.
       const param = choice($.param, $.splat_param, $.double_splat_param)
@@ -686,9 +696,9 @@ module.exports = grammar({
         seq(
           param,
           repeat(seq(',', param)),
-          optional(seq(',', optional($.block_param)))
+          optional(seq(',', optional($.block_param))),
         ),
-        $.block_param
+        $.block_param,
       )
     },
 
@@ -702,7 +712,7 @@ module.exports = grammar({
         optional(extern_name),
         name,
         optional(type),
-        optional(default_value)
+        optional(default_value),
       )
     },
 
@@ -735,7 +745,7 @@ module.exports = grammar({
       return seq(
         '&',
         optional(name),
-        optional(type)
+        optional(type),
       )
     },
 
@@ -756,7 +766,7 @@ module.exports = grammar({
       return seq(
         optional(seq('with', with_expr, $._end_of_with_expression)),
         'yield',
-        optional(argument_list)
+        optional(argument_list),
       )
     },
 
@@ -766,24 +776,24 @@ module.exports = grammar({
         optional('::'),
         constant_segment,
         repeat(
-          seq('::', constant_segment)
+          seq('::', constant_segment),
         ),
       ))
     },
 
     pseudo_constant: $ => choice(
-      "__LINE__",
-      "__END_LINE__",
-      "__FILE__",
-      "__DIR__",
+      '__LINE__',
+      '__END_LINE__',
+      '__FILE__',
+      '__DIR__',
     ),
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),
 
-    instance_var: $ => token(seq("@", ident_start, repeat(ident_part))),
+    instance_var: $ => token(seq('@', ident_start, repeat(ident_part))),
 
-    class_var: $ => token(seq("@@", ident_start, repeat(ident_part))),
+    class_var: $ => token(seq('@@', ident_start, repeat(ident_part))),
 
     self: $ => 'self',
 
@@ -806,14 +816,14 @@ module.exports = grammar({
     ),
 
     union_type: $ => prec.right(seq(
-      $._type, repeat1(prec.left(seq("|", $._type))))
+      $._type, repeat1(prec.left(seq('|', $._type)))),
     ),
 
     proc_type: $ => {
       const param_types = seq(
         $._type,
-        repeat(prec.left(seq(',', $._type))
-      ))
+        repeat(prec.left(seq(',', $._type))),
+      )
 
       const return_type = field('return', $._type)
 
@@ -828,13 +838,13 @@ module.exports = grammar({
       $.constant,
       token.immediate('('),
       field('params', optional(alias($.type_param_list, $.param_list))),
-      ')'
+      ')',
     ),
 
     type_param_list: $ => seq(
       $._type,
       repeat(prec.left(seq(',', $._type))),
-      optional(',')
+      optional(','),
     ),
 
     _dot_call: $ => {
@@ -856,8 +866,8 @@ module.exports = grammar({
         ']',
         optional(choice(
           token.immediate('?'),
-          '='
-        ))
+          '=',
+        )),
       )
 
       return prec('dot_operator', seq(
@@ -960,7 +970,7 @@ module.exports = grammar({
         receiver,
         $._start_of_index_operator,
         args,
-        choice(']', ']?')
+        choice(']', ']?'),
       ))
     },
 
@@ -995,7 +1005,7 @@ module.exports = grammar({
 
       return prec('unary_operator', seq(
         field('operator', alias(operator, $.operator)),
-        field('receiver', $._expression)
+        field('receiver', $._expression),
       ))
     },
 
@@ -1007,7 +1017,7 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left('multiplicative_operator', seq(
-        receiver, method, arg
+        receiver, method, arg,
       ))
     },
 
@@ -1019,7 +1029,7 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.right('exponential_operator', seq(
-        receiver, method, arg
+        receiver, method, arg,
       ))
     },
 
@@ -1031,7 +1041,7 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left('shift_operator', seq(
-        receiver, method, arg
+        receiver, method, arg,
       ))
     },
 
@@ -1040,7 +1050,7 @@ module.exports = grammar({
 
       return prec('unary_operator', seq(
         field('operator', alias(operator, $.operator)),
-        field('receiver', $._expression)
+        field('receiver', $._expression),
       ))
     },
 
@@ -1051,7 +1061,7 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left('binary_and_operator', seq(
-        receiver, method, arg
+        receiver, method, arg,
       ))
     },
 
@@ -1062,7 +1072,7 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left('binary_or_operator', seq(
-        receiver, method, arg
+        receiver, method, arg,
       ))
     },
 
@@ -1086,7 +1096,7 @@ module.exports = grammar({
       return prec.right(seq(
         optional($._start_of_parenless_args),
         args,
-        repeat(prec('comma', seq(',', args)))
+        repeat(prec('comma', seq(',', args))),
       ))
     },
 
@@ -1100,7 +1110,7 @@ module.exports = grammar({
           repeat(seq(',', args)),
           optional(','),
         )),
-        ')'
+        ')',
       ))
     },
 
@@ -1109,7 +1119,7 @@ module.exports = grammar({
       const rhs = field('rhs', $._expression)
 
       return prec('assignment_operator', seq(
-        lhs, '=', rhs
+        lhs, '=', rhs,
       ))
     },
 
@@ -1118,7 +1128,7 @@ module.exports = grammar({
       const rhs = field('rhs', $._statement)
 
       return prec.right('assignment_operator', seq(
-        lhs, '=', rhs
+        lhs, '=', rhs,
       ))
     },
 
@@ -1126,7 +1136,7 @@ module.exports = grammar({
       'alias',
       field('name', $.constant),
       '=',
-      field('type', $._type)
+      field('type', $._type),
     ),
 
     block_body_param: $ => field('name', $.identifier),
@@ -1144,7 +1154,7 @@ module.exports = grammar({
         param,
         repeat(seq(',', param)),
         optional(','),
-        ')'
+        ')',
       )
     },
 
@@ -1158,7 +1168,7 @@ module.exports = grammar({
       return seq(
         param,
         repeat(seq(',', param)),
-        optional(',')
+        optional(','),
       )
     },
 
@@ -1190,7 +1200,7 @@ module.exports = grammar({
       field('body', optional($._statements)),
       field('rescue', optional($.rescue_block)),
       // TODO: else, ensure
-      'end'
+      'end',
     ),
 
     rescue_block: $ => {
@@ -1206,7 +1216,7 @@ module.exports = grammar({
           rescue_type,
         )),
         $._terminator,
-        rescue_body
+        rescue_body,
       )
     },
 
@@ -1215,7 +1225,7 @@ module.exports = grammar({
       field('condition', $._expression),
       $._terminator,
       optional($._statements),
-      'end'
+      'end',
     ),
 
     until: $ => seq(
@@ -1223,7 +1233,7 @@ module.exports = grammar({
       field('condition', $._expression),
       $._terminator,
       optional($._statements),
-      'end'
+      'end',
     ),
 
     if: $ => {
@@ -1270,31 +1280,30 @@ module.exports = grammar({
         optional(then),
         optional(else_),
       )
-
     },
 
     else: $ => seq('else', optional($._statements)),
 
-    conditional: $ => prec.right('ternary_operator',seq(
+    conditional: $ => prec.right('ternary_operator', seq(
       field('cond', $._expression),
       '?',
       field('then', $._expression),
       ':',
-      field('else', $._expression)
+      field('else', $._expression),
     )),
 
     modifier_if: $ => seq(
       field('then', $._statement),
       $._modifier_if_keyword,
-      field('cond', $._expression)
+      field('cond', $._expression),
     ),
 
     modifier_unless: $ => seq(
       field('then', $._statement),
       $._modifier_unless_keyword,
-      field('cond', $._expression)
+      field('cond', $._expression),
     ),
 
     require: $ => seq('require', $.string),
-  }
-});
+  },
+})
