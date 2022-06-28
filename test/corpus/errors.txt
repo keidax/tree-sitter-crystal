@@ -1,0 +1,42 @@
+===================
+unterminated string
+===================
+"abc
+
+---
+(source_file
+  (string
+    (MISSING """)))
+
+===================
+unterminated symbol
+===================
+
+:"abc
+
+----
+(source_file
+  (symbol
+    (MISSING """)))
+
+===================================
+unterminated percent literal string
+===================================
+
+%(asdf
+
+---
+
+(source_file
+  (ERROR))
+
+=============================
+incorrectly escaped %q string
+=============================
+
+%q[\]]
+
+----
+(source_file
+  (string)
+  (ERROR))

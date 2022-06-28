@@ -78,6 +78,12 @@ module.exports = grammar({
     $._regular_unless_keyword,
     $._modifier_unless_keyword,
 
+    $._modulo_operator,
+
+    $._percent_literal_start,
+    $._percent_literal_end,
+    $._delimited_string_contents,
+
     // These symbols are never actually returned. They signal the current scope
     // to the scanner.
     $._start_of_parenless_args,
@@ -258,6 +264,7 @@ module.exports = grammar({
       $.array,
       $.hash,
       $.string,
+      alias($.string_percent_literal, $.string),
       alias($.operator_symbol, $.symbol),
       alias($.unquoted_symbol, $.symbol),
       alias($.quoted_symbol, $.symbol),
@@ -477,6 +484,17 @@ module.exports = grammar({
 
     interpolation: $ => seq(
       token.immediate(prec(1, '#{')), $._expression, '}',
+    ),
+
+    string_percent_literal: $ => seq(
+      $._percent_literal_start,
+      repeat(choice(
+        $._delimited_string_contents,
+        // $.interpolation
+        $.string_escape_sequence,
+        $.ignored_backslash,
+      )),
+      $._percent_literal_end,
     ),
 
     operator_symbol: $ => token(seq(
@@ -1010,7 +1028,7 @@ module.exports = grammar({
     },
 
     multiplicative_operator: $ => {
-      const operator = choice($._binary_star, '&*', '/', '//', '%')
+      const operator = choice($._binary_star, '&*', '/', '//', $._modulo_operator)
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))

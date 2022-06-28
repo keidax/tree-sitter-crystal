@@ -5,8 +5,23 @@
 #include <string.h>
 #include <wctype.h>
 
+enum LiteralType {
+    STRING,
+    STRING_NO_ESCAPE,
+    STRING_ARRAY,
+};
+typedef enum LiteralType LiteralType;
+
+struct PercentLiteral {
+    int32_t opening_char;
+    int32_t closing_char;
+    LiteralType type;
+};
+typedef struct PercentLiteral PercentLiteral;
+
 struct State {
     bool has_leading_whitespace;
+    PercentLiteral literal;
 };
 typedef struct State State;
 
@@ -52,6 +67,12 @@ enum Token {
     REGULAR_UNLESS_KEYWORD,
     MODIFIER_UNLESS_KEYWORD,
 
+    MODULO_OPERATOR,
+
+    PERCENT_LITERAL_START,
+    PERCENT_LITERAL_END,
+    DELIMITED_STRING_CONTENTS,
+
     // Never returned
     START_OF_PARENLESS_ARGS,
     END_OF_RANGE,
@@ -63,6 +84,8 @@ void *tree_sitter_crystal_external_scanner_create() {
 
     state = malloc(sizeof(State));
     state->has_leading_whitespace = false;
+    state->literal.opening_char = 0;
+    state->literal.closing_char = 0;
 
     return state;
 }
@@ -131,6 +154,60 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
     }
 }
 
+// Returns true if a string content token is found
+bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    bool found_content = false;
+
+    for (;;) {
+        if (lexer->eof(lexer)) {
+            DEBUG("reached EOF\n");
+            return found_content;
+        }
+
+        switch (lexer->lookahead) {
+            case '\\':
+                switch (state->literal.type) {
+                    case STRING:
+                        return found_content;
+                    case STRING_NO_ESCAPE:
+                        break;
+                    case STRING_ARRAY:
+                        // TODO: %w and %i allow only '\ ' as an escape sequence
+                        break;
+                }
+                break;
+            case '"':
+            case '|':
+                // These delimiters can't nest
+                if (state->literal.closing_char == lexer->lookahead) {
+                    return found_content;
+                }
+                break;
+            case '(':
+            case '[':
+            case '{':
+            case '<':
+                if (state->literal.opening_char == lexer->lookahead) {
+                    // TODO: increase nesting
+                }
+                break;
+            case ')':
+            case ']':
+            case '}':
+            case '>':
+                // TODO: check nesting
+                if (state->literal.closing_char == lexer->lookahead) {
+                    return found_content;
+                }
+                break;
+                // TODO: # interpolation
+        }
+
+        lex_advance(lexer);
+        found_content = true;
+    }
+}
+
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     DEBUG("\n ==> starting external scan\n");
     DEBUG(" ==> char is '%c'\n", lexer->lookahead);
@@ -151,10 +228,18 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[MODIFIER_UNLESS_KEYWORD]) DEBUG("\tMODIFIER_UNLESS_KEYWORD\n");
     if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
     if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
+    if (valid_symbols[PERCENT_LITERAL_START]) DEBUG("\tPERCENT_LITERAL_START\n");
+    if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
+    if (valid_symbols[DELIMITED_STRING_CONTENTS]) DEBUG("\tDELIMITED_STRING_CONTENTS\n");
     if (valid_symbols[NONE]) DEBUG("\tNONE\n");
 
     State *state = (State *)payload;
     state->has_leading_whitespace = false;
+
+    if (valid_symbols[DELIMITED_STRING_CONTENTS] && scan_string_contents(state, lexer, valid_symbols)) {
+        lexer->result_symbol = DELIMITED_STRING_CONTENTS;
+        return true;
+    }
 
     lexer->result_symbol = NONE;
 
@@ -164,6 +249,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     if (lexer->result_symbol != NONE) {
         return true;
+    }
+
+    if (valid_symbols[PERCENT_LITERAL_END] && state->literal.closing_char != 0) {
+        DEBUG(" %%%%%% checking PERCENT_LITERAL_END\n");
+        if (lexer->lookahead == state->literal.closing_char) {
+            lex_advance(lexer);
+            state->literal.opening_char = 0;
+            state->literal.closing_char = 0;
+            lexer->result_symbol = PERCENT_LITERAL_END;
+            return true;
+        }
     }
 
     switch (lexer->lookahead) {
@@ -344,6 +440,73 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             }
             break;
 
+        case '%':
+            if (valid_symbols[PERCENT_LITERAL_START]) {
+                DEBUG(" %%%%%% checking PERCENT_LITERAL_START\n");
+                lex_advance(lexer);
+
+                LiteralType type = STRING;
+
+                switch (lexer->lookahead) {
+                    case 'Q':
+                        lex_advance(lexer);
+                        // type is already STRING
+                        break;
+                    case 'q':
+                        lex_advance(lexer);
+                        type = STRING_NO_ESCAPE;
+                        break;
+                }
+
+                int32_t opening_char = 0, closing_char;
+
+                switch (lexer->lookahead) {
+                    case '{':
+                        opening_char = '{';
+                        closing_char = '}';
+                        break;
+                    case '(':
+                        opening_char = '(';
+                        closing_char = ')';
+                        break;
+                    case '[':
+                        opening_char = '[';
+                        closing_char = ']';
+                        break;
+                    case '<':
+                        opening_char = '<';
+                        closing_char = '>';
+                        break;
+                    case '|':
+                        opening_char = '|';
+                        closing_char = '|';
+                        break;
+                    default:
+                        if (valid_symbols[MODULO_OPERATOR]) {
+                            lexer->result_symbol = MODULO_OPERATOR;
+                            return true;
+                        }
+                }
+
+                if (opening_char) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = PERCENT_LITERAL_START;
+
+                    state->literal = (PercentLiteral){
+                        .opening_char = opening_char,
+                        .closing_char = closing_char,
+                        .type = type};
+
+                    return true;
+                }
+
+            } else if (valid_symbols[MODULO_OPERATOR]) {
+                lex_advance(lexer);
+                lexer->result_symbol = MODULO_OPERATOR;
+                return true;
+            }
+            break;
+
         case '.':
             if (valid_symbols[BEGINLESS_RANGE_OPERATOR] && !valid_symbols[START_OF_PARENLESS_ARGS]) {
                 lex_advance(lexer);
@@ -456,29 +619,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 unsigned tree_sitter_crystal_external_scanner_serialize(void *payload, char *buffer) {
     State *state = (State *)payload;
 
-    if (state->has_leading_whitespace) {
-        *buffer = 1;
-    } else {
-        *buffer = 0;
-    }
+    size_t state_size = sizeof(State);
 
-    return 1;
+    memcpy(buffer, state, state_size);
+
+    return state_size;
 }
 
 void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     State *state = (State *)payload;
 
-    state->has_leading_whitespace = false;
-
-    if (length == 0) {
-        return;
-    }
-
-    if (*buffer) {
-        state->has_leading_whitespace = true;
-    } else {
-        state->has_leading_whitespace = false;
-    }
+    memcpy(state, buffer, length);
 }
 
 void tree_sitter_crystal_external_scanner_destroy(void *payload) {

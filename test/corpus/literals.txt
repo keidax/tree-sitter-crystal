@@ -400,6 +400,57 @@ string interpolation
         operator: (operator)
         argument: (identifier)))))
 
+===============
+percent strings
+===============
+
+%()
+p% ()
+
+%||
+%<>
+%{} % %[]
+
+%q(
+
+)
+
+%Q["|)]
+%([{<|"''"|>}])
+
+%(\n\))
+%q[\n\]
+%Q|\|\n|
+
+-------
+(source_file
+  (string)
+  (op_call
+    (identifier)
+    (operator)
+    (nil))
+
+  (string)
+  (string)
+  (op_call
+    (string)
+    (operator)
+    (string))
+
+  (string)
+
+  (string)
+  (string)
+
+  (string
+    (string_escape_sequence)
+    (ignored_backslash))
+  (string)
+  (string
+    (ignored_backslash)
+    (string_escape_sequence))
+)
+
 =======
 symbols
 =======
