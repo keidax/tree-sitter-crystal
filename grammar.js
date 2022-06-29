@@ -80,7 +80,7 @@ module.exports = grammar({
 
     $._modulo_operator,
 
-    $._percent_literal_start,
+    $._string_percent_literal_start,
     $._percent_literal_end,
     $._delimited_string_contents,
 
@@ -447,7 +447,6 @@ module.exports = grammar({
 
     // TODO:
     // multiple string literals joined by backslashes
-    // percent literals
     // heredocs
     string: $ => seq(
       '"',
@@ -487,10 +486,10 @@ module.exports = grammar({
     ),
 
     string_percent_literal: $ => seq(
-      $._percent_literal_start,
+      $._string_percent_literal_start,
       repeat(choice(
         $._delimited_string_contents,
-        // $.interpolation
+        $.interpolation,
         $.string_escape_sequence,
         $.ignored_backslash,
       )),

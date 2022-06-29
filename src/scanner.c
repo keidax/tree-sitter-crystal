@@ -16,6 +16,7 @@ struct PercentLiteral {
     int32_t opening_char;
     int32_t closing_char;
     LiteralType type;
+    uint8_t nesting_level;
 };
 typedef struct PercentLiteral PercentLiteral;
 
@@ -69,7 +70,7 @@ enum Token {
 
     MODULO_OPERATOR,
 
-    PERCENT_LITERAL_START,
+    STRING_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
     DELIMITED_STRING_CONTENTS,
 
@@ -78,6 +79,7 @@ enum Token {
     END_OF_RANGE,
     NONE,
 };
+typedef enum Token Token;
 
 void *tree_sitter_crystal_external_scanner_create() {
     State *state;
@@ -176,6 +178,16 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                         break;
                 }
                 break;
+            case '#':
+                lexer->mark_end(lexer);
+                lex_advance(lexer);
+                if (lexer->lookahead == '{') {
+                    return found_content;
+                }
+
+                found_content = true;
+                lexer->mark_end(lexer);
+                continue;
             case '"':
             case '|':
                 // These delimiters can't nest
@@ -188,22 +200,25 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '{':
             case '<':
                 if (state->literal.opening_char == lexer->lookahead) {
-                    // TODO: increase nesting
+                    state->literal.nesting_level++;
                 }
                 break;
             case ')':
             case ']':
             case '}':
             case '>':
-                // TODO: check nesting
                 if (state->literal.closing_char == lexer->lookahead) {
-                    return found_content;
+                    if (state->literal.nesting_level == 0) {
+                        return found_content;
+                    }
+
+                    state->literal.nesting_level--;
                 }
                 break;
-                // TODO: # interpolation
         }
 
         lex_advance(lexer);
+        lexer->mark_end(lexer);
         found_content = true;
     }
 }
@@ -228,7 +243,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[MODIFIER_UNLESS_KEYWORD]) DEBUG("\tMODIFIER_UNLESS_KEYWORD\n");
     if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
     if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
-    if (valid_symbols[PERCENT_LITERAL_START]) DEBUG("\tPERCENT_LITERAL_START\n");
+    if (valid_symbols[STRING_PERCENT_LITERAL_START]) DEBUG("\tSTRING_PERCENT_LITERAL_START\n");
     if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
     if (valid_symbols[DELIMITED_STRING_CONTENTS]) DEBUG("\tDELIMITED_STRING_CONTENTS\n");
     if (valid_symbols[NONE]) DEBUG("\tNONE\n");
@@ -441,11 +456,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             break;
 
         case '%':
-            if (valid_symbols[PERCENT_LITERAL_START]) {
-                DEBUG(" %%%%%% checking PERCENT_LITERAL_START\n");
+            if (valid_symbols[STRING_PERCENT_LITERAL_START]) {
+                DEBUG(" %%%%%% checking STRING_PERCENT_LITERAL_START\n");
                 lex_advance(lexer);
 
                 LiteralType type = STRING;
+                Token return_symbol = STRING_PERCENT_LITERAL_START;
 
                 switch (lexer->lookahead) {
                     case 'Q':
@@ -490,12 +506,14 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 if (opening_char) {
                     lex_advance(lexer);
-                    lexer->result_symbol = PERCENT_LITERAL_START;
+                    lexer->result_symbol = return_symbol;
 
                     state->literal = (PercentLiteral){
                         .opening_char = opening_char,
                         .closing_char = closing_char,
-                        .type = type};
+                        .type = type,
+                        .nesting_level = 0,
+                    };
 
                     return true;
                 }

@@ -404,15 +404,16 @@ string interpolation
 percent strings
 ===============
 
-%()
+%(abc)
 p% ()
 
 %||
 %<>
-%{} % %[]
+%{{}} % %[[]]
+%<]})>
 
 %q(
-
+()()()(((())()))
 )
 
 %Q["|)]
@@ -421,6 +422,17 @@ p% ()
 %(\n\))
 %q[\n\]
 %Q|\|\n|
+
+%(1#{2}3)
+%{#{""}}
+%<# {}>
+%|#\n|
+
+%Q(##{:a})
+%Q(#)
+%Q(##)
+%Q(###)
+%Q(####{{1,}})
 
 -------
 (source_file
@@ -436,6 +448,7 @@ p% ()
     (string)
     (operator)
     (string))
+  (string)
 
   (string)
 
@@ -449,7 +462,27 @@ p% ()
   (string
     (ignored_backslash)
     (string_escape_sequence))
-)
+
+  (string
+    (interpolation
+      (integer)))
+  (string
+    (interpolation
+      (string)))
+  (string)
+  (string
+    (string_escape_sequence))
+
+  (string
+    (interpolation
+      (symbol)))
+  (string)
+  (string)
+  (string)
+  (string
+    (interpolation
+      (tuple
+        (integer)))))
 
 =======
 symbols
