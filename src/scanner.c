@@ -5,26 +5,47 @@
 #include <string.h>
 #include <wctype.h>
 
-enum LiteralType {
+enum LiteralTypeEnum {
     STRING,
     STRING_NO_ESCAPE,
     STRING_ARRAY,
 };
-typedef enum LiteralType LiteralType;
+typedef uint8_t LiteralType;
 
 struct PercentLiteral {
-    int32_t opening_char;
-    int32_t closing_char;
-    LiteralType type;
+    // We compare these chars with int32_t codepoints, but all valid delimiters
+    // in Crystal are in the ASCII range, so we won't overflow.
+    uint8_t opening_char;
+    uint8_t closing_char;
     uint8_t nesting_level;
+    LiteralType type;
 };
 typedef struct PercentLiteral PercentLiteral;
 
+#define MAX_LITERAL_COUNT 16
+
 struct State {
     bool has_leading_whitespace;
-    PercentLiteral literal;
+
+    // It's possible to have nested delimited literals, like
+    //   %(#{%(foo)})
+    // We can handle up to MAX_LITERAL_COUNT levels of nesting.
+    uint8_t literal_count;
+    PercentLiteral literal_stack[MAX_LITERAL_COUNT];
 };
 typedef struct State State;
+
+#define HAS_ACTIVE_LITERAL(state) \
+    (state->literal_count > 0)
+
+#define ACTIVE_LITERAL(state) \
+    (state->literal_stack[state->literal_count - 1])
+
+#define PUSH_LITERAL(state, literal) \
+    (state->literal_stack[state->literal_count++] = literal)
+
+#define POP_LITERAL(state) \
+    (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
 
 #ifdef TREE_SITTER_INTERNAL_BUILD
 #define DEBUG(...)                                                                          \
@@ -85,9 +106,8 @@ void *tree_sitter_crystal_external_scanner_create() {
     State *state;
 
     state = malloc(sizeof(State));
+    memset(state, 0, sizeof(State));
     state->has_leading_whitespace = false;
-    state->literal.opening_char = 0;
-    state->literal.closing_char = 0;
 
     return state;
 }
@@ -168,7 +188,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
 
         switch (lexer->lookahead) {
             case '\\':
-                switch (state->literal.type) {
+                switch (ACTIVE_LITERAL(state).type) {
                     case STRING:
                         return found_content;
                     case STRING_NO_ESCAPE:
@@ -191,7 +211,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '"':
             case '|':
                 // These delimiters can't nest
-                if (state->literal.closing_char == lexer->lookahead) {
+                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
                     return found_content;
                 }
                 break;
@@ -199,20 +219,20 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '[':
             case '{':
             case '<':
-                if (state->literal.opening_char == lexer->lookahead) {
-                    state->literal.nesting_level++;
+                if (ACTIVE_LITERAL(state).opening_char == lexer->lookahead) {
+                    ACTIVE_LITERAL(state).nesting_level++;
                 }
                 break;
             case ')':
             case ']':
             case '}':
             case '>':
-                if (state->literal.closing_char == lexer->lookahead) {
-                    if (state->literal.nesting_level == 0) {
+                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                    if (ACTIVE_LITERAL(state).nesting_level == 0) {
                         return found_content;
                     }
 
-                    state->literal.nesting_level--;
+                    ACTIVE_LITERAL(state).nesting_level--;
                 }
                 break;
         }
@@ -266,12 +286,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
-    if (valid_symbols[PERCENT_LITERAL_END] && state->literal.closing_char != 0) {
+    if (valid_symbols[PERCENT_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
         DEBUG(" %%%%%% checking PERCENT_LITERAL_END\n");
-        if (lexer->lookahead == state->literal.closing_char) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
             lex_advance(lexer);
-            state->literal.opening_char = 0;
-            state->literal.closing_char = 0;
+            POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
             return true;
         }
@@ -508,12 +527,19 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lex_advance(lexer);
                     lexer->result_symbol = return_symbol;
 
-                    state->literal = (PercentLiteral){
-                        .opening_char = opening_char,
-                        .closing_char = closing_char,
-                        .type = type,
-                        .nesting_level = 0,
-                    };
+                    if (state->literal_count >= MAX_LITERAL_COUNT) {
+                        // Instead of overflowing the state (and accessing out-of-bounds memory)
+                        // we'll just return false, resulting in an error in the syntax tree. The
+                        // literals already on the stack can still be parsed successfully.
+                        return false;
+                    }
+
+                    PUSH_LITERAL(state, ((PercentLiteral){
+                                            .opening_char = opening_char,
+                                            .closing_char = closing_char,
+                                            .type = type,
+                                            .nesting_level = 0,
+                                        }));
 
                     return true;
                 }

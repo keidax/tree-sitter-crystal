@@ -484,6 +484,25 @@ p% ()
       (tuple
         (integer)))))
 
+======================
+nested percent strings
+======================
+
+%(#{%|#{%<#{%(a)}>}|})
+
+
+---
+
+(source_file
+  (string
+    (interpolation
+      (string
+        (interpolation
+          (string
+            (interpolation
+              (string)))))))
+  )
+
 =======
 symbols
 =======

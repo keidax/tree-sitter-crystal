@@ -60,3 +60,150 @@ percent literal nesting too deep
   (string)
   (string)
   (ERROR))
+
+================================
+too many nested percent literals
+================================
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+1
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+1
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+---
+
+(source_file
+  (string
+    (interpolation
+      (string
+        (interpolation
+          (string
+            (interpolation
+              (string
+                (interpolation
+                  (string
+                    (interpolation
+                      (string
+                        (interpolation
+                          (string
+                            (interpolation
+                              (string
+                                (interpolation
+                                  (string
+                                    (interpolation
+                                      (string
+                                        (interpolation
+                                          (string
+                                            (interpolation
+                                              (string
+                                                (interpolation
+                                                  (string
+                                                    (interpolation
+                                                      (string
+                                                        (interpolation
+                                                          (string
+                                                            (interpolation
+                                                              (string
+                                                                (interpolation
+                                                                  (integer)))))))))))))))))))))))))))))))))
+
+  (string
+    (interpolation
+      (string
+        (interpolation
+          (string
+            (interpolation
+              (string
+                (interpolation
+                  (string
+                    (interpolation
+                      (string
+                        (interpolation
+                          (string
+                            (interpolation
+                              (string
+                                (interpolation
+                                  (string
+                                    (interpolation
+                                      (string
+                                        (interpolation
+                                          (string
+                                            (interpolation
+                                              (string
+                                                (interpolation
+                                                  (string
+                                                    (interpolation
+                                                      (string
+                                                        (interpolation
+                                                          (string
+                                                            (interpolation
+                                                              (string
+                                                                (ERROR)
+                                                                (ERROR)
+                                                                (interpolation
+                                                                  (integer))))))))))))))))))))))))))))))))))
