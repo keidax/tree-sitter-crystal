@@ -434,6 +434,10 @@ p% ()
 %Q(###)
 %Q(####{{1,}})
 
+%q(#)
+%q(#{)
+%q(#{1})
+
 -------
 (source_file
   (string)
@@ -482,7 +486,11 @@ p% ()
   (string
     (interpolation
       (tuple
-        (integer)))))
+        (integer))))
+
+  (string)
+  (string)
+  (string))
 
 ======================
 nested percent strings
@@ -502,6 +510,85 @@ nested percent strings
             (interpolation
               (string)))))))
   )
+
+=====================
+percent string arrays
+=====================
+
+%w(a b	c
+d)
+
+%w(1\ 2)
+  %w( a\	b)
+%w{a\  a }
+%w{a \ \ }
+%w((\)))
+%w|\|\)|
+
+%w| a\b c\d |
+
+%w[1 2		3
+4567]
+
+# This is possibly a bug with the Crystal parser
+%w<a <b c >
+%w<a <b c>>
+
+---
+
+(source_file
+  (array
+    (string)
+    (string)
+    (string)
+    (string))
+
+  (array
+    (string
+      (ignored_backslash)))
+  (array
+    (string
+      (ignored_backslash)))
+  (array
+    (string
+      (ignored_backslash))
+    (string))
+  (array
+    (string)
+    (string
+      (ignored_backslash)
+      (ignored_backslash)))
+  (array
+    (string
+      (ignored_backslash)))
+  (array
+    (string
+      (ignored_backslash)))
+
+  (array
+    (string
+      (ignored_backslash))
+    (string
+      (ignored_backslash)))
+
+  (array
+    (string)
+    (string)
+    (string)
+    (string)
+    (string)
+    (string)
+    (string))
+
+  (comment)
+  (array
+    (string)
+    (string)
+    (string))
+  (array
+    (string)
+    (string)
+    (string)))
 
 =======
 symbols

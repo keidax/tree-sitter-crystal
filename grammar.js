@@ -81,8 +81,11 @@ module.exports = grammar({
     $._modulo_operator,
 
     $._string_percent_literal_start,
+    $._string_array_percent_literal_start,
     $._percent_literal_end,
     $._delimited_string_contents,
+    $._delimited_array_element_start,
+    $._delimited_array_element_end,
 
     // These symbols are never actually returned. They signal the current scope
     // to the scanner.
@@ -265,6 +268,7 @@ module.exports = grammar({
       $.hash,
       $.string,
       alias($.string_percent_literal, $.string),
+      alias($.string_array_percent_literal, $.array),
       alias($.operator_symbol, $.symbol),
       alias($.unquoted_symbol, $.symbol),
       alias($.quoted_symbol, $.symbol),
@@ -494,6 +498,23 @@ module.exports = grammar({
         $.ignored_backslash,
       )),
       $._percent_literal_end,
+    ),
+
+    string_array_percent_literal: $ => seq(
+      $._string_array_percent_literal_start,
+      repeat(
+        alias($.string_array_percent_literal_word, $.string),
+      ),
+      $._percent_literal_end,
+    ),
+
+    string_array_percent_literal_word: $ => seq(
+      $._delimited_array_element_start,
+      repeat(choice(
+        $._delimited_string_contents,
+        $.ignored_backslash,
+      )),
+      $._delimited_array_element_end,
     ),
 
     operator_symbol: $ => token(seq(

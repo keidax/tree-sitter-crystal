@@ -52,8 +52,15 @@ typedef struct State State;
     if (getenv("TREE_SITTER_DEBUG") && strncmp(getenv("TREE_SITTER_DEBUG"), "1", 1) == 0) { \
         fprintf(stderr, __VA_ARGS__);                                                       \
     }
+#define ABORT(...)                                         \
+    fprintf(stderr, "‼️ ABORT @ line %d: ", __LINE__); \
+    fprintf(stderr, __VA_ARGS__);                          \
+    abort();
 #else
 #define DEBUG(...)
+#define ABORT(...)                                                                \
+    fprintf(stderr, "tree-sitter-crystal has encountered an unexpected state: "); \
+    fprintf(stderr, __VA_ARGS__);
 #endif
 
 enum Token {
@@ -92,8 +99,12 @@ enum Token {
     MODULO_OPERATOR,
 
     STRING_PERCENT_LITERAL_START,
+    STRING_ARRAY_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
     DELIMITED_STRING_CONTENTS,
+
+    DELIMITED_ARRAY_ELEMENT_START,
+    DELIMITED_ARRAY_ELEMENT_END,
 
     // Never returned
     START_OF_PARENLESS_ARGS,
@@ -154,6 +165,15 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
                 }
                 break;
 
+            case '\v':
+            case '\f':
+                // In regular code, these characters are not allowed. But they
+                // may be used in between strings in a %w array.
+                if (HAS_ACTIVE_LITERAL(state)) {
+                    lex_skip(state, lexer);
+                    break;
+                }
+
             default:
                 if (crossed_newline) {
                     if (lexer->lookahead == '.') {
@@ -179,6 +199,10 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 // Returns true if a string content token is found
 bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
     bool found_content = false;
+    LiteralType active_type;
+
+    // This may be overridden later.
+    lexer->result_symbol = DELIMITED_STRING_CONTENTS;
 
     for (;;) {
         if (lexer->eof(lexer)) {
@@ -186,19 +210,37 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             return found_content;
         }
 
+        active_type = ACTIVE_LITERAL(state).type;
+
         switch (lexer->lookahead) {
             case '\\':
-                switch (ACTIVE_LITERAL(state).type) {
+                switch (active_type) {
                     case STRING:
                         return found_content;
                     case STRING_NO_ESCAPE:
                         break;
                     case STRING_ARRAY:
-                        // TODO: %w and %i allow only '\ ' as an escape sequence
-                        break;
+                        // %w and %i allow only '\<whitespace>' or the closing
+                        // delimiter as an escape sequence, so we have to look
+                        // ahead one character.
+                        lexer->mark_end(lexer);
+                        lex_advance(lexer);
+                        if (iswspace(lexer->lookahead) || ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                            return found_content;
+                        }
+
+                        // The backslash must be part of the word contents.
+                        found_content = true;
+                        lexer->mark_end(lexer);
+                        continue;
                 }
                 break;
             case '#':
+                if (active_type == STRING_NO_ESCAPE || active_type == STRING_ARRAY) {
+                    // These types don't allow interpolation
+                    break;
+                }
+
                 lexer->mark_end(lexer);
                 lex_advance(lexer);
                 if (lexer->lookahead == '{') {
@@ -208,11 +250,39 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                 found_content = true;
                 lexer->mark_end(lexer);
                 continue;
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+            case '\v':
+            case '\f':
+                if (active_type == STRING_ARRAY) {
+                    if (found_content) {
+                        // We've already found string contents, return that.
+                        return true;
+                    } else if (valid_symbols[DELIMITED_ARRAY_ELEMENT_END]) {
+                        // We've reached the end of an array word.
+                        lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_END;
+                        return true;
+                    } else {
+                        ABORT("found whitespace outside delimited element\n");
+                    }
+                }
+                break;
             case '"':
             case '|':
                 // These delimiters can't nest
                 if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
-                    return found_content;
+                    if (found_content) {
+                        // We've already found string contents, return that.
+                        return true;
+                    } else if (valid_symbols[DELIMITED_ARRAY_ELEMENT_END]) {
+                        // We've reached the end of an array word.
+                        lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_END;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
                 break;
             case '(':
@@ -229,7 +299,16 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '>':
                 if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
                     if (ACTIVE_LITERAL(state).nesting_level == 0) {
-                        return found_content;
+                        if (found_content) {
+                            // We've already found string contents, return that.
+                            return true;
+                        } else if (valid_symbols[DELIMITED_ARRAY_ELEMENT_END]) {
+                            // We've reached the end of an array word.
+                            lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_END;
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
 
                     ACTIVE_LITERAL(state).nesting_level--;
@@ -264,15 +343,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
     if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
     if (valid_symbols[STRING_PERCENT_LITERAL_START]) DEBUG("\tSTRING_PERCENT_LITERAL_START\n");
+    if (valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSTRING_ARRAY_PERCENT_LITERAL_START\n");
     if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
     if (valid_symbols[DELIMITED_STRING_CONTENTS]) DEBUG("\tDELIMITED_STRING_CONTENTS\n");
+    if (valid_symbols[DELIMITED_ARRAY_ELEMENT_START]) DEBUG("\tDELIMITED_ARRAY_ELEMENT_START\n");
+    if (valid_symbols[DELIMITED_ARRAY_ELEMENT_END]) DEBUG("\tDELIMITED_ARRAY_ELEMENT_END\n");
     if (valid_symbols[NONE]) DEBUG("\tNONE\n");
 
     State *state = (State *)payload;
     state->has_leading_whitespace = false;
 
     if (valid_symbols[DELIMITED_STRING_CONTENTS] && scan_string_contents(state, lexer, valid_symbols)) {
-        lexer->result_symbol = DELIMITED_STRING_CONTENTS;
         return true;
     }
 
@@ -287,13 +368,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
 
     if (valid_symbols[PERCENT_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        DEBUG(" %%%%%% checking PERCENT_LITERAL_END\n");
         if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
             lex_advance(lexer);
             POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
             return true;
         }
+    }
+
+    if (valid_symbols[DELIMITED_ARRAY_ELEMENT_START] && HAS_ACTIVE_LITERAL(state)) {
+        lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_START;
+        return true;
     }
 
     switch (lexer->lookahead) {
@@ -475,7 +560,8 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             break;
 
         case '%':
-            if (valid_symbols[STRING_PERCENT_LITERAL_START]) {
+            if (valid_symbols[STRING_PERCENT_LITERAL_START]
+                || valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) {
                 DEBUG(" %%%%%% checking STRING_PERCENT_LITERAL_START\n");
                 lex_advance(lexer);
 
@@ -490,6 +576,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     case 'q':
                         lex_advance(lexer);
                         type = STRING_NO_ESCAPE;
+                        break;
+                    case 'w':
+                        lex_advance(lexer);
+                        type = STRING_ARRAY;
+                        return_symbol = STRING_ARRAY_PERCENT_LITERAL_START;
                         break;
                 }
 
@@ -525,6 +616,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 if (opening_char) {
                     lex_advance(lexer);
+
+                    if (!valid_symbols[return_symbol]) {
+                        return false;
+                    }
+
                     lexer->result_symbol = return_symbol;
 
                     if (state->literal_count >= MAX_LITERAL_COUNT) {
@@ -672,6 +768,10 @@ unsigned tree_sitter_crystal_external_scanner_serialize(void *payload, char *buf
 
 void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     State *state = (State *)payload;
+
+    if (length < sizeof(State)) {
+        memset(state, 0, sizeof(State));
+    }
 
     memcpy(state, buffer, length);
 }

@@ -30,6 +30,17 @@ unterminated percent literal string
 (source_file
   (ERROR))
 
+==================================
+unterminated percent literal array
+==================================
+
+%w(1
+
+---
+(source_file
+  (ERROR
+    (string)))
+
 =============================
 incorrectly escaped %q string
 =============================
