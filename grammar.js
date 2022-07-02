@@ -81,6 +81,7 @@ module.exports = grammar({
     $._modulo_operator,
 
     $._string_percent_literal_start,
+    $._command_percent_literal_start,
     $._string_array_percent_literal_start,
     $._symbol_array_percent_literal_start,
     $._percent_literal_end,
@@ -279,9 +280,10 @@ module.exports = grammar({
       $.tuple,
       $.named_tuple,
       $.proc,
+      $.command,
+      alias($.command_percent_literal, $.command),
       // TODO: other expressions
-      // regex
-      // `command`
+      // regex and special variables: $~, $1, $1?, etc.
 
       // Groupings
       alias($.empty_parens, $.nil),
@@ -556,6 +558,30 @@ module.exports = grammar({
         token.immediate('"'),
       ),
     ),
+
+    command: $ => seq(
+      '`',
+      repeat(choice(
+        token.immediate(prec(1, /[^\\`]/)),
+        $.string_escape_sequence,
+        $.ignored_backslash,
+        $.interpolation,
+      )),
+      token.immediate('`'),
+    ),
+
+    command_percent_literal: $ => seq(
+      $._command_percent_literal_start,
+      repeat(choice(
+        $._delimited_string_contents,
+        $.interpolation,
+        $.string_escape_sequence,
+        $.ignored_backslash,
+      )),
+      $._percent_literal_end,
+    ),
+
+    // TODO: special $? variable
 
     array: $ => {
       const of_type = field('of', seq('of', $._type))

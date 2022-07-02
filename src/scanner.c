@@ -8,6 +8,7 @@
 enum LiteralTypeEnum {
     STRING,
     STRING_NO_ESCAPE,
+    COMMAND,
     STRING_ARRAY,
     SYMBOL_ARRAY,
 };
@@ -100,6 +101,7 @@ enum Token {
     MODULO_OPERATOR,
 
     STRING_PERCENT_LITERAL_START,
+    COMMAND_PERCENT_LITERAL_START,
     STRING_ARRAY_PERCENT_LITERAL_START,
     SYMBOL_ARRAY_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
@@ -218,6 +220,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '\\':
                 switch (active_type) {
                     case STRING:
+                    case COMMAND:
                         return found_content;
                     case STRING_NO_ESCAPE:
                         break;
@@ -346,6 +349,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
     if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
     if (valid_symbols[STRING_PERCENT_LITERAL_START]) DEBUG("\tSTRING_PERCENT_LITERAL_START\n");
+    if (valid_symbols[COMMAND_PERCENT_LITERAL_START]) DEBUG("\tCOMMAND_PERCENT_LITERAL_START\n");
     if (valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSTRING_ARRAY_PERCENT_LITERAL_START\n");
     if (valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSYMBOL_ARRAY_PERCENT_LITERAL_START\n");
     if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
@@ -565,6 +569,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
         case '%':
             if (valid_symbols[STRING_PERCENT_LITERAL_START]
+                || valid_symbols[COMMAND_PERCENT_LITERAL_START]
                 || valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]
                 || valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]) {
                 lex_advance(lexer);
@@ -580,6 +585,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     case 'q':
                         lex_advance(lexer);
                         type = STRING_NO_ESCAPE;
+                        break;
+
+                    case 'x':
+                        lex_advance(lexer);
+                        type = COMMAND;
+                        return_symbol = COMMAND_PERCENT_LITERAL_START;
                         break;
                     case 'w':
                         lex_advance(lexer);

@@ -1087,3 +1087,32 @@ String |
           (constant)
           return: (constant))))
     block: (block)))
+
+================
+command literals
+================
+
+`tree-sitter generate`
+
+`echo "#{foo}\n"; \`echo "echo"\``
+
+puts %x[echo \t[#{foo}]\]]
+---
+(source_file
+  (command)
+
+  (command
+    (interpolation
+      (identifier))
+    (string_escape_sequence)
+    (ignored_backslash)
+    (ignored_backslash))
+
+  (call
+    (identifier)
+    (argument_list
+      (command
+        (string_escape_sequence)
+        (interpolation
+          (identifier))
+        (ignored_backslash)))))
