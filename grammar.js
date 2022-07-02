@@ -82,6 +82,7 @@ module.exports = grammar({
 
     $._string_percent_literal_start,
     $._string_array_percent_literal_start,
+    $._symbol_array_percent_literal_start,
     $._percent_literal_end,
     $._delimited_string_contents,
     $._delimited_array_element_start,
@@ -272,6 +273,7 @@ module.exports = grammar({
       alias($.operator_symbol, $.symbol),
       alias($.unquoted_symbol, $.symbol),
       alias($.quoted_symbol, $.symbol),
+      alias($.symbol_array_percent_literal, $.array),
       $.range,
       alias($.beginless_range, $.range),
       $.tuple,
@@ -503,12 +505,20 @@ module.exports = grammar({
     string_array_percent_literal: $ => seq(
       $._string_array_percent_literal_start,
       repeat(
-        alias($.string_array_percent_literal_word, $.string),
+        alias($.percent_literal_array_word, $.string),
       ),
       $._percent_literal_end,
     ),
 
-    string_array_percent_literal_word: $ => seq(
+    symbol_array_percent_literal: $ => seq(
+      $._symbol_array_percent_literal_start,
+      repeat(
+        alias($.percent_literal_array_word, $.symbol),
+      ),
+      $._percent_literal_end,
+    ),
+
+    percent_literal_array_word: $ => seq(
       $._delimited_array_element_start,
       repeat(choice(
         $._delimited_string_contents,

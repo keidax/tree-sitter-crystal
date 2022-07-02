@@ -9,6 +9,7 @@ enum LiteralTypeEnum {
     STRING,
     STRING_NO_ESCAPE,
     STRING_ARRAY,
+    SYMBOL_ARRAY,
 };
 typedef uint8_t LiteralType;
 
@@ -100,6 +101,7 @@ enum Token {
 
     STRING_PERCENT_LITERAL_START,
     STRING_ARRAY_PERCENT_LITERAL_START,
+    SYMBOL_ARRAY_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
     DELIMITED_STRING_CONTENTS,
 
@@ -220,6 +222,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                     case STRING_NO_ESCAPE:
                         break;
                     case STRING_ARRAY:
+                    case SYMBOL_ARRAY:
                         // %w and %i allow only '\<whitespace>' or the closing
                         // delimiter as an escape sequence, so we have to look
                         // ahead one character.
@@ -236,7 +239,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                 }
                 break;
             case '#':
-                if (active_type == STRING_NO_ESCAPE || active_type == STRING_ARRAY) {
+                if (active_type == STRING_NO_ESCAPE || active_type == STRING_ARRAY || active_type == SYMBOL_ARRAY) {
                     // These types don't allow interpolation
                     break;
                 }
@@ -256,7 +259,7 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '\r':
             case '\v':
             case '\f':
-                if (active_type == STRING_ARRAY) {
+                if (active_type == STRING_ARRAY || active_type == SYMBOL_ARRAY) {
                     if (found_content) {
                         // We've already found string contents, return that.
                         return true;
@@ -344,6 +347,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
     if (valid_symbols[STRING_PERCENT_LITERAL_START]) DEBUG("\tSTRING_PERCENT_LITERAL_START\n");
     if (valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSTRING_ARRAY_PERCENT_LITERAL_START\n");
+    if (valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSYMBOL_ARRAY_PERCENT_LITERAL_START\n");
     if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
     if (valid_symbols[DELIMITED_STRING_CONTENTS]) DEBUG("\tDELIMITED_STRING_CONTENTS\n");
     if (valid_symbols[DELIMITED_ARRAY_ELEMENT_START]) DEBUG("\tDELIMITED_ARRAY_ELEMENT_START\n");
@@ -561,8 +565,8 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
         case '%':
             if (valid_symbols[STRING_PERCENT_LITERAL_START]
-                || valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) {
-                DEBUG(" %%%%%% checking STRING_PERCENT_LITERAL_START\n");
+                || valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]
+                || valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]) {
                 lex_advance(lexer);
 
                 LiteralType type = STRING;
@@ -581,6 +585,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         lex_advance(lexer);
                         type = STRING_ARRAY;
                         return_symbol = STRING_ARRAY_PERCENT_LITERAL_START;
+                        break;
+                    case 'i':
+                        lex_advance(lexer);
+                        type = SYMBOL_ARRAY;
+                        return_symbol = SYMBOL_ARRAY_PERCENT_LITERAL_START;
                         break;
                 }
 

@@ -590,6 +590,83 @@ d)
     (string)
     (string)))
 
+=====================
+percent symbol arrays
+=====================
+
+%i(a b	c
+d)
+
+%i(1\ 2)
+  %i( a\	b)
+%i{a\  a }
+%i{a \ \ }
+%i((\)))
+%i|\|\)|
+
+%i| a\b c\d |
+
+%i[1 2		3
+4567]
+
+# This is possibly a bug with the Crystal parser
+%i<a <b c >
+%i<a <b c>>
+---
+(source_file
+  (array
+    (symbol)
+    (symbol)
+    (symbol)
+    (symbol))
+
+  (array
+    (symbol
+      (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash))
+    (symbol))
+  (array
+    (symbol)
+    (symbol
+      (ignored_backslash)
+      (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash)))
+
+  (array
+    (symbol
+      (ignored_backslash))
+    (symbol
+      (ignored_backslash)))
+
+  (array
+    (symbol)
+    (symbol)
+    (symbol)
+    (symbol)
+    (symbol)
+    (symbol)
+    (symbol))
+
+  (comment)
+  (array
+    (symbol)
+    (symbol)
+    (symbol))
+  (array
+    (symbol)
+    (symbol)
+    (symbol)))
+
 =======
 symbols
 =======
