@@ -54,15 +54,24 @@ typedef struct State State;
     if (getenv("TREE_SITTER_DEBUG") && strncmp(getenv("TREE_SITTER_DEBUG"), "1", 1) == 0) { \
         fprintf(stderr, __VA_ARGS__);                                                       \
     }
-#define ABORT(...)                                         \
-    fprintf(stderr, "‼️ ABORT @ line %d: ", __LINE__); \
-    fprintf(stderr, __VA_ARGS__);                          \
-    abort();
+
+#define ASSERT(expr)                                                          \
+    if (expr) {                                                               \
+        ;                                                                     \
+    } else {                                                                  \
+        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
+        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
+        abort();                                                              \
+    }
 #else
 #define DEBUG(...)
-#define ABORT(...)                                                                \
-    fprintf(stderr, "tree-sitter-crystal has encountered an unexpected state: "); \
-    fprintf(stderr, __VA_ARGS__);
+#define ASSERT(expr)                                                          \
+    if (expr) {                                                               \
+        ;                                                                     \
+    } else {                                                                  \
+        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
+        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
+    }
 #endif
 
 enum Token {
@@ -267,6 +276,8 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
             case '\v':
             case '\f':
                 if (active_type == STRING_ARRAY || active_type == SYMBOL_ARRAY) {
+                    ASSERT(found_content || valid_symbols[DELIMITED_ARRAY_ELEMENT_END]);
+
                     if (found_content) {
                         // We've already found string contents, return that.
                         return true;
@@ -274,8 +285,6 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                         // We've reached the end of an array word.
                         lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_END;
                         return true;
-                    } else {
-                        ABORT("found whitespace outside delimited element\n");
                     }
                 }
                 break;
@@ -541,7 +550,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 if (lexer->lookahead == '+') {
                     lex_advance(lexer);
 
-                    // The binary form of &+ is alway preferred. E.g.
+                    // The binary form of &+ is always preferred. E.g.
                     //   foo! &+bar
                     // is still binary.
                     if (valid_symbols[BINARY_WRAPPING_PLUS]) {
@@ -592,13 +601,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     return true;
                 } else {
                     // Both are valid
-                    if (!valid_symbols[REGEX_START] && !valid_symbols[BINARY_SLASH]) {
-                        ABORT("expected REGEX_START and BINARY_SLASH to both be valid but neither were");
-                    }
+                    ASSERT(valid_symbols[REGEX_START] && valid_symbols[BINARY_SLASH]);
 
-                    if (!valid_symbols[START_OF_PARENLESS_ARGS]) {
-                        ABORT("unexpected conflict between REGEX_START and BINARY_SLASH outside of method call");
-                    }
+                    // This sort of ambiguity should only happen after an identifier without parentheses
+                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
 
                     if (state->has_leading_whitespace
                         && !(lexer->lookahead == ' '
@@ -761,18 +767,22 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 if (valid_symbols[MODIFIER_IF_KEYWORD] && !valid_symbols[REGULAR_IF_KEYWORD]) {
                     lexer->result_symbol = MODIFIER_IF_KEYWORD;
+                    return true;
                 } else if (valid_symbols[REGULAR_IF_KEYWORD] && !valid_symbols[MODIFIER_IF_KEYWORD]) {
                     lexer->result_symbol = REGULAR_IF_KEYWORD;
+                    return true;
                 } else {
                     // Both are valid
+                    ASSERT(valid_symbols[MODIFIER_IF_KEYWORD] && valid_symbols[REGULAR_IF_KEYWORD]);
+
+                    // This sort of ambiguity should only happen after an identifier without parentheses
+                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
+
                     if (valid_symbols[START_OF_PARENLESS_ARGS]) {
                         lexer->result_symbol = MODIFIER_IF_KEYWORD;
-                    } else {
-                        // probably this shouldn't be reached in valid code?
-                        return false;
+                        return true;
                     }
                 }
-                return true;
             }
             break;
         case 'u':
@@ -796,18 +806,22 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 if (valid_symbols[MODIFIER_UNLESS_KEYWORD] && !valid_symbols[REGULAR_UNLESS_KEYWORD]) {
                     lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
+                    return true;
                 } else if (valid_symbols[REGULAR_UNLESS_KEYWORD] && !valid_symbols[MODIFIER_UNLESS_KEYWORD]) {
                     lexer->result_symbol = REGULAR_UNLESS_KEYWORD;
+                    return true;
                 } else {
                     // Both are valid
+                    ASSERT(valid_symbols[MODIFIER_UNLESS_KEYWORD] && valid_symbols[REGULAR_UNLESS_KEYWORD]);
+
+                    // This sort of ambiguity should only happen after an identifier without parentheses
+                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
+
                     if (valid_symbols[START_OF_PARENLESS_ARGS]) {
                         lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
-                    } else {
-                        // probably this shouldn't be reached in valid code?
-                        return false;
+                        return true;
                     }
                 }
-                return true;
             }
             break;
         case 'y':

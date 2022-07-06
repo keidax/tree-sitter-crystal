@@ -1243,6 +1243,9 @@ def foo
   puts i nil
   puts if? true
   puts iff false
+
+  foo! if bar
+  "foo" if bar
 end
 ---
 (source_file
@@ -1285,7 +1288,15 @@ end
         (call
           method: (identifier)
           arguments: (argument_list
-            (false)))))))
+            (false)))))
+
+    (modifier_if
+      then: (call
+        method: (identifier))
+      cond: (identifier))
+    (modifier_if
+      then: (string)
+      cond: (identifier))))
 
 ================
 unless modifiers
@@ -1304,6 +1315,9 @@ def foo
   puts unles nil
   puts unless? true
   puts unlesss false
+
+  foo! unless bar
+  "foo" unless bar
 end
 ---
 
@@ -1347,8 +1361,16 @@ end
         (call
           method: (identifier)
           arguments: (argument_list
-            (false)))))))
+            (false)))))
 
+    (modifier_unless
+      then: (call
+        method: (identifier))
+      cond: (identifier))
+
+    (modifier_unless
+      then: (string)
+      cond: (identifier))))
 
 ========================
 calls with do/end blocks
