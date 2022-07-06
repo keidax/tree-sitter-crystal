@@ -92,6 +92,10 @@ enum Token {
 
     BEGINLESS_RANGE_OPERATOR,
 
+    REGEX_START,
+    BINARY_SLASH,
+    BINARY_DOUBLE_SLASH,
+
     REGULAR_IF_KEYWORD,
     MODIFIER_IF_KEYWORD,
 
@@ -563,6 +567,65 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     }
 
                     return false;
+                }
+            }
+            break;
+
+        case '/':
+            if (valid_symbols[REGEX_START]
+                || valid_symbols[BINARY_SLASH]
+                || BINARY_DOUBLE_SLASH) {
+
+                lex_advance(lexer);
+
+                if (lexer->lookahead == '/' && valid_symbols[BINARY_DOUBLE_SLASH]) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = BINARY_DOUBLE_SLASH;
+                    return true;
+                }
+
+                if (valid_symbols[BINARY_SLASH] && !valid_symbols[REGEX_START]) {
+                    lexer->result_symbol = BINARY_SLASH;
+                    return true;
+                } else if (valid_symbols[REGEX_START] && !valid_symbols[BINARY_SLASH]) {
+                    lexer->result_symbol = REGEX_START;
+                    return true;
+                } else {
+                    // Both are valid
+                    if (!valid_symbols[REGEX_START] && !valid_symbols[BINARY_SLASH]) {
+                        ABORT("expected REGEX_START and BINARY_SLASH to both be valid but neither were");
+                    }
+
+                    if (!valid_symbols[START_OF_PARENLESS_ARGS]) {
+                        ABORT("unexpected conflict between REGEX_START and BINARY_SLASH outside of method call");
+                    }
+
+                    if (state->has_leading_whitespace
+                        && !(lexer->lookahead == ' '
+                            || lexer->lookahead == '\t'
+                            || lexer->lookahead == '\n'
+                            || lexer->lookahead == '\r')) {
+                        // If we're in the state
+                        //   foo   /a
+                        //         ^
+                        // then we assume this is the start of a regex.
+                        lexer->result_symbol = REGEX_START;
+                        return true;
+                    } else {
+                        // We must be in one of these states:
+                        //   foo/a
+                        //      ^
+                        // or
+                        //   foo/ a
+                        //      ^
+                        // or
+                        //   foo / a
+                        //       ^
+                        // In each of these cases, we give the slash operator
+                        // higher precedence over a regex.
+                        lexer->result_symbol = BINARY_SLASH;
+                        return true;
+                    }
                 }
             }
             break;

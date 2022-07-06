@@ -715,6 +715,79 @@ symbols
         (symbol (string_escape_sequence))))
     else: (symbol)))
 
+=======
+regexes
+=======
+
+//
+/;/
+/
+/
+/#/
+/🔎/
+
+/^#{name}$/
+
+/\//
+/\a/
+/\e/
+/\f/
+/\n/
+/\r/
+/\t/
+
+/\cx/
+/\cX/
+/\c/
+/\c /
+/\c/
+
+/\11/
+/\012/
+/\177/
+/\o{6666}/
+
+/\xa/
+/\x20/
+/\x{12345}/
+
+---
+(source_file
+  (regex)
+  (regex)
+  (regex)
+  (regex)
+  (regex)
+
+  (regex
+    (interpolation
+      (identifier)))
+
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence))
+
+)
+
 ======
 arrays
 ======

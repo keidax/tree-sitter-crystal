@@ -72,6 +72,10 @@ module.exports = grammar({
 
     $._beginless_range_operator,
 
+    $._regex_start,
+    $._binary_slash,
+    $._binary_double_slash,
+
     $._regular_if_keyword,
     $._modifier_if_keyword,
 
@@ -284,6 +288,7 @@ module.exports = grammar({
       alias($.command_percent_literal, $.command),
       // TODO: other expressions
       // regex and special variables: $~, $1, $1?, etc.
+      $.regex,
 
       // Groupings
       alias($.empty_parens, $.nil),
@@ -582,6 +587,37 @@ module.exports = grammar({
     ),
 
     // TODO: special $? variable
+    //
+    regex: $ => seq(
+      $._regex_start,
+      repeat(choice(
+        token.immediate(prec(1, /[^\\/]/)),
+        $.regex_escape_sequence,
+        $.interpolation,
+      )),
+      token.immediate('/'),
+    ),
+
+    regex_escape_sequence: $ => {
+      // These are PCRE escape sequences
+      const octal_escape = seq(/[0-7]{1,3}/)
+      const long_octal_escape = seq('o{', repeat1(/[0-7]/), '}')
+
+      const hex_escape = seq('x', /[0-9a-fA-F]{1,2}/)
+      const long_hex_escape = seq('x{', repeat1(/[0-9a-fA-F]/), '}')
+
+      const ctrl_escape = seq(/c[\x01-\x7f]/)
+
+      // TODO: decide how to handle other backslash sequences
+
+      return token.immediate(seq('\\', choice(
+        '/', 'a', 'e', 'f', 'n', 'r', 't',
+        octal_escape, long_octal_escape,
+        hex_escape, long_hex_escape,
+        ctrl_escape,
+      )))
+    },
+
 
     array: $ => {
       const of_type = field('of', seq('of', $._type))
@@ -1084,7 +1120,13 @@ module.exports = grammar({
     },
 
     multiplicative_operator: $ => {
-      const operator = choice($._binary_star, '&*', '/', '//', $._modulo_operator)
+      const operator = choice(
+        $._binary_star,
+        '&*',
+        $._binary_slash,
+        $._binary_double_slash,
+        $._modulo_operator,
+      )
 
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))

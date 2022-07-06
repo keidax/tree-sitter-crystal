@@ -840,6 +840,15 @@ pp 7 +
   4.0 //
     3
 
+pp! // foo
+pp! /foo/
+(a)/b
+d //e
+baz/ 7
+
+begin 1 end / 2
+foo(// // 3)
+
 ---
 (source_file
   (op_call
@@ -882,7 +891,42 @@ pp 7 +
         argument: (op_call
           receiver: (float)
           operator: (operator)
-          argument: (integer))))))
+          argument: (integer)))))
+
+  (op_call
+    receiver: (call
+      method: (identifier))
+    operator: (operator)
+    argument: (identifier))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (regex)))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (integer))
+
+  (op_call
+    receiver: (begin_block
+      body: (integer))
+    operator: (operator)
+    argument: (integer))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        receiver: (regex)
+        operator: (operator)
+        argument: (integer)))))
 
 =====================
 exponential operators
