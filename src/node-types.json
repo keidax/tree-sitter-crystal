@@ -94,6 +94,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -190,6 +194,10 @@
           "named": true
         },
         {
+          "type": "regex",
+          "named": true
+        },
+        {
           "type": "require",
           "named": true
         },
@@ -282,6 +290,10 @@
         },
         {
           "type": "class_var",
+          "named": true
+        },
+        {
+          "type": "command",
           "named": true
         },
         {
@@ -386,6 +398,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -523,6 +539,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -616,6 +636,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -748,6 +772,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -841,6 +869,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -962,6 +994,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -1055,6 +1091,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -1166,6 +1206,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -1259,6 +1303,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -1379,6 +1427,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -1472,6 +1524,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -1624,6 +1680,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -1717,6 +1777,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -1861,6 +1925,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -1954,6 +2022,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -2099,6 +2171,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -2195,6 +2271,10 @@
           "named": true
         },
         {
+          "type": "regex",
+          "named": true
+        },
+        {
           "type": "require",
           "named": true
         },
@@ -2236,6 +2316,29 @@
         },
         {
           "type": "yield",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "command",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "ignored_backslash",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "string_escape_sequence",
           "named": true
         }
       ]
@@ -2299,6 +2402,10 @@
           },
           {
             "type": "class_var",
+            "named": true
+          },
+          {
+            "type": "command",
             "named": true
           },
           {
@@ -2395,6 +2502,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -2500,6 +2611,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -2593,6 +2708,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -2698,6 +2817,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -2791,6 +2914,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -2912,6 +3039,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -3005,6 +3136,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -3104,6 +3239,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -3197,6 +3336,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -3349,6 +3492,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -3442,6 +3589,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -3552,6 +3703,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -3645,6 +3800,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -3875,6 +4034,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -3968,6 +4131,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -4078,6 +4245,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -4171,6 +4342,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -4316,6 +4491,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -4409,6 +4588,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -4513,6 +4696,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -4606,6 +4793,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -4755,6 +4946,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -4848,6 +5043,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -4958,6 +5157,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -5051,6 +5254,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -5156,6 +5363,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -5249,6 +5460,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -5360,6 +5575,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -5453,6 +5672,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -5558,6 +5781,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -5651,6 +5878,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -5761,6 +5992,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -5854,6 +6089,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -5963,6 +6202,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -6056,6 +6299,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -6169,6 +6416,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -6262,6 +6513,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -6360,6 +6615,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -6453,6 +6712,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -6556,6 +6819,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -6649,6 +6916,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -6759,6 +7030,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -6852,6 +7127,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -6967,6 +7246,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -7060,6 +7343,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -7159,6 +7446,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -7252,6 +7543,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -7366,6 +7661,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -7459,6 +7758,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -7790,6 +8093,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -7883,6 +8190,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -7988,6 +8299,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -8084,6 +8399,10 @@
             "named": true
           },
           {
+            "type": "regex",
+            "named": true
+          },
+          {
             "type": "require",
             "named": true
           },
@@ -8139,6 +8458,29 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "regex",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "ignored_backslash",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "regex_escape_sequence",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -8217,6 +8559,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -8310,6 +8656,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -8449,6 +8799,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -8542,6 +8896,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -8640,6 +8998,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -8733,6 +9095,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -8831,6 +9197,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -8924,6 +9294,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -9118,6 +9492,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -9211,6 +9589,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -9309,6 +9691,10 @@
           "named": true
         },
         {
+          "type": "command",
+          "named": true
+        },
+        {
           "type": "conditional",
           "named": true
         },
@@ -9402,6 +9788,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -9539,6 +9929,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -9632,6 +10026,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -9763,6 +10161,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -9859,6 +10261,10 @@
             "named": true
           },
           {
+            "type": "regex",
+            "named": true
+          },
+          {
             "type": "require",
             "named": true
           },
@@ -9947,6 +10353,10 @@
         },
         {
           "type": "class_var",
+          "named": true
+        },
+        {
+          "type": "command",
           "named": true
         },
         {
@@ -10043,6 +10453,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -10153,6 +10567,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -10249,6 +10667,10 @@
             "named": true
           },
           {
+            "type": "regex",
+            "named": true
+          },
+          {
             "type": "require",
             "named": true
           },
@@ -10337,6 +10759,10 @@
         },
         {
           "type": "class_var",
+          "named": true
+        },
+        {
+          "type": "command",
           "named": true
         },
         {
@@ -10433,6 +10859,10 @@
         },
         {
           "type": "range",
+          "named": true
+        },
+        {
+          "type": "regex",
           "named": true
         },
         {
@@ -10553,6 +10983,10 @@
             "named": true
           },
           {
+            "type": "command",
+            "named": true
+          },
+          {
             "type": "conditional",
             "named": true
           },
@@ -10646,6 +11080,10 @@
           },
           {
             "type": "range",
+            "named": true
+          },
+          {
+            "type": "regex",
             "named": true
           },
           {
@@ -10757,6 +11195,10 @@
     "named": false
   },
   {
+    "type": "/",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
@@ -10814,6 +11256,10 @@
   },
   {
     "type": "__LINE__",
+    "named": false
+  },
+  {
+    "type": "`",
     "named": false
   },
   {
@@ -10898,6 +11344,10 @@
   },
   {
     "type": "operator",
+    "named": true
+  },
+  {
+    "type": "regex_escape_sequence",
     "named": true
   },
   {
