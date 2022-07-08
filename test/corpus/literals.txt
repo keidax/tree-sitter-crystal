@@ -423,6 +423,9 @@ p% ()
 %q[\n\]
 %Q|\|\n|
 
+%q(\)
+%Q(\\)
+
 %(1#{2}3)
 %{#{""}}
 %<# {}>
@@ -465,6 +468,10 @@ p% ()
   (string)
   (string
     (ignored_backslash)
+    (string_escape_sequence))
+
+  (string)
+  (string
     (string_escape_sequence))
 
   (string
@@ -787,6 +794,29 @@ regexes
   (regex (regex_escape_sequence))
 
 )
+
+======================
+regex percent literals
+======================
+
+%r|a/b|
+
+%r<#{1}\#{2})>
+%r<a\>>
+%r(a\\)
+
+---
+
+(source_file
+  (regex)
+  (regex
+    (interpolation
+      (integer))
+    (ignored_backslash))
+  (regex
+    (ignored_backslash))
+  (regex
+    (regex_escape_sequence)))
 
 ======
 arrays

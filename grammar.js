@@ -88,6 +88,7 @@ module.exports = grammar({
     $._command_percent_literal_start,
     $._string_array_percent_literal_start,
     $._symbol_array_percent_literal_start,
+    $._regex_percent_literal_start,
     $._percent_literal_end,
     $._delimited_string_contents,
     $._delimited_array_element_start,
@@ -289,6 +290,7 @@ module.exports = grammar({
       // TODO: other expressions
       // regex and special variables: $~, $1, $1?, etc.
       $.regex,
+      alias($.regex_percent_literal, $.regex),
 
       // Groupings
       alias($.empty_parens, $.nil),
@@ -587,7 +589,8 @@ module.exports = grammar({
     ),
 
     // TODO: special $? variable
-    //
+
+    // TODO: regex modifiers
     regex: $ => seq(
       $._regex_start,
       repeat(choice(
@@ -606,18 +609,29 @@ module.exports = grammar({
       const hex_escape = seq('x', /[0-9a-fA-F]{1,2}/)
       const long_hex_escape = seq('x{', repeat1(/[0-9a-fA-F]/), '}')
 
-      const ctrl_escape = seq(/c[\x01-\x7f]/)
+      const ctrl_escape = seq(/c[\x01-\x7f]/) // eslint-disable-line no-control-regex
 
-      // TODO: decide how to handle other backslash sequences
+      // TODO: handle rest of PCRE escape syntax:
+      // https://www.pcre.org/original/doc/html/pcresyntax.html
 
       return token.immediate(seq('\\', choice(
-        '/', 'a', 'e', 'f', 'n', 'r', 't',
+        '/', '\\', 'a', 'e', 'f', 'n', 'r', 't',
         octal_escape, long_octal_escape,
         hex_escape, long_hex_escape,
         ctrl_escape,
       )))
     },
 
+    regex_percent_literal: $ => seq(
+      $._regex_percent_literal_start,
+      repeat(choice(
+        $._delimited_string_contents,
+        $.regex_escape_sequence,
+        $.ignored_backslash,
+        $.interpolation,
+      )),
+      $._percent_literal_end,
+    ),
 
     array: $ => {
       const of_type = field('of', seq('of', $._type))
