@@ -332,6 +332,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "special_variable"
+        },
+        {
+          "type": "SYMBOL",
           "name": "identifier"
         },
         {
@@ -4324,6 +4328,30 @@
           "value": "__DIR__"
         }
       ]
+    },
+    "special_variable": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "$?"
+          },
+          {
+            "type": "STRING",
+            "value": "$~"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\$[0-9]+"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\$[0-9]+\\?"
+          }
+        ]
+      }
     },
     "identifier": {
       "type": "TOKEN",

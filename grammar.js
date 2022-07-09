@@ -287,8 +287,6 @@ module.exports = grammar({
       $.proc,
       $.command,
       alias($.command_percent_literal, $.command),
-      // TODO: other expressions
-      // regex and special variables: $~, $1, $1?, etc.
       $.regex,
       alias($.regex_percent_literal, $.regex),
 
@@ -301,6 +299,7 @@ module.exports = grammar({
       $.self,
       $.constant,
       $.pseudo_constant,
+      $.special_variable,
       $.identifier,
       $.instance_var,
       $.class_var,
@@ -587,8 +586,6 @@ module.exports = grammar({
       )),
       $._percent_literal_end,
     ),
-
-    // TODO: special $? variable
 
     // TODO: regex modifiers
     regex: $ => seq(
@@ -911,6 +908,13 @@ module.exports = grammar({
       '__FILE__',
       '__DIR__',
     ),
+
+    special_variable: $ => token(choice(
+      '$?',
+      '$~',
+      /\$[0-9]+/,
+      /\$[0-9]+\?/,
+    )),
 
     identifier: $ => token(seq(ident_start, repeat(ident_part))),
     identifier_method_call: $ => token(seq(ident_start, repeat(ident_part), /[?!]/)),

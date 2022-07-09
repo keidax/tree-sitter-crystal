@@ -120,6 +120,27 @@ end
           (interpolation
             (pseudo_constant)))))))
 
+=================
+special variables
+=================
+
+$?
+$~
+$0
+$5
+$12?
+$099
+
+---
+
+(source_file
+  (special_variable)
+  (special_variable)
+  (special_variable)
+  (special_variable)
+  (special_variable)
+  (special_variable))
+
 ============
 method calls
 ============
