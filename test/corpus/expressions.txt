@@ -293,7 +293,7 @@ puts(*a)
 
 pp *a, 2, *{3}
 
-pp(*a+b, *c*d)
+pp(*a+b, *c*d, *e = f)
 ---
 (source_file
   (op_call
@@ -337,7 +337,11 @@ pp(*a+b, *c*d)
         (op_call
           receiver: (identifier)
           operator: (operator)
-          argument: (identifier))))))
+          argument: (identifier)))
+      (splat
+        (assign
+          lhs: (identifier)
+          rhs: (identifier))))))
 
 ======================
 double splat arguments
@@ -575,6 +579,97 @@ baz = 7 unless qux?
       rhs: (integer))
     cond: (call
       method: (identifier))))
+
+===================
+multiple assignment
+===================
+
+foo, bar = bar, foo
+
+*splat = {1}
+* splat = 2, 3, 4
+
+first, _, last = stuff
+
+a, *@b, _ = 1, 2, 3
+
+a, b = c = 1, d = 2
+
+d.val,e.val=:d,:e
+a, b, c = d.val, e.val, f = {1, 2, 3}
+
+---
+(source_file
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (identifier)
+    rhs: (identifier))
+
+  (multi_assign
+    lhs: (splat
+      (identifier))
+    rhs: (tuple
+      (integer)))
+  (multi_assign
+    lhs: (splat
+      (identifier))
+    rhs: (integer)
+    rhs: (integer)
+    rhs: (integer))
+
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (identifier))
+
+  (multi_assign
+    lhs: (identifier)
+    lhs: (splat
+      (instance_var))
+    lhs: (identifier)
+    rhs: (integer)
+    rhs: (integer)
+    rhs: (integer))
+
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (assign
+      lhs: (identifier)
+      rhs: (integer))
+    rhs: (assign
+      lhs: (identifier)
+      rhs: (integer)))
+
+  (multi_assign
+    lhs: (assign_call
+      receiver: (identifier)
+      method: (identifier))
+    lhs: (assign_call
+      receiver: (identifier)
+      method: (identifier))
+    rhs: (symbol)
+    rhs: (symbol))
+
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+
+    rhs: (call
+      receiver: (identifier)
+      method: (identifier))
+    rhs: (call
+      receiver: (identifier)
+      method: (identifier))
+    rhs: (assign
+      lhs: (identifier)
+      rhs: (tuple
+        (integer)
+        (integer)
+        (integer)))))
 
 ===============
 while and until

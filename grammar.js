@@ -138,6 +138,12 @@ module.exports = grammar({
       $.proc_type,
     ],
 
+    // Ensure `*a = b` parses as `(*a) = b`, when encountered as a standalone statement
+    [
+      $.lhs_splat,
+      'assignment_operator',
+    ],
+
     // Ensure `a b { 1 }` parses as `a(b { 1 })`
     [
       $.call_with_brace_block,
@@ -243,6 +249,7 @@ module.exports = grammar({
     _statement: $ => choice(
       $._expression,
       $.const_assign,
+      $.multi_assign,
       $.module_def,
       $.class_def,
       $.alias,
@@ -338,7 +345,6 @@ module.exports = grammar({
       alias($.index_operator, $.index_call),
       $.assign,
       // TODO:
-      // multi assignment
       // operator assignment
       // index assignment
       // annotations
@@ -1267,6 +1273,25 @@ module.exports = grammar({
       return prec.right('assignment_operator', seq(
         lhs, '=', rhs,
       ))
+    },
+
+    lhs_splat: $ => seq('*', choice($.identifier, $.instance_var, $.class_var, $.assign_call)),
+
+    multi_assign: $ => {
+      const lhs_basic = choice($.identifier, $.instance_var, $.class_var, $.assign_call)
+      const lhs_splat = field('lhs', alias($.lhs_splat, $.splat))
+      const lhs = field('lhs', choice(lhs_basic, alias($.lhs_splat, $.splat)))
+      const multi_lhs = seq(repeat1(seq(lhs, ',')), lhs)
+
+      const rhs = field('rhs', $._expression)
+      const multi_rhs = seq(repeat1(seq(rhs, ',')), rhs)
+
+      return choice(
+        seq(lhs_splat, '=', rhs),
+        seq(multi_lhs, '=', rhs),
+        seq(lhs_splat, '=', multi_rhs),
+        seq(multi_lhs, '=', multi_rhs),
+      )
     },
 
     alias: $ => seq(
