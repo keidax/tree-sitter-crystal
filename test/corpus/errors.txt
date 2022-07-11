@@ -19,6 +19,31 @@ unterminated symbol
   (symbol
     (MISSING """)))
 
+==================
+unterminated regex
+==================
+
+/foo
+
+---
+
+(source_file
+  (ERROR))
+
+==============================
+regex with incorrect modifiers
+==============================
+
+/foo/if
+
+---
+
+(source_file
+  (ERROR
+    (regex
+      (regex_modifier)))
+  (identifier))
+
 ===================================
 unterminated percent literal string
 ===================================

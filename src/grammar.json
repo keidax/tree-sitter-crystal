@@ -2559,6 +2559,18 @@
             "type": "STRING",
             "value": "/"
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "regex_modifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -2716,6 +2728,18 @@
         {
           "type": "SYMBOL",
           "name": "_percent_literal_end"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "regex_modifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -7373,6 +7397,10 @@
     {
       "type": "SYMBOL",
       "name": "_delimited_array_element_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "regex_modifier"
     },
     {
       "type": "SYMBOL",

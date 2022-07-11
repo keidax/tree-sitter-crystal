@@ -736,12 +736,12 @@ regexes
 /^#{name}$/
 
 /\//
-/\a/
-/\e/
-/\f/
+/\a/i
+/\e/m
+/\f/x
 /\n/
 /\r/
-/\t/
+/\t/ximixi
 
 /\cx/
 /\cX/
@@ -758,6 +758,8 @@ regexes
 /\x20/
 /\x{12345}/
 
+/a#{/b/m}c/i
+
 ---
 (source_file
   (regex)
@@ -771,12 +773,12 @@ regexes
       (identifier)))
 
   (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence) (regex_modifier))
+  (regex (regex_escape_sequence) (regex_modifier))
+  (regex (regex_escape_sequence) (regex_modifier))
   (regex (regex_escape_sequence))
   (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
+  (regex (regex_escape_sequence) (regex_modifier))
 
   (regex (regex_escape_sequence))
   (regex (regex_escape_sequence))
@@ -793,6 +795,11 @@ regexes
   (regex (regex_escape_sequence))
   (regex (regex_escape_sequence))
 
+  (regex
+    (interpolation
+      (regex
+        (regex_modifier)))
+    (regex_modifier))
 )
 
 ======================
@@ -803,7 +810,8 @@ regex percent literals
 
 %r<#{1}\#{2})>
 %r<a\>>
-%r(a\\)
+%r(a\\)im
+%r{#{%r{f#{/o/}o}m}}
 
 ---
 
@@ -816,7 +824,14 @@ regex percent literals
   (regex
     (ignored_backslash))
   (regex
-    (regex_escape_sequence)))
+    (regex_escape_sequence)
+    (regex_modifier))
+  (regex
+    (interpolation
+      (regex
+        (interpolation
+          (regex))
+        (regex_modifier)))))
 
 ======
 arrays

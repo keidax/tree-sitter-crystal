@@ -125,6 +125,8 @@ enum Token {
     DELIMITED_ARRAY_ELEMENT_START,
     DELIMITED_ARRAY_ELEMENT_END,
 
+    REGEX_MODIFIER,
+
     // Never returned
     START_OF_PARENLESS_ARGS,
     END_OF_RANGE,
@@ -344,6 +346,32 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
     }
 }
 
+bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    if (!state->has_leading_whitespace) {
+        bool found_modifier = false;
+
+        for (;;) {
+            switch (lexer->lookahead) {
+                case 'i':
+                case 'm':
+                case 'x':
+                    found_modifier = true;
+                    lex_advance(lexer);
+                    continue;
+            }
+
+            if (found_modifier) {
+                lexer->result_symbol = REGEX_MODIFIER;
+                return true;
+            } else {
+                break;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     DEBUG("\n ==> starting external scan\n");
     DEBUG(" ==> char is '%c'\n", lexer->lookahead);
@@ -403,6 +431,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     if (valid_symbols[DELIMITED_ARRAY_ELEMENT_START] && HAS_ACTIVE_LITERAL(state)) {
         lexer->result_symbol = DELIMITED_ARRAY_ELEMENT_START;
+        return true;
+    }
+
+    if (valid_symbols[REGEX_MODIFIER] && scan_regex_modifier(state, lexer, valid_symbols)) {
         return true;
     }
 

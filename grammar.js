@@ -94,6 +94,8 @@ module.exports = grammar({
     $._delimited_array_element_start,
     $._delimited_array_element_end,
 
+    $.regex_modifier,
+
     // These symbols are never actually returned. They signal the current scope
     // to the scanner.
     $._start_of_parenless_args,
@@ -587,7 +589,6 @@ module.exports = grammar({
       $._percent_literal_end,
     ),
 
-    // TODO: regex modifiers
     regex: $ => seq(
       $._regex_start,
       repeat(choice(
@@ -596,6 +597,7 @@ module.exports = grammar({
         $.interpolation,
       )),
       token.immediate('/'),
+      optional($.regex_modifier),
     ),
 
     regex_escape_sequence: $ => {
@@ -628,6 +630,7 @@ module.exports = grammar({
         $.interpolation,
       )),
       $._percent_literal_end,
+      optional($.regex_modifier),
     ),
 
     array: $ => {
