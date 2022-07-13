@@ -346,7 +346,6 @@ module.exports = grammar({
       $.assign,
       // TODO:
       // operator assignment
-      // index assignment
       // annotations
 
       // Logical operators
@@ -1258,7 +1257,13 @@ module.exports = grammar({
     },
 
     assign: $ => {
-      const lhs = field('lhs', choice($.identifier, $.instance_var, $.class_var, $.assign_call))
+      const lhs = field('lhs', choice(
+        $.identifier,
+        $.instance_var,
+        $.class_var,
+        $.assign_call,
+        alias($.index_operator, $.index_call),
+      ))
       const rhs = field('rhs', $._expression)
 
       return prec('assignment_operator', seq(
@@ -1275,10 +1280,22 @@ module.exports = grammar({
       ))
     },
 
-    lhs_splat: $ => seq('*', choice($.identifier, $.instance_var, $.class_var, $.assign_call)),
+    lhs_splat: $ => seq('*', choice(
+      $.identifier,
+      $.instance_var,
+      $.class_var,
+      $.assign_call,
+      alias($.index_operator, $.index_call),
+    )),
 
     multi_assign: $ => {
-      const lhs_basic = choice($.identifier, $.instance_var, $.class_var, $.assign_call)
+      const lhs_basic = choice(
+        $.identifier,
+        $.instance_var,
+        $.class_var,
+        $.assign_call,
+        alias($.index_operator, $.index_call),
+      )
       const lhs_splat = field('lhs', alias($.lhs_splat, $.splat))
       const lhs = field('lhs', choice(lhs_basic, alias($.lhs_splat, $.splat)))
       const multi_lhs = seq(repeat1(seq(lhs, ',')), lhs)

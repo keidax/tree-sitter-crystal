@@ -1928,3 +1928,63 @@ a.[count: 1, values: [5]] =0
           (integer))))
     arguments: (argument_list
       (integer))))
+
+================
+index assignment
+================
+
+a.[]=(1, 2)
+
+a[1] = 2
+
+a[0], a[2, 3] = a[2], a[0]
+
+a[1], *b[0] = a
+
+---
+
+(source_file
+  (call
+    receiver: (identifier)
+    method: (operator)
+    arguments: (argument_list
+      (integer)
+      (integer)))
+
+  (assign
+    lhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer)))
+    rhs: (integer))
+
+  (multi_assign
+    lhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer)))
+    lhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer)
+        (integer)))
+    rhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer)))
+    rhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer))))
+
+  (multi_assign
+    lhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (integer)))
+    lhs: (splat
+      (index_call
+        receiver: (identifier)
+        arguments: (argument_list
+          (integer))))
+    rhs: (identifier)))

@@ -6193,6 +6193,15 @@
                 {
                   "type": "SYMBOL",
                   "name": "assign_call"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "index_operator"
+                  },
+                  "named": true,
+                  "value": "index_call"
                 }
               ]
             }
@@ -6266,6 +6275,15 @@
             {
               "type": "SYMBOL",
               "name": "assign_call"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "index_operator"
+              },
+              "named": true,
+              "value": "index_call"
             }
           ]
         }
@@ -6339,6 +6357,15 @@
                                 {
                                   "type": "SYMBOL",
                                   "name": "assign_call"
+                                },
+                                {
+                                  "type": "ALIAS",
+                                  "content": {
+                                    "type": "SYMBOL",
+                                    "name": "index_operator"
+                                  },
+                                  "named": true,
+                                  "value": "index_call"
                                 }
                               ]
                             },
@@ -6385,6 +6412,15 @@
                           {
                             "type": "SYMBOL",
                             "name": "assign_call"
+                          },
+                          {
+                            "type": "ALIAS",
+                            "content": {
+                              "type": "SYMBOL",
+                              "name": "index_operator"
+                            },
+                            "named": true,
+                            "value": "index_call"
                           }
                         ]
                       },
@@ -6506,6 +6542,15 @@
                                 {
                                   "type": "SYMBOL",
                                   "name": "assign_call"
+                                },
+                                {
+                                  "type": "ALIAS",
+                                  "content": {
+                                    "type": "SYMBOL",
+                                    "name": "index_operator"
+                                  },
+                                  "named": true,
+                                  "value": "index_call"
                                 }
                               ]
                             },
@@ -6552,6 +6597,15 @@
                           {
                             "type": "SYMBOL",
                             "name": "assign_call"
+                          },
+                          {
+                            "type": "ALIAS",
+                            "content": {
+                              "type": "SYMBOL",
+                              "name": "index_operator"
+                            },
+                            "named": true,
+                            "value": "index_call"
                           }
                         ]
                       },

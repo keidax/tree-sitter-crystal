@@ -467,7 +467,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 // potential method call:
                 //   foo [1]
                 // If there's no leading whitespace, or we know this isn't the
-                // first parameter of a method call, then it must be an intex
+                // first parameter of a method call, then it must be an index
                 // operator:
                 //   puts({42} [0])
                 if (state->has_leading_whitespace && valid_symbols[START_OF_PARENLESS_ARGS]) {

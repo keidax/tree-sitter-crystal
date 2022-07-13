@@ -734,6 +734,10 @@
             "named": true
           },
           {
+            "type": "index_call",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           }
@@ -6376,6 +6380,10 @@
           },
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "index_call",
             "named": true
           },
           {
