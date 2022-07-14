@@ -344,8 +344,8 @@ module.exports = grammar({
       alias($.binary_or_operator, $.op_call),
       alias($.index_operator, $.index_call),
       $.assign,
+      alias($.operator_assign, $.op_assign),
       // TODO:
-      // operator assignment
       // annotations
 
       // Logical operators
@@ -1279,6 +1279,43 @@ module.exports = grammar({
         lhs, '=', rhs,
       ))
     },
+
+    operator_assign: $ => {
+      // https://crystal-lang.org/reference/1.5/syntax_and_semantics/operators.html#combined-assignments
+      const combined_operators = [
+        '+=',
+        '&+=',
+        '-=',
+        '&-=',
+        '*=',
+        '&*=',
+        '/=',
+        '//=',
+        '%=',
+        '|=',
+        '&=',
+        '^=',
+        '**=',
+        '<<=',
+        '>>=',
+        '||=',
+        '&&=',
+      ]
+
+      const lhs = field('lhs', choice(
+        $.identifier,
+        $.instance_var,
+        $.class_var,
+        $.assign_call,
+        alias($.index_operator, $.index_call),
+      ))
+      const rhs = field('rhs', $._expression)
+
+      return prec('assignment_operator', seq(
+        lhs, choice(...combined_operators), rhs,
+      ))
+    },
+
 
     lhs_splat: $ => seq('*', choice(
       $.identifier,

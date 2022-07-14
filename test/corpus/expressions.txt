@@ -1194,6 +1194,99 @@ d && e || f && g
 
   (or (and (identifier) (identifier)) (and (identifier) (identifier))))
 
+=============================
+combined assignment operators
+=============================
+
+a += b
+a &+= b
+a -= b
+a &-= b
+a *= b
+a &*= b
+a /= b
+a //= b
+a %= b
+a |= b
+a &= b
+a ^= b
+a **= b
+a <<= b
+a >>= b
+a ||= b
+a &&= b
+
+ary[0..2] //= val.bar **= 7
+
+----
+
+(source_file
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+  (op_assign
+    lhs: (identifier)
+    rhs: (identifier))
+
+  (op_assign
+    lhs: (index_call
+      receiver: (identifier)
+      arguments: (argument_list
+        (range
+          begin: (integer)
+          operator: (operator)
+          end: (integer))))
+    rhs: (op_assign
+      lhs: (assign_call
+        receiver: (identifier)
+        method: (identifier))
+      rhs: (integer))))
+
 =============
 if/elsif/else
 =============

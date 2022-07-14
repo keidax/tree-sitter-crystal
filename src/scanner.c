@@ -376,32 +376,48 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     DEBUG("\n ==> starting external scan\n");
     DEBUG(" ==> char is '%c'\n", lexer->lookahead);
     DEBUG(" ==> valid symbols are:\n");
-    if (valid_symbols[LINE_BREAK]) DEBUG("\tLINE_BREAK\n");
-    if (valid_symbols[START_OF_BRACE_BLOCK]) DEBUG("\tSTART_OF_BRACE_BLOCK\n");
-    if (valid_symbols[END_OF_WITH_EXPRESSSION]) DEBUG("\tEND_OF_WITH_EXPRESSSION\n");
-    if (valid_symbols[UNARY_PLUS]) DEBUG("\tUNARY_PLUS\n");
-    if (valid_symbols[UNARY_MINUS]) DEBUG("\tUNARY_MINUS\n");
-    if (valid_symbols[BINARY_PLUS]) DEBUG("\tBINARY_PLUS\n");
-    if (valid_symbols[BINARY_MINUS]) DEBUG("\tBINARY_MINUS\n");
-    if (valid_symbols[UNARY_STAR]) DEBUG("\tUNARY_STAR\n");
-    if (valid_symbols[BINARY_STAR]) DEBUG("\tBINARY_STAR\n");
-    if (valid_symbols[START_OF_PARENLESS_ARGS]) DEBUG("\tSTART_OF_PARENLESS_ARGS\n");
-    if (valid_symbols[REGULAR_IF_KEYWORD]) DEBUG("\tREGULAR_IF_KEYWORD\n");
-    if (valid_symbols[MODIFIER_IF_KEYWORD]) DEBUG("\tMODIFIER_IF_KEYWORD\n");
-    if (valid_symbols[REGULAR_UNLESS_KEYWORD]) DEBUG("\tREGULAR_UNLESS_KEYWORD\n");
-    if (valid_symbols[MODIFIER_UNLESS_KEYWORD]) DEBUG("\tMODIFIER_UNLESS_KEYWORD\n");
-    if (valid_symbols[END_OF_RANGE]) DEBUG("\tEND_OF_RANGE\n");
-    if (valid_symbols[BEGINLESS_RANGE_OPERATOR]) DEBUG("\tBEGINLESS_RANGE_OPERATOR\n");
-    if (valid_symbols[STRING_PERCENT_LITERAL_START]) DEBUG("\tSTRING_PERCENT_LITERAL_START\n");
-    if (valid_symbols[COMMAND_PERCENT_LITERAL_START]) DEBUG("\tCOMMAND_PERCENT_LITERAL_START\n");
-    if (valid_symbols[STRING_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSTRING_ARRAY_PERCENT_LITERAL_START\n");
-    if (valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]) DEBUG("\tSYMBOL_ARRAY_PERCENT_LITERAL_START\n");
-    if (valid_symbols[REGEX_PERCENT_LITERAL_START]) DEBUG("\tREGEX_PERCENT_LITERAL_START\n");
-    if (valid_symbols[PERCENT_LITERAL_END]) DEBUG("\tPERCENT_LITERAL_END\n");
-    if (valid_symbols[DELIMITED_STRING_CONTENTS]) DEBUG("\tDELIMITED_STRING_CONTENTS\n");
-    if (valid_symbols[DELIMITED_ARRAY_ELEMENT_START]) DEBUG("\tDELIMITED_ARRAY_ELEMENT_START\n");
-    if (valid_symbols[DELIMITED_ARRAY_ELEMENT_END]) DEBUG("\tDELIMITED_ARRAY_ELEMENT_END\n");
-    if (valid_symbols[NONE]) DEBUG("\tNONE\n");
+
+#define LOG_SYMBOL(sym) \
+    if (valid_symbols[sym]) DEBUG("\t" #sym "\n");
+
+    LOG_SYMBOL(LINE_BREAK);
+    LOG_SYMBOL(START_OF_BRACE_BLOCK);
+    LOG_SYMBOL(START_OF_INDEX_OPERATOR);
+    LOG_SYMBOL(END_OF_WITH_EXPRESSSION);
+    LOG_SYMBOL(UNARY_PLUS);
+    LOG_SYMBOL(UNARY_MINUS);
+    LOG_SYMBOL(BINARY_PLUS);
+    LOG_SYMBOL(BINARY_MINUS);
+    LOG_SYMBOL(UNARY_WRAPPING_PLUS);
+    LOG_SYMBOL(UNARY_WRAPPING_MINUS);
+    LOG_SYMBOL(BINARY_WRAPPING_PLUS);
+    LOG_SYMBOL(BINARY_WRAPPING_MINUS);
+    LOG_SYMBOL(UNARY_STAR);
+    LOG_SYMBOL(BINARY_STAR);
+    LOG_SYMBOL(UNARY_DOUBLE_STAR);
+    LOG_SYMBOL(BINARY_DOUBLE_STAR);
+    LOG_SYMBOL(BEGINLESS_RANGE_OPERATOR);
+    LOG_SYMBOL(REGEX_START);
+    LOG_SYMBOL(BINARY_SLASH);
+    LOG_SYMBOL(BINARY_DOUBLE_SLASH);
+    LOG_SYMBOL(REGULAR_IF_KEYWORD);
+    LOG_SYMBOL(MODIFIER_IF_KEYWORD);
+    LOG_SYMBOL(REGULAR_UNLESS_KEYWORD);
+    LOG_SYMBOL(MODIFIER_UNLESS_KEYWORD);
+    LOG_SYMBOL(MODULO_OPERATOR);
+    LOG_SYMBOL(STRING_PERCENT_LITERAL_START);
+    LOG_SYMBOL(COMMAND_PERCENT_LITERAL_START);
+    LOG_SYMBOL(STRING_ARRAY_PERCENT_LITERAL_START);
+    LOG_SYMBOL(SYMBOL_ARRAY_PERCENT_LITERAL_START);
+    LOG_SYMBOL(REGEX_PERCENT_LITERAL_START);
+    LOG_SYMBOL(PERCENT_LITERAL_END);
+    LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
+    LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_START);
+    LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
+    LOG_SYMBOL(REGEX_MODIFIER);
+    LOG_SYMBOL(START_OF_PARENLESS_ARGS);
+    LOG_SYMBOL(END_OF_RANGE);
+    LOG_SYMBOL(NONE);
 
     State *state = (State *)payload;
     state->has_leading_whitespace = false;
@@ -510,7 +526,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             }
             break;
         case '-':
-            if (valid_symbols[UNARY_PLUS] || valid_symbols[BINARY_PLUS]) {
+            if (valid_symbols[UNARY_MINUS] || valid_symbols[BINARY_MINUS]) {
                 lex_advance(lexer);
 
                 if (lexer->lookahead == '=' || lexer->lookahead == '>') {
@@ -539,8 +555,16 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             if (valid_symbols[UNARY_STAR] || valid_symbols[BINARY_STAR] || valid_symbols[UNARY_DOUBLE_STAR] || valid_symbols[BINARY_DOUBLE_STAR]) {
                 lex_advance(lexer);
 
+                if (lexer->lookahead == '=') {
+                    return false;
+                }
+
                 if (lexer->lookahead == '*') {
                     lex_advance(lexer);
+
+                    if (lexer->lookahead == '=') {
+                        return false;
+                    }
 
                     bool unary_priority = state->has_leading_whitespace && !iswspace(lexer->lookahead);
 
@@ -586,6 +610,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 if (lexer->lookahead == '+') {
                     lex_advance(lexer);
 
+                    if (lexer->lookahead == '=') {
+                        return false;
+                    }
+
                     // The binary form of &+ is always preferred. E.g.
                     //   foo! &+bar
                     // is still binary.
@@ -602,6 +630,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 if (lexer->lookahead == '-') {
                     lex_advance(lexer);
+
+                    if (lexer->lookahead == '=') {
+                        return false;
+                    }
 
                     if (valid_symbols[BINARY_WRAPPING_MINUS]) {
                         lexer->result_symbol = BINARY_WRAPPING_MINUS;
@@ -623,8 +655,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 lex_advance(lexer);
 
+                if (lexer->lookahead == '=') {
+                    return false;
+                }
+
                 if (lexer->lookahead == '/' && valid_symbols[BINARY_DOUBLE_SLASH]) {
                     lex_advance(lexer);
+
+                    if (lexer->lookahead == '=') {
+                        return false;
+                    }
+
                     lexer->result_symbol = BINARY_DOUBLE_SLASH;
                     return true;
                 }
@@ -679,6 +720,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 || valid_symbols[SYMBOL_ARRAY_PERCENT_LITERAL_START]
                 || valid_symbols[REGEX_PERCENT_LITERAL_START]) {
                 lex_advance(lexer);
+
+                if (lexer->lookahead == '=') {
+                    return false;
+                }
 
                 LiteralType type = STRING;
                 Token return_symbol = STRING_PERCENT_LITERAL_START;
@@ -772,6 +817,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
             } else if (valid_symbols[MODULO_OPERATOR]) {
                 lex_advance(lexer);
+
+                if (lexer->lookahead == '=') {
+                    return false;
+                }
+
                 lexer->result_symbol = MODULO_OPERATOR;
                 return true;
             }
