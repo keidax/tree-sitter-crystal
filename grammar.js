@@ -146,26 +146,26 @@ module.exports = grammar({
 
     // Ensure `a b { 1 }` parses as `a(b { 1 })`
     [
-      $.call_with_brace_block,
+      'brace_block_call',
       $._expression,
     ],
 
     // Ensure `a b do 1 end` parses as `a(b) do 1 end`
     [
       $._expression,
-      $.call_with_block,
+      'do_end_block_call',
     ],
 
     // Ensure `a b() { 1 }` parses as `a(b() { 1 })`
     [
-      $.call_with_brace_block,
-      $.call_without_block,
+      'brace_block_call',
+      'no_block_call',
     ],
 
     // Ensure `a b() do 1 end` parses as `a(b()) do 1 end`
     [
-      $.call_without_block,
-      $.call_with_block,
+      'no_block_call',
+      'do_end_block_call',
     ],
 
     // Ensure `[] of A | B` parses as `[] of (A | B)`
@@ -330,9 +330,7 @@ module.exports = grammar({
       // macro fresh variables
 
       // Methods
-      alias($.call_without_block, $.call),
-      alias($.call_with_block, $.call),
-      alias($.call_with_brace_block, $.call),
+      $.call,
 
       alias($.additive_operator, $.op_call),
       alias($.unary_additive_operator, $.op_call),
@@ -1023,7 +1021,14 @@ module.exports = grammar({
       )
     },
 
-    call_without_block: $ => {
+    // how do we distingush a method call from a variable?
+    // at least one of these is required:
+    // - receiver
+    // - ends in ? or !
+    // - parentheses
+    // - arguments
+    // - block arg
+    call: $ => {
       const receiver_call = choice(
         $._dot_call,
         field('method', alias($.identifier_method_call, $.identifier)),
@@ -1035,37 +1040,19 @@ module.exports = grammar({
         alias($.argument_list_no_parens, $.argument_list),
       ))
 
-      // how do we distingush a method call from a variable?
-      // at least one of these is required:
-      // - receiver
-      // - ends in ? or !
-      // - parentheses
-      // - arguments
-      // - block arg
-      return choice(
-        seq(receiver_call, optional(argument_list)),
-        seq(ambiguous_call, argument_list),
-      )
-    },
+      const brace_block = field('block', alias($.brace_block, $.block))
 
-    call_with_block: $ => {
-      const receiver_call = choice(
-        $._dot_call,
-        field('method', alias($.identifier_method_call, $.identifier)),
-      )
-      const ambiguous_call = field('method', $.identifier)
-
-      const argument_list = field('arguments', choice(
-        alias($.argument_list_with_parens, $.argument_list),
-        alias($.argument_list_no_parens, $.argument_list),
-      ))
-
-      const block = field('block', alias($.do_end_block, $.block))
+      const do_end_block = field('block', alias($.do_end_block, $.block))
 
       return choice(
-        seq(receiver_call, optional(argument_list), block),
-        seq(ambiguous_call, argument_list, block),
-        seq(ambiguous_call, block),
+        prec('no_block_call', seq(receiver_call, optional(argument_list))),
+        prec('no_block_call', seq(ambiguous_call, argument_list)),
+
+        prec('brace_block_call', seq(receiver_call, optional(argument_list), brace_block)),
+        prec('brace_block_call', seq(ambiguous_call, optional(argument_list), brace_block)),
+
+        prec('do_end_block_call', seq(receiver_call, optional(argument_list), do_end_block)),
+        prec('do_end_block_call', seq(ambiguous_call, optional(argument_list), do_end_block)),
       )
     },
 
@@ -1075,27 +1062,6 @@ module.exports = grammar({
       const method_identifier = field('method', $.identifier)
 
       return prec('dot_operator', seq(receiver, '.', method_identifier))
-    },
-
-    call_with_brace_block: $ => {
-      const receiver_call = choice(
-        $._dot_call,
-        field('method', alias($.identifier_method_call, $.identifier)),
-      )
-      const ambiguous_call = field('method', $.identifier)
-
-      const argument_list = field('arguments', choice(
-        alias($.argument_list_with_parens, $.argument_list),
-        alias($.argument_list_no_parens, $.argument_list),
-      ))
-
-      const block = field('block', alias($.brace_block, $.block))
-
-      return choice(
-        seq(receiver_call, optional(argument_list), block),
-        seq(ambiguous_call, argument_list, block),
-        seq(ambiguous_call, block),
-      )
     },
 
     index_operator: $ => {
