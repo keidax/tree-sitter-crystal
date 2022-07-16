@@ -2220,3 +2220,53 @@ end
               (named_arg
                 name: (identifier)
                 (integer)))))))))
+
+===========================
+exhaustive case expressions
+===========================
+case nil
+in nil
+end
+
+case foo
+in false
+  case bar
+  in .bar?
+  in Int32
+  end
+in true, Foo
+in .zero? then 0
+in Proc(Int32, -> (Int32))
+end
+---
+(source_file
+  (case
+    cond: (nil)
+    (in
+      cond: (nil)))
+
+  (case
+    cond: (identifier)
+    (in
+      cond: (false)
+      (case
+        cond: (identifier)
+        (in
+          cond: (implicit_object_call
+            method: (identifier)))
+        (in
+          cond: (constant))))
+    (in
+      cond: (true)
+      cond: (constant))
+    (in
+      cond: (implicit_object_call
+        method: (identifier))
+      (integer))
+    (in
+      cond: (generic_type
+        (constant)
+        params: (param_list
+          (constant)
+          (proc_type
+            return: (constant)))))))

@@ -320,6 +320,7 @@ module.exports = grammar({
       $.unless,
       $.conditional,
       $.case,
+      alias($.exhaustive_case, $.case),
       // TODO
       // rescue modifier
       // macro interpolation
@@ -1561,6 +1562,36 @@ module.exports = grammar({
         cond,
         repeat($.when),
         optional($.else),
+        'end',
+      )
+    },
+
+    in: $ => {
+      const cond = field('cond', choice(
+        $.generic_type,
+        $.constant,
+        $.true,
+        $.false,
+        $.nil,
+        $.implicit_object_call,
+      ))
+
+      return seq(
+        'in',
+        cond,
+        repeat(seq(',', cond)),
+        choice('then', $._terminator),
+        optional($._statements),
+      )
+    },
+
+    exhaustive_case: $ => {
+      const cond = field('cond', $._expression)
+
+      return seq(
+        'case',
+        cond,
+        repeat1($.in),
         'end',
       )
     },
