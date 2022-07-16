@@ -687,8 +687,8 @@ module.exports = grammar({
     ),
 
     named_tuple_entry: $ => {
-      const symbol_name = alias(
-        token(seq(choice(const_start, ident_start), repeat(ident_part))),
+      const symbol_name = choice(
+        alias($._constant_segment, $.identifier),
         $.identifier,
       )
       const string_name = $.string
@@ -897,13 +897,14 @@ module.exports = grammar({
       )
     },
 
+    _constant_segment: $ => token(seq(const_start, repeat(ident_part))),
+
     constant: $ => {
-      const constant_segment = seq(const_start, repeat(ident_part))
-      return token(seq(
+      return prec.right(seq(
         optional('::'),
-        constant_segment,
+        $._constant_segment,
         repeat(
-          seq('::', constant_segment),
+          seq('::', $._constant_segment),
         ),
       ))
     },

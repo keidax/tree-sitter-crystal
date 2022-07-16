@@ -1061,6 +1061,8 @@ tuples
 }
 }
 
+{foo, _z}
+
 { {} of TypeA => TypeB}
 ---
 (source_file
@@ -1073,6 +1075,10 @@ tuples
 
   (tuple
     (tuple (integer)))
+
+  (tuple
+    (identifier)
+    (identifier))
 
   (tuple
     (hash of_key: (constant) of_value: (constant))))

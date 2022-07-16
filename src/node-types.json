@@ -3363,6 +3363,11 @@
     }
   },
   {
+    "type": "constant",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "double_splat",
     "named": true,
     "fields": {},
@@ -12363,6 +12368,10 @@
     "named": false
   },
   {
+    "type": "::",
+    "named": false
+  },
+  {
     "type": ";",
     "named": false
   },
@@ -12452,10 +12461,6 @@
   },
   {
     "type": "comment",
-    "named": true
-  },
-  {
-    "type": "constant",
     "named": true
   },
   {
