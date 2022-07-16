@@ -2081,3 +2081,142 @@ a[1], *b[0] = a
         arguments: (argument_list
           (integer))))
     rhs: (identifier)))
+
+================
+case expressions
+================
+
+a = case "foo"
+    when /o/, /z/
+      puts "asdf"
+      1
+    when .empty?
+    when false then ":("
+    else
+      2
+    end
+
+case 1 when 2,
+3; else end
+
+case exp
+when value1, .value2?(foo: :bar)  then do_something
+when .ljust 5, 'a' do |xyz| 9 end then do_something_else
+else                                   do_another_thing
+end
+
+case {val1, val2, val3}
+when {.even?, .odd?, _}
+  true
+when {.odd?, .even?, 1}, {_, _ab, .zero?(0) {0}}
+  false
+else
+  case val3
+  when .>(0), false
+  when .[] 2, count: 3
+  end
+end
+---
+
+(source_file
+  (assign
+    lhs: (identifier)
+    rhs: (case
+      cond: (string)
+      (when
+        cond: (regex)
+        cond: (regex)
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (string)))
+        (integer))
+      (when
+        cond: (implicit_object_call
+          method: (identifier)))
+      (when
+        cond: (false)
+        (string))
+      (else
+        (integer))))
+
+  (case
+    cond: (integer)
+    (when
+      cond: (integer)
+      cond: (integer))
+    (else))
+
+  (case
+    cond: (identifier)
+    (when
+      cond: (identifier)
+      cond: (implicit_object_call
+        method: (identifier)
+        arguments: (argument_list
+          (named_arg
+            name: (identifier)
+            (symbol))))
+      (identifier))
+    (when
+      cond: (implicit_object_call
+        method: (identifier)
+        arguments: (argument_list
+          (integer)
+          (char))
+        block: (block
+          params: (param_list
+            (param
+              name: (identifier)))
+          (integer)))
+      (identifier))
+    (else
+      (identifier)))
+
+  (case
+    cond: (tuple
+      (identifier)
+      (identifier)
+      (identifier))
+    (when
+      cond: (tuple
+        (implicit_object_call
+          method: (identifier))
+        (implicit_object_call
+          method: (identifier))
+        (identifier))
+      (true))
+    (when
+      cond: (tuple
+        (implicit_object_call
+          method: (identifier))
+        (implicit_object_call
+          method: (identifier))
+        (integer))
+      cond: (tuple
+        (identifier)
+        (identifier)
+        (implicit_object_call
+          method: (identifier)
+          arguments: (argument_list
+            (integer))
+          block: (block
+            (integer))))
+      (false))
+    (else
+      (case
+        cond: (identifier)
+        (when
+          cond: (implicit_object_call
+            method: (operator)
+            arguments: (argument_list
+              (integer)))
+          cond: (false))
+        (when
+          cond: (implicit_object_call
+            method: (operator)
+            arguments: (argument_list
+              (integer)
+              (named_arg
+                name: (identifier)
+                (integer)))))))))

@@ -319,10 +319,9 @@ module.exports = grammar({
       $.if,
       $.unless,
       $.conditional,
+      $.case,
       // TODO
-      // unless modifier
       // rescue modifier
-      // case
       // macro interpolation
       // macro if
       // macro for
@@ -1057,6 +1056,55 @@ module.exports = grammar({
       )
     },
 
+    implicit_object_method_identifier: $ => token(seq(
+      '.',
+      ident_start,
+      repeat(ident_part),
+      optional(/[?!]/),
+    )),
+
+    implicit_object_method_operator: $ => token(seq(
+      '.',
+      choice(...operator_tokens),
+    )),
+
+    implicit_object_call: $ => {
+      const method_name = field('method', choice(
+        alias($.implicit_object_method_identifier, $.identifier),
+        alias($.implicit_object_method_operator, $.operator),
+      ))
+
+      const argument_list = field('arguments', choice(
+        alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_no_parens, $.argument_list),
+      ))
+
+      const brace_block = field('block', alias($.brace_block, $.block))
+
+      const do_end_block = field('block', alias($.do_end_block, $.block))
+
+      return choice(
+        prec('no_block_call', seq(method_name, optional(argument_list))),
+
+        prec('brace_block_call', seq(method_name, optional(argument_list), brace_block)),
+
+        prec('do_end_block_call', seq(method_name, optional(argument_list), do_end_block)),
+      )
+    },
+
+    implicit_object_tuple: $ => seq(
+      '{',
+      optional(seq(
+        $._expression,
+        repeat(seq(',', $._expression)),
+        ',',
+      )),
+      $.implicit_object_call,
+      repeat(seq(',', choice($._expression, $.implicit_object_call))),
+      optional(','),
+      '}',
+    ),
+
     // A subset of method calls that can be the LHS of an assignment
     assign_call: $ => {
       const receiver = field('receiver', $._expression)
@@ -1488,5 +1536,33 @@ module.exports = grammar({
     ),
 
     require: $ => seq('require', $.string),
+
+    when: $ => {
+      const cond = field('cond', choice(
+        $._expression,
+        $.implicit_object_call,
+        alias($.implicit_object_tuple, $.tuple),
+      ))
+
+      return seq(
+        'when',
+        cond,
+        repeat(seq(',', cond)),
+        choice('then', $._terminator),
+        optional($._statements),
+      )
+    },
+
+    case: $ => {
+      const cond = field('cond', $._expression)
+
+      return seq(
+        'case',
+        cond,
+        repeat($.when),
+        optional($.else),
+        'end',
+      )
+    },
   },
 })
