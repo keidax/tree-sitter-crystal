@@ -1,9 +1,6 @@
-vim: sw=2
-
-=========
+================================================================================
 constants
-=========
-
+================================================================================
 A
 A1
 (A_A____)
@@ -11,21 +8,19 @@ A1
 ::B
 ::B💎::C
 ::B_::C4
+--------------------------------------------------------------------------------
 
----
 (source_file
   (constant)
   (constant)
   (constant)
-
   (constant)
   (constant)
   (constant))
 
-======
+================================================================================
 unions
-======
-
+================================================================================
 alias AOrB = A | B
 
 alias AOrBCOrD = A|B::C|D
@@ -33,24 +28,27 @@ alias AOrBCOrD = A|B::C|D
 alias NestedUnion = (A)|( B::C|D )
 
 alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F) | G | H)
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (alias
     name: (constant)
-    type: (union_type (constant) (constant)))
-
-  (alias
-    name: (constant)
-    type: (union_type (constant) (constant) (constant)))
-
+    type: (union_type
+      (constant)
+      (constant)))
   (alias
     name: (constant)
     type: (union_type
       (constant)
-      (union_type (constant) (constant))))
-
+      (constant)
+      (constant)))
+  (alias
+    name: (constant)
+    type: (union_type
+      (constant)
+      (union_type
+        (constant)
+        (constant))))
   (alias
     name: (constant)
     type: (union_type
@@ -66,10 +64,9 @@ alias NestedUnion2 = A | ( B | (C | D ) | E) | ((F) | G | H)
         (constant)
         (constant)))))
 
-==========
+================================================================================
 proc types
-==========
-
+================================================================================
 [] of ->
 {} of -> => ->
 
@@ -99,8 +96,7 @@ def x(y : A, B ->); end
 alias Foo = A | B -> C | D
 
 alias DoubleProc = -> ->
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (array
@@ -108,15 +104,18 @@ alias DoubleProc = -> ->
   (hash
     of_key: (proc_type)
     of_value: (proc_type))
-
   (array
     of: (proc_type
-      return: (union_type (constant) (constant))))
+      return: (union_type
+        (constant)
+        (constant))))
   (array
     of: (generic_instance_type
       (constant)
-      params: (param_list (union_type (constant) (constant)))))
-
+      params: (param_list
+        (union_type
+          (constant)
+          (constant)))))
   (array
     (array
       of: (proc_type
@@ -131,7 +130,6 @@ alias DoubleProc = -> ->
           (constant)
           (constant)
           (constant)))))
-
   (array
     (hash
       of_key: (constant)
@@ -148,13 +146,11 @@ alias DoubleProc = -> ->
           (constant)
           (constant)
           (constant)))))
-
   (tuple
     (hash
       of_key: (constant)
       of_value: (constant))
     (constant))
-
   (tuple
     (hash
       of_key: (constant)
@@ -170,23 +166,20 @@ alias DoubleProc = -> ->
           (constant)
           (constant)
           (constant)))))
-
   (array
     of: (generic_instance_type
       (constant)
       params: (param_list
-          (proc_type
-            (constant)
-            (constant)
-            return: (constant)))))
-
+        (proc_type
+          (constant)
+          (constant)
+          return: (constant)))))
   (array
     of: (proc_type
       (proc_type
         (constant)
         return: (constant))
       return: (constant)))
-
   (method_def
     name: (identifier)
     params: (param_list
@@ -195,7 +188,6 @@ alias DoubleProc = -> ->
         type: (constant))
       (param
         name: (identifier))))
-
   (method_def
     name: (identifier)
     params: (param_list
@@ -204,25 +196,26 @@ alias DoubleProc = -> ->
         type: (proc_type
           (constant)
           (constant)))))
-
   (alias
     name: (constant)
     type: (proc_type
-      (union_type (constant) (constant))
-      return: (union_type (constant) (constant))))
-
+      (union_type
+        (constant)
+        (constant))
+      return: (union_type
+        (constant)
+        (constant))))
   (alias
     name: (constant)
     type: (proc_type
-      return: (proc_type)))
-)
+      return: (proc_type))))
 
-=====================
+================================================================================
 proc types, continued
-=====================
+================================================================================
 alias P2 = -> Tuple(Int8) ->
+--------------------------------------------------------------------------------
 
----
 (source_file
   (alias
     name: (constant)
@@ -231,21 +224,18 @@ alias P2 = -> Tuple(Int8) ->
         return: (generic_instance_type
           (constant)
           params: (param_list
-            (constant))))))
-)
+            (constant)))))))
 
-=========================
+================================================================================
 proc ambiguity resolution
-=========================
-
+================================================================================
 def p1 : ->{1=>1}; end
 def p2 : ->{Int32}; end
 def p2 : ->{Int32,}; end
 
 def p3 : ->(Int32.to_s); end
 def p4 : ->(Int32.class); end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (method_def
@@ -265,44 +255,39 @@ def p4 : ->(Int32.class); end
     type: (proc_type
       return: (tuple_type
         (constant))))
-
   (method_def
     name: (identifier)
     type: (proc_type)
-      (call
-        receiver: (constant)
-        method: (identifier)))
+    (call
+      receiver: (constant)
+      method: (identifier)))
   (method_def
     name: (identifier)
     type: (proc_type
       return: (class_type
-        (constant))))
-)
+        (constant)))))
 
-===========
+================================================================================
 tuple types
-===========
-
+================================================================================
 alias Foo1 = {Int32}
 alias Foo2 = {Int32, Int32}
 
 -> : {Int32, Proc(Int32)} { {1, -> {1}} }
 
 -> : Int32, Int32 -> { ->, ->} do  end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (alias
     name: (constant)
     type: (tuple_type
       (constant)))
-
   (alias
     name: (constant)
     type: (tuple_type
       (constant)
       (constant)))
-
   (proc
     type: (tuple_type
       (constant)
@@ -316,7 +301,6 @@ alias Foo2 = {Int32, Int32}
         (proc
           block: (block
             (integer))))))
-
   (proc
     type: (proc_type
       (constant)
@@ -324,13 +308,11 @@ alias Foo2 = {Int32, Int32}
       return: (tuple_type
         (proc_type)
         (proc_type)))
-    block: (block))
-)
+    block: (block)))
 
-=============
+================================================================================
 generic types
-=============
-
+================================================================================
 class Gen(*U)
 end
 
@@ -339,8 +321,8 @@ alias Foo2 = Gen(Int32)
 alias Foo3 = Gen(Int32,)
 alias Foo4 = Gen(Int32,String)
 alias Foo5 = Gen(Int32,String|Char)
+--------------------------------------------------------------------------------
 
----
 (source_file
   (class_def
     name: (generic_type
@@ -348,26 +330,22 @@ alias Foo5 = Gen(Int32,String|Char)
       params: (param_list
         (splat
           (constant)))))
-
   (alias
     name: (constant)
     type: (generic_instance_type
       (constant)))
-
   (alias
     name: (constant)
     type: (generic_instance_type
       (constant)
       params: (param_list
         (constant))))
-
   (alias
     name: (constant)
     type: (generic_instance_type
       (constant)
       params: (param_list
         (constant))))
-
   (alias
     name: (constant)
     type: (generic_instance_type
@@ -375,27 +353,26 @@ alias Foo5 = Gen(Int32,String|Char)
       params: (param_list
         (constant)
         (constant))))
-
   (alias
     name: (constant)
     type: (generic_instance_type
       (constant)
       params: (param_list
         (constant)
-        (union_type (constant) (constant))))))
+        (union_type
+          (constant)
+          (constant))))))
 
-=====================
+================================================================================
 generic classes, etc.
-=====================
-
+================================================================================
 class Foo(*T)
   getter content
 
   def initialize(*@content : *T)
   end
 end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (class_def
@@ -414,14 +391,11 @@ end
         (splat_param
           name: (instance_var)
           type: (splat_type
-            (constant)))))
-  )
-)
+            (constant)))))))
 
-===========
+================================================================================
 splat types
-===========
-
+================================================================================
 def foo : {*{Int32 | Int8}}
 end
 
@@ -431,8 +405,7 @@ alias Bar = {Char, *Foo, String}
 
 # TODO
 # c : *Char | String = "c"
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (method_def
@@ -443,7 +416,6 @@ alias Bar = {Char, *Foo, String}
           (union_type
             (constant)
             (constant))))))
-
   (alias
     name: (constant)
     type: (tuple_type
@@ -453,7 +425,6 @@ alias Bar = {Char, *Foo, String}
             (constant)
             (constant))
           (constant)))))
-
   (alias
     name: (constant)
     type: (tuple_type
@@ -461,7 +432,5 @@ alias Bar = {Char, *Foo, String}
       (splat_type
         (constant))
       (constant)))
-
   (comment)
-  (comment)
-)
+  (comment))

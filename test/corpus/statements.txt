@@ -1,20 +1,16 @@
-vim: sw=2
-
-==========
+================================================================================
 blank file
-==========
+================================================================================
 
 
 
-
-
----
+--------------------------------------------------------------------------------
 
 (source_file)
 
-===========
+================================================================================
 blank lines
-===========
+================================================================================
 
 
 
@@ -38,17 +34,16 @@ end
 
 
 
----
+--------------------------------------------------------------------------------
 
 (source_file
   (true)
-
   (method_def
     name: (identifier)))
 
-========
+================================================================================
 comments
-========
+================================================================================
 # this is a comment
 
 a + # asdf
@@ -60,45 +55,43 @@ a + # asdf
 
 ##
 ##
----
+--------------------------------------------------------------------------------
 
 (source_file
   (comment)
-
   (op_call
     receiver: (identifier)
     operator: (operator)
     (comment)
     argument: (integer))
-
-  (integer) (comment)
+  (integer)
+  (comment)
   (op_call
     operator: (operator)
     (comment)
-    receiver: (integer)
-  )
+    receiver: (integer))
   (comment)
-
   (comment)
   (comment))
 
-=======
+================================================================================
 require
-=======
+================================================================================
 require "colorize"
 require "#{__DIR__}/relative_file"
----
+--------------------------------------------------------------------------------
+
 (source_file
-  (require (string))
+  (require
+    (string))
   (require
     (string
       (interpolation
         (pseudo_constant)))))
 
-===================
+================================================================================
 compound statements
-===================
-
+================================================================================
 ;;;nil;;;
 ;nil;nil;
   ;;;;;
@@ -121,48 +114,43 @@ nil; (nil;nil)
 (nil; nil)
 
 (nil; (nil;nil))
+--------------------------------------------------------------------------------
 
----
 (source_file
-    (nil)
- (nil) (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil)
+  (nil))
 
- (nil)
-
- (nil)
-
- (nil) (nil)
-
- (nil) (nil) (nil)
-
- (nil)
- (nil)
-
- (nil)
-
- (nil)
-
- (nil) (nil)
-
- (nil) (nil) (nil))
-
-=======
+================================================================================
 aliases
-=======
-
+================================================================================
 alias Foo = Bar::Baz
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (alias
     name: (constant)
     type: (constant)))
 
-=======
+================================================================================
 modules
-=======
-
+================================================================================
 module A; end
 module A
 ;;;;
@@ -181,17 +169,15 @@ module ::Outer
     false
   end
 end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (module_def
     name: (constant))
   (module_def
     name: (constant))
-
   (module_def
     name: (constant))
-
   (module_def
     name: (constant)
     (const_assign
@@ -200,10 +186,8 @@ end
     (const_assign
       lhs: (constant)
       rhs: (integer)))
-
   (module_def
     name: (constant))
-
   (module_def
     name: (constant)
     (module_def
@@ -211,10 +195,9 @@ end
       (true)
       (false))))
 
-=======
+================================================================================
 classes
-=======
-
+================================================================================
 class A < Super; end
 
 class B <
@@ -237,21 +220,17 @@ class ::Outer
     end
   end
 end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (class_def
     name: (constant)
     superclass: (constant))
-
   (class_def
     name: (constant)
     superclass: (constant))
-
   (class_def
     name: (constant))
-
   (class_def
     name: (constant)
     (const_assign
@@ -260,11 +239,9 @@ end
     (const_assign
       lhs: (constant)
       rhs: (integer)))
-
   (class_def
     name: (constant)
     superclass: (constant))
-
   (class_def
     name: (constant)
     (module_def
@@ -274,10 +251,9 @@ end
         (self)
         (nil)))))
 
-==================
+================================================================================
 method definitions
-==================
-
+================================================================================
 def foo
   return 3
 end
@@ -298,38 +274,49 @@ def buzz(
 )
   puts x + y
 end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (method_def
     name: (identifier)
-    (return (integer)))
-
+    (return
+      (integer)))
   (method_def
     name: (identifier))
   (method_def
     name: (identifier))
-
   (method_def
     name: (identifier)
     type: (constant)
-    (return (true)))
-
+    (return
+      (true)))
   (method_def
     name: (identifier)
     params: (param_list
-      (param name: (identifier))
-      (param name: (identifier) type: (constant))
-      (param name: (identifier) type: (constant) default: (integer))
-      (param name: (identifier) default: (nil)))
+      (param
+        name: (identifier))
+      (param
+        name: (identifier)
+        type: (constant))
+      (param
+        name: (identifier)
+        type: (constant)
+        default: (integer))
+      (param
+        name: (identifier)
+        default: (nil)))
     type: (constant))
-
   (method_def
     name: (identifier)
     params: (param_list
-      (param extern_name: (identifier) name: (identifier) default: (integer))
-      (param extern_name: (identifier) name: (identifier) default: (integer)))
+      (param
+        extern_name: (identifier)
+        name: (identifier)
+        default: (integer))
+      (param
+        extern_name: (identifier)
+        name: (identifier)
+        default: (integer)))
     (call
       method: (identifier)
       arguments: (argument_list
@@ -338,10 +325,9 @@ end
           operator: (operator)
           argument: (identifier))))))
 
-========================================
+================================================================================
 method definitions with block parameters
-========================================
-
+================================================================================
 def foo(&);end
 
 def bar(&thingy); end
@@ -355,20 +341,18 @@ end
 
 def worst_syntax(b, &:
 ->);end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (method_def
     name: (identifier)
     params: (param_list
       (block_param)))
-
   (method_def
     name: (identifier)
     params: (param_list
       (block_param
         name: (identifier))))
-
   (method_def
     name: (identifier)
     params: (param_list
@@ -377,15 +361,15 @@ def worst_syntax(b, &:
         type: (generic_instance_type
           (constant)
           params: (param_list
-           (constant))))))
-
+            (constant))))))
   (method_def
     name: (identifier)
     params: (param_list
       (block_param
         type: (proc_type
-          return: (union_type (constant) (constant))))))
-
+          return: (union_type
+            (constant)
+            (constant))))))
   (method_def
     name: (identifier)
     params: (param_list
@@ -394,23 +378,21 @@ def worst_syntax(b, &:
       (block_param
         type: (proc_type)))))
 
-========================================
+================================================================================
 method definitions with splat parameters
-========================================
-
+================================================================================
 def foo(*); end
 
 def bar(a, *b : Int32, c, **d : Bool); end
 
 def baz(*a, **b, &c); end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (method_def
     name: (identifier)
     params: (param_list
       (splat_param)))
-
   (method_def
     name: (identifier)
     params: (param_list
@@ -424,7 +406,6 @@ def baz(*a, **b, &c); end
       (double_splat_param
         name: (identifier)
         type: (constant))))
-
   (method_def
     name: (identifier)
     params: (param_list

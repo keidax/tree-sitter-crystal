@@ -1,33 +1,26 @@
-vim: sw=2
-
-===
+================================================================================
 nil
-===
-
+================================================================================
 nil
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (nil))
 
-=====
+================================================================================
 bools
-=====
-
+================================================================================
 true
 false
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (true)
   (false))
 
-===============
+================================================================================
 binary integers
-===============
-
+================================================================================
 0b0
 -0b1_
 +0b_0_1_
@@ -41,8 +34,7 @@ binary integers
 +0b01101i32
 0b1001_1101i64
 -0b___i128
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (integer)
@@ -59,10 +51,9 @@ binary integers
   (integer)
   (integer))
 
-==============
+================================================================================
 octal integers
-==============
-
+================================================================================
 0o0
 -0o7_
 +0o_2_6_
@@ -76,8 +67,7 @@ octal integers
 +0o01114i32
 0o7036_1205i64
 -0o___i128
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (integer)
@@ -94,10 +84,9 @@ octal integers
   (integer)
   (integer))
 
-================
+================================================================================
 decimal integers
-================
-
+================================================================================
 0
 -0
 0_
@@ -117,8 +106,7 @@ decimal integers
 32i32
 -123_456_789i64
 +1_000_000_000_000i128
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (integer)
@@ -141,10 +129,9 @@ decimal integers
   (integer)
   (integer))
 
-============
+================================================================================
 hex integers
-============
-
+================================================================================
 0x0
 +0x1
 -0x__f__
@@ -158,8 +145,7 @@ hex integers
 +0xi32
 0x12341234i64
 0xaabb_bbaa_abba_baabi128
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (integer)
@@ -176,11 +162,9 @@ hex integers
   (integer)
   (integer))
 
-
-======
+================================================================================
 floats
-======
-
+================================================================================
 0.0
 0.0000
 +1_2.3_4
@@ -192,8 +176,7 @@ floats
 52f32
 -2e+2f64
 1_e_
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (float)
@@ -208,11 +191,9 @@ floats
   (float)
   (float))
 
-
-=====
+================================================================================
 chars
-=====
-
+================================================================================
 'a'
 'あ'
 '"'
@@ -241,42 +222,55 @@ chars
 '\u{abcd}'
 '\u{aBcDe}'
 '\u{10FFFF}'
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (char)
   (char)
   (char)
   (char)
+  (char)
+  (char)
+  (char)
+  (char)
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence))
+  (char
+    (char_escape_sequence)))
 
-  (char)
-  (char)
-  (char)
-  (char)
-
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence))
-  (char (char_escape_sequence)))
-
-=======
+================================================================================
 strings
-=======
-
+================================================================================
 ""
 "_"
 "# not a comment"
@@ -312,8 +306,7 @@ strings
 "\c"
 "\?"
 "\#"
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (string)
@@ -321,39 +314,56 @@ strings
   (string)
   (string)
   (string)
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence))
+  (string
+    (ignored_backslash))
+  (string
+    (ignored_backslash))
+  (string
+    (ignored_backslash))
+  (string
+    (ignored_backslash)))
 
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-  (string (string_escape_sequence))
-
-  (string (ignored_backslash))
-  (string (ignored_backslash))
-  (string (ignored_backslash))
-  (string (ignored_backslash)))
-
-====================
+================================================================================
 string interpolation
-====================
-
+================================================================================
 "#"
 "\#{"
 "\#{}"
@@ -364,14 +374,14 @@ string interpolation
 "hello, #{place.to_s}"
 
 "#{a} + #{b} = #{a + b}"
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (string)
-  (string (ignored_backslash))
-  (string (ignored_backslash))
-
+  (string
+    (ignored_backslash))
+  (string
+    (ignored_backslash))
   (string
     (interpolation
       (integer)))
@@ -382,13 +392,11 @@ string interpolation
           (string
             (interpolation
               (char)))))))
-
   (string
     (interpolation
       (call
         receiver: (identifier)
         method: (identifier))))
-
   (string
     (interpolation
       (identifier))
@@ -400,10 +408,9 @@ string interpolation
         operator: (operator)
         argument: (identifier)))))
 
-===============
+================================================================================
 percent strings
-===============
-
+================================================================================
 %(abc)
 p% ()
 
@@ -440,15 +447,14 @@ p% ()
 %q(#)
 %q(#{)
 %q(#{1})
+--------------------------------------------------------------------------------
 
--------
 (source_file
   (string)
   (op_call
     (identifier)
     (operator)
     (nil))
-
   (string)
   (string)
   (op_call
@@ -456,12 +462,9 @@ p% ()
     (operator)
     (string))
   (string)
-
-  (string)
-
   (string)
   (string)
-
+  (string)
   (string
     (string_escape_sequence)
     (ignored_backslash))
@@ -469,11 +472,9 @@ p% ()
   (string
     (ignored_backslash)
     (string_escape_sequence))
-
   (string)
   (string
     (string_escape_sequence))
-
   (string
     (interpolation
       (integer)))
@@ -483,7 +484,6 @@ p% ()
   (string)
   (string
     (string_escape_sequence))
-
   (string
     (interpolation
       (symbol)))
@@ -494,19 +494,15 @@ p% ()
     (interpolation
       (tuple
         (integer))))
-
   (string)
   (string)
   (string))
 
-======================
+================================================================================
 nested percent strings
-======================
-
+================================================================================
 %(#{%|#{%<#{%(a)}>}|})
-
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (string
@@ -515,13 +511,11 @@ nested percent strings
         (interpolation
           (string
             (interpolation
-              (string)))))))
-  )
+              (string))))))))
 
-=====================
+================================================================================
 percent string arrays
-=====================
-
+================================================================================
 %w(a b	c
 d)
 
@@ -540,8 +534,7 @@ d)
 # This is possibly a bug with the Crystal parser
 %w<a <b c >
 %w<a <b c>>
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (array
@@ -549,7 +542,6 @@ d)
     (string)
     (string)
     (string))
-
   (array
     (string
       (ignored_backslash)))
@@ -571,13 +563,11 @@ d)
   (array
     (string
       (ignored_backslash)))
-
   (array
     (string
       (ignored_backslash))
     (string
       (ignored_backslash)))
-
   (array
     (string)
     (string)
@@ -586,7 +576,6 @@ d)
     (string)
     (string)
     (string))
-
   (comment)
   (array
     (string)
@@ -597,10 +586,9 @@ d)
     (string)
     (string)))
 
-=====================
+================================================================================
 percent symbol arrays
-=====================
-
+================================================================================
 %i(a b	c
 d)
 
@@ -619,14 +607,14 @@ d)
 # This is possibly a bug with the Crystal parser
 %i<a <b c >
 %i<a <b c>>
----
+--------------------------------------------------------------------------------
+
 (source_file
   (array
     (symbol)
     (symbol)
     (symbol)
     (symbol))
-
   (array
     (symbol
       (ignored_backslash)))
@@ -648,13 +636,11 @@ d)
   (array
     (symbol
       (ignored_backslash)))
-
   (array
     (symbol
       (ignored_backslash))
     (symbol
       (ignored_backslash)))
-
   (array
     (symbol)
     (symbol)
@@ -663,7 +649,6 @@ d)
     (symbol)
     (symbol)
     (symbol))
-
   (comment)
   (array
     (symbol)
@@ -674,9 +659,9 @@ d)
     (symbol)
     (symbol)))
 
-=======
+================================================================================
 symbols
-=======
+================================================================================
 :a
 :stuff!
 :Q_Q
@@ -693,8 +678,7 @@ symbols
 
 :"😀" ? puts :"\u{1234}" : :"
 "
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (symbol)
@@ -706,26 +690,25 @@ symbols
   (symbol)
   (symbol)
   (symbol)
-  (symbol (ignored_backslash))
+  (symbol
+    (ignored_backslash))
   (symbol)
-
   (conditional
     cond: (symbol)
     then: (symbol)
     else: (symbol))
-
   (conditional
     cond: (symbol)
     then: (call
       method: (identifier)
       arguments: (argument_list
-        (symbol (string_escape_sequence))))
+        (symbol
+          (string_escape_sequence))))
     else: (symbol)))
 
-=======
+================================================================================
 regexes
-=======
-
+================================================================================
 //
 /;/
 /
@@ -759,61 +742,75 @@ regexes
 /\x{12345}/
 
 /a#{/b/m}c/i
+--------------------------------------------------------------------------------
 
----
 (source_file
   (regex)
   (regex)
   (regex)
   (regex)
   (regex)
-
   (regex
     (interpolation
       (identifier)))
-
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence) (regex_modifier))
-  (regex (regex_escape_sequence) (regex_modifier))
-  (regex (regex_escape_sequence) (regex_modifier))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence) (regex_modifier))
-
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-  (regex (regex_escape_sequence))
-
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence)
+    (regex_modifier))
+  (regex
+    (regex_escape_sequence)
+    (regex_modifier))
+  (regex
+    (regex_escape_sequence)
+    (regex_modifier))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence)
+    (regex_modifier))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
+  (regex
+    (regex_escape_sequence))
   (regex
     (interpolation
       (regex
         (regex_modifier)))
-    (regex_modifier))
-)
+    (regex_modifier)))
 
-======================
+================================================================================
 regex percent literals
-======================
-
+================================================================================
 %r|a/b|
 
 %r<#{1}\#{2})>
 %r<a\>>
 %r(a\\)im
 %r{#{%r{f#{/o/}o}m}}
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (regex)
@@ -833,10 +830,9 @@ regex percent literals
           (regex))
         (regex_modifier)))))
 
-======
+================================================================================
 arrays
-======
-
+================================================================================
 [] of Bool
 
 [
@@ -850,38 +846,39 @@ arrays
 [[1,2],[3,4]]
 
 [foo 1, 2, 3]
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (array
     of: (constant))
-
   (array
     (integer)
     (integer))
-
   (array
     (nil)
     (nil)
     (nil)
-    of: (union_type (constant) (constant)))
-
+    of: (union_type
+      (constant)
+      (constant)))
   (array
     (array
-      (integer) (integer))
+      (integer)
+      (integer))
     (array
-      (integer) (integer)))
-
+      (integer)
+      (integer)))
   (array
     (call
       method: (identifier)
-      arguments: (argument_list (integer) (integer) (integer)))))
+      arguments: (argument_list
+        (integer)
+        (integer)
+        (integer)))))
 
-======
+================================================================================
 hashes
-======
-
+================================================================================
 {} of
   Int16 |
     Int32 =>
@@ -895,25 +892,32 @@ hashes
 {
   1 + 2 => { '3' => [3.0] }
 }
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (hash
-    of_key: (union_type (constant) (constant))
-    of_value: (union_type (constant) (constant)))
-
+    of_key: (union_type
+      (constant)
+      (constant))
+    of_value: (union_type
+      (constant)
+      (constant)))
   (hash
-    (hash_entry (char) (char))
-    (hash_entry (char) (char))
+    (hash_entry
+      (char)
+      (char))
+    (hash_entry
+      (char)
+      (char))
     of_key: (constant)
-    of_value: (constant)
-  )
-
+    of_value: (constant))
   (hash
-    (hash_entry (string) (integer))
-    (hash_entry (string) (integer)))
-
+    (hash_entry
+      (string)
+      (integer))
+    (hash_entry
+      (string)
+      (integer)))
   (hash
     (hash_entry
       (op_call
@@ -923,11 +927,12 @@ hashes
       (hash
         (hash_entry
           (char)
-          (array (float)))))))
+          (array
+            (float)))))))
 
-======
+================================================================================
 ranges
-======
+================================================================================
 a..1
 5...7
 0..
@@ -951,8 +956,7 @@ foo .. - bar
 foo bar... 8
 
 puts(..)
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (range
@@ -969,8 +973,8 @@ puts(..)
   (range
     operator: (operator)
     end: (integer))
-  (range operator: (operator))
-
+  (range
+    operator: (operator))
   (range
     begin: (range
       begin: (integer)
@@ -997,8 +1001,8 @@ puts(..)
     operator: (operator))
   (range
     operator: (operator)
-    end: (range operator: (operator)))
-
+    end: (range
+      operator: (operator)))
   (range
     begin: (call
       method: (identifier))
@@ -1011,7 +1015,6 @@ puts(..)
         begin: (integer)
         operator: (operator)
         end: (integer))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1019,7 +1022,6 @@ puts(..)
       (range
         operator: (operator)
         end: (integer))))
-
   (range
     begin: (identifier)
     operator: (operator)
@@ -1027,14 +1029,12 @@ puts(..)
       receiver: (integer)
       operator: (operator)
       argument: (integer)))
-
   (range
     begin: (identifier)
     operator: (operator)
     end: (op_call
       operator: (operator)
       receiver: (identifier)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1042,15 +1042,15 @@ puts(..)
         begin: (identifier)
         operator: (operator)
         end: (integer))))
-
   (call
     method: (identifier)
     arguments: (argument_list
-      (range operator: (operator)))))
+      (range
+        operator: (operator)))))
 
-======
+================================================================================
 tuples
-======
+================================================================================
 {1, "foo", 'a'}
 
 {(),}
@@ -1064,39 +1064,40 @@ tuples
 {foo, _z}
 
 { {} of TypeA => TypeB}
----
+--------------------------------------------------------------------------------
+
 (source_file
   (tuple
     (integer)
     (string)
     (char))
-
-  (tuple (nil))
-
   (tuple
-    (tuple (integer)))
-
+    (nil))
+  (tuple
+    (tuple
+      (integer)))
   (tuple
     (identifier)
     (identifier))
-
   (tuple
-    (hash of_key: (constant) of_value: (constant))))
+    (hash
+      of_key: (constant)
+      of_value: (constant))))
 
-============
+================================================================================
 named tuples
-============
+================================================================================
 {a: 123}
 
 named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
 ":7, fooB_r: {abc: 5.8},}
----
+--------------------------------------------------------------------------------
+
 (source_file
   (named_tuple
     (named_tuple_entry
       (identifier)
       (integer)))
-
   (assign
     lhs: (identifier)
     rhs: (named_tuple
@@ -1124,9 +1125,9 @@ named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
             (identifier)
             (float)))))))
 
-=============
+================================================================================
 proc literals
-=============
+================================================================================
 ->{}
 
 ->: Int32
@@ -1157,17 +1158,15 @@ String |
 end
 
 -> : -> {->} { -> { {->{}} } }
+--------------------------------------------------------------------------------
 
----
 (source_file
   (proc
     block: (block))
-
   (proc
     type: (constant)
     block: (block
       (integer)))
-
   (proc
     params: (param_list
       (param
@@ -1177,7 +1176,6 @@ end
       (proc_type))
     block: (block
       (string)))
-
   (proc
     params: (param_list
       (param
@@ -1192,12 +1190,10 @@ end
         receiver: (identifier)
         operator: (operator)
         argument: (identifier))))
-
   (proc
     block: (block
       (proc
         block: (block))))
-
   (proc
     type: (generic_instance_type
       (constant)
@@ -1217,7 +1213,6 @@ end
           (constant)
           return: (constant))))
     block: (block))
-
   (proc
     type: (proc_type
       (constant)
@@ -1232,7 +1227,6 @@ end
             name: (identifier)
             type: (constant)))
         block: (block))))
-
   (proc
     type: (proc_type
       return: (tuple_type
@@ -1242,29 +1236,26 @@ end
         block: (block
           (tuple
             (proc
-              block: (block)))))))
-)
+              block: (block))))))))
 
-================
+================================================================================
 command literals
-================
-
+================================================================================
 `tree-sitter generate`
 
 `echo "#{foo}\n"; \`echo "echo"\``
 
 puts %x[echo \t[#{foo}]\]]
----
+--------------------------------------------------------------------------------
+
 (source_file
   (command)
-
   (command
     (interpolation
       (identifier))
     (string_escape_sequence)
     (ignored_backslash)
     (ignored_backslash))
-
   (call
     (identifier)
     (argument_list

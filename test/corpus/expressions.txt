@@ -1,15 +1,11 @@
-vim: sw=2
-
-=================
+================================================================================
 plain identifiers
-=================
-
+================================================================================
 fOo
 f_0___
 🥺
 あいうえお
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (identifier)
@@ -17,10 +13,9 @@ f_0___
   (identifier)
   (identifier))
 
-============================
+================================================================================
 instance and class variables
-============================
-
+================================================================================
 class Klass
   @a = 87
   @@b = "hjkl"
@@ -32,16 +27,22 @@ class Klass
   def set_class_var(@@b)
   end
 end
+--------------------------------------------------------------------------------
 
----
 (source_file
-  (class_def name: (constant)
-    (assign lhs: (instance_var) rhs: (integer))
-    (assign lhs: (class_var) rhs: (string))
-
+  (class_def
+    name: (constant)
+    (assign
+      lhs: (instance_var)
+      rhs: (integer))
+    (assign
+      lhs: (class_var)
+      rhs: (string))
     (method_def
       name: (identifier)
-      params: (param_list (param name: (instance_var)))
+      params: (param_list
+        (param
+          name: (instance_var)))
       (call
         method: (identifier)
         arguments: (argument_list
@@ -49,30 +50,28 @@ end
             receiver: (instance_var)
             operator: (operator)
             argument: (integer)))))
-
     (method_def
       name: (identifier)
-      params: (param_list (param name: (class_var))))))
+      params: (param_list
+        (param
+          name: (class_var))))))
 
-====
+================================================================================
 self
-====
-
+================================================================================
 self
 self_
 selfself
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (self)
   (identifier)
   (identifier))
 
-================
+================================================================================
 pseudo-constants
-================
-
+================================================================================
 def pseudo_constants(caller_line = __LINE__, end_of_caller = __END_LINE__)
   puts "Called from line number: #{caller_line}"
   puts "Currently at line number: #{__LINE__}"
@@ -80,15 +79,18 @@ def pseudo_constants(caller_line = __LINE__, end_of_caller = __END_LINE__)
   puts "File path is: #{__FILE__}"
   puts "Directory file is in: #{__DIR__}"
 end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (method_def
     name: (identifier)
     params: (param_list
-      (param name: (identifier) default: (pseudo_constant))
-      (param name: (identifier) default: (pseudo_constant)))
-
+      (param
+        name: (identifier)
+        default: (pseudo_constant))
+      (param
+        name: (identifier)
+        default: (pseudo_constant)))
     (call
       method: (identifier)
       arguments: (argument_list
@@ -120,18 +122,16 @@ end
           (interpolation
             (pseudo_constant)))))))
 
-=================
+================================================================================
 special variables
-=================
-
+================================================================================
 $?
 $~
 $0
 $5
 $12?
 $099
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (special_variable)
@@ -141,10 +141,9 @@ $099
   (special_variable)
   (special_variable))
 
-============
+================================================================================
 method calls
-============
-
+================================================================================
 A.b
 
 e()
@@ -170,52 +169,50 @@ pp a # comment
   .  # asdf
      # comment
   b  # one more comment
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (call
     receiver: (constant)
     method: (identifier))
-
-  (call method: (identifier) arguments: (argument_list))
-  (call method: (identifier))
-  (call method: (identifier) arguments: (argument_list))
-
+  (call
+    method: (identifier)
+    arguments: (argument_list))
+  (call
+    method: (identifier))
+  (call
+    method: (identifier)
+    arguments: (argument_list))
   (call
     receiver: (true)
     method: (identifier))
-
   (call
     receiver: (call
       method: (identifier))
     method: (identifier))
-
   (call
     method: (identifier)
-    arguments: (argument_list (identifier)))
-
+    arguments: (argument_list
+      (identifier)))
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         method: (identifier)
-        arguments: (argument_list (integer)))))
-
+        arguments: (argument_list
+          (integer)))))
   (call
     receiver: (call
       receiver: (call
         method: (identifier))
       method: (identifier))
     method: (identifier))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         receiver: (identifier)
         method: (identifier))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -225,7 +222,6 @@ pp a # comment
           (call
             method: (identifier)
             arguments: (argument_list))))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -238,10 +234,9 @@ pp a # comment
         method: (identifier))))
   (comment))
 
-====================================
+================================================================================
 method calls with multiple arguments
-====================================
-
+================================================================================
 puts true, -1, nil
 
 puts false,
@@ -256,36 +251,47 @@ puts(
 )
 
 puts (), ()
+--------------------------------------------------------------------------------
 
----
 (source_file
   (call
     method: (identifier)
     arguments: (argument_list
-      (true) (integer) (nil)))
-
+      (true)
+      (integer)
+      (nil)))
   (call
     method: (identifier)
     arguments: (argument_list
-      (false) (integer)))
+      (false)
+      (integer)))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (true)
+      (false)
+      (nil)))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (true)
+      (false)
+      (nil)))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (true)
+      (false)
+      (nil)))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (nil)
+      (nil))))
 
-  (call
-    method: (identifier)
-    arguments: (argument_list (true) (false) (nil)))
-  (call
-    method: (identifier)
-    arguments: (argument_list (true) (false) (nil)))
-  (call
-    method: (identifier)
-    arguments: (argument_list (true) (false) (nil)))
-
-  (call
-    method: (identifier)
-    arguments: (argument_list (nil) (nil))))
-
-===============
+================================================================================
 splat arguments
-===============
+================================================================================
 puts * a
 puts *a
 puts*a
@@ -294,7 +300,8 @@ puts(*a)
 pp *a, 2, *{3}
 
 pp(*a+b, *c*d, *e = f)
----
+--------------------------------------------------------------------------------
+
 (source_file
   (op_call
     receiver: (identifier)
@@ -314,7 +321,6 @@ pp(*a+b, *c*d, *e = f)
     arguments: (argument_list
       (splat
         (identifier))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -324,7 +330,6 @@ pp(*a+b, *c*d, *e = f)
       (splat
         (tuple
           (integer)))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -343,16 +348,17 @@ pp(*a+b, *c*d, *e = f)
           lhs: (identifier)
           rhs: (identifier))))))
 
-======================
+================================================================================
 double splat arguments
-======================
+================================================================================
 puts ** kwargs
 puts **kwargs
 puts**kwargs
 puts(**kwargs)
 
 pp **{a: 1, "b": 2.0}, **{c: nil}
----
+--------------------------------------------------------------------------------
+
 (source_file
   (op_call
     receiver: (identifier)
@@ -372,23 +378,26 @@ pp **{a: 1, "b": 2.0}, **{c: nil}
     arguments: (argument_list
       (double_splat
         (identifier))))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (double_splat
         (named_tuple
-          (named_tuple_entry (identifier) (integer))
-          (named_tuple_entry (string) (float))))
+          (named_tuple_entry
+            (identifier)
+            (integer))
+          (named_tuple_entry
+            (string)
+            (float))))
       (double_splat
         (named_tuple
-          (named_tuple_entry (identifier) (nil)))))))
+          (named_tuple_entry
+            (identifier)
+            (nil)))))))
 
-
-===============
+================================================================================
 named arguments
-===============
-
+================================================================================
 foo(named: 1)
 
 bar 1, *splat, a: 2 .. 3
@@ -398,8 +407,7 @@ bar 1, c: + 2,
   3 {
 
   }
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (call
@@ -408,7 +416,6 @@ bar 1, c: + 2,
       (named_arg
         name: (identifier)
         (integer))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -421,7 +428,6 @@ bar 1, c: + 2,
           begin: (integer)
           operator: (operator)
           end: (integer)))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -436,10 +442,9 @@ bar 1, c: + 2,
         (integer)))
     block: (block)))
 
-================
+================================================================================
 plain assignment
-================
-
+================================================================================
 a = 1.0
 
 b =
@@ -450,36 +455,31 @@ d=-0.zero?
 
 (e=1f32)
 .to_s
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (assign
     lhs: (identifier)
     rhs: (float))
-
   (assign
     lhs: (identifier)
     rhs: (assign
       lhs: (identifier)
       rhs: (integer)))
-
   (assign
     lhs: (identifier)
     rhs: (call
       receiver: (integer)
       method: (identifier)))
-
   (call
     receiver: (assign
       lhs: (identifier)
       rhs: (float))
     method: (identifier)))
 
-===================
+================================================================================
 constant assignment
-===================
-
+================================================================================
 A = 1.0
 
 B =
@@ -487,29 +487,26 @@ B =
 2
 
 D::E=-0.zero?
+--------------------------------------------------------------------------------
 
----
 (source_file
   (const_assign
     lhs: (constant)
     rhs: (float))
-
   (const_assign
     lhs: (constant)
     rhs: (const_assign
       lhs: (constant)
       rhs: (integer)))
-
   (const_assign
     lhs: (constant)
     rhs: (call
       receiver: (integer)
       method: (identifier))))
 
-=================
+================================================================================
 method assignment
-=================
-
+================================================================================
 ::A.b = 1
 
 self
@@ -517,8 +514,7 @@ self
 true
 
 c.foo.bar = d.baz!.quz = 8
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (assign
@@ -526,13 +522,11 @@ c.foo.bar = d.baz!.quz = 8
       receiver: (constant)
       method: (identifier))
     rhs: (integer))
-
   (assign
     lhs: (assign_call
       receiver: (self)
       method: (identifier))
     rhs: (true))
-
   (assign
     lhs: (assign_call
       receiver: (call
@@ -547,22 +541,22 @@ c.foo.bar = d.baz!.quz = 8
         method: (identifier))
       rhs: (integer))))
 
-=========================
+================================================================================
 assignment with modifiers
-=========================
+================================================================================
 a = 5 if c
 
 foo.bar = 0.8 if true if false
 
 baz = 7 unless qux?
----
+--------------------------------------------------------------------------------
+
 (source_file
   (modifier_if
     then: (assign
       lhs: (identifier)
       rhs: (integer))
     cond: (identifier))
-
   (modifier_if
     then: (modifier_if
       then: (assign
@@ -572,7 +566,6 @@ baz = 7 unless qux?
         rhs: (float))
       cond: (true))
     cond: (false))
-
   (modifier_unless
     then: (assign
       lhs: (identifier)
@@ -580,10 +573,9 @@ baz = 7 unless qux?
     cond: (call
       method: (identifier))))
 
-===================
+================================================================================
 multiple assignment
-===================
-
+================================================================================
 foo, bar = bar, foo
 
 *splat = {1}
@@ -597,15 +589,14 @@ a, b = c = 1, d = 2
 
 d.val,e.val=:d,:e
 a, b, c = d.val, e.val, f = {1, 2, 3}
+--------------------------------------------------------------------------------
 
----
 (source_file
   (multi_assign
     lhs: (identifier)
     lhs: (identifier)
     rhs: (identifier)
     rhs: (identifier))
-
   (multi_assign
     lhs: (splat
       (identifier))
@@ -617,13 +608,11 @@ a, b, c = d.val, e.val, f = {1, 2, 3}
     rhs: (integer)
     rhs: (integer)
     rhs: (integer))
-
   (multi_assign
     lhs: (identifier)
     lhs: (identifier)
     lhs: (identifier)
     rhs: (identifier))
-
   (multi_assign
     lhs: (identifier)
     lhs: (splat
@@ -632,7 +621,6 @@ a, b, c = d.val, e.val, f = {1, 2, 3}
     rhs: (integer)
     rhs: (integer)
     rhs: (integer))
-
   (multi_assign
     lhs: (identifier)
     lhs: (identifier)
@@ -642,7 +630,6 @@ a, b, c = d.val, e.val, f = {1, 2, 3}
     rhs: (assign
       lhs: (identifier)
       rhs: (integer)))
-
   (multi_assign
     lhs: (assign_call
       receiver: (identifier)
@@ -652,12 +639,10 @@ a, b, c = d.val, e.val, f = {1, 2, 3}
       method: (identifier))
     rhs: (symbol)
     rhs: (symbol))
-
   (multi_assign
     lhs: (identifier)
     lhs: (identifier)
     lhs: (identifier)
-
     rhs: (call
       receiver: (identifier)
       method: (identifier))
@@ -671,10 +656,9 @@ a, b, c = d.val, e.val, f = {1, 2, 3}
         (integer)
         (integer)))))
 
-===============
+================================================================================
 while and until
-===============
-
+================================================================================
 while true; end
 
 while 1
@@ -686,17 +670,14 @@ until a.nil?
     break
   end
 end
-
-----
+--------------------------------------------------------------------------------
 
 (source_file
   (while
     condition: (true))
-
   (while
     condition: (integer)
     (next))
-
   (until
     condition: (call
       receiver: (identifier)
@@ -708,10 +689,9 @@ end
       condition: (identifier)
       (break))))
 
-============
+================================================================================
 begin blocks
-============
-
+================================================================================
 begin 1 end
 begin;2;end
 
@@ -741,48 +721,46 @@ end
 begin 9
 rescue err : FooError | BarError
 end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
-  (begin_block body: (integer))
-  (begin_block body: (integer))
-
-  (begin_block body: (begin_block))
-  (begin_block body: (begin_block))
-
+  (begin_block
+    body: (integer))
+  (begin_block
+    body: (integer))
+  (begin_block
+    body: (begin_block))
+  (begin_block
+    body: (begin_block))
   (begin_block
     body: (integer)
     rescue: (rescue_block
       body: (integer)))
-
   (begin_block
     body: (integer)
     rescue: (rescue_block
       body: (integer)))
-
   (begin_block
     body: (integer)
     rescue: (rescue_block
       variable: (identifier)
       body: (integer)))
-
   (begin_block
     body: (integer)
     rescue: (rescue_block
       type: (constant)
       body: (integer)))
-
   (begin_block
     body: (integer)
     rescue: (rescue_block
       variable: (identifier)
-      type: (union_type (constant) (constant)))))
+      type: (union_type
+        (constant)
+        (constant)))))
 
-=========================
+================================================================================
 binary additive operators
-=========================
-
+================================================================================
 1 + 2.0
 
 a &+ b! - C
@@ -791,15 +769,13 @@ D &-
   (E)
 
 puts "a" + "b".upcase
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (op_call
     receiver: (integer)
     operator: (operator)
     argument: (float))
-
   (op_call
     receiver: (op_call
       receiver: (identifier)
@@ -808,12 +784,10 @@ puts "a" + "b".upcase
         method: (identifier)))
     operator: (operator)
     argument: (constant))
-
   (op_call
     receiver: (constant)
     operator: (operator)
     argument: (constant))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -822,14 +796,11 @@ puts "a" + "b".upcase
         operator: (operator)
         argument: (call
           receiver: (string)
-          method: (identifier)))))
+          method: (identifier))))))
 
-    )
-
-========================
+================================================================================
 unary additive operators
-========================
-
+================================================================================
 puts + 2
 puts +2
 puts+2
@@ -855,8 +826,8 @@ d_ (- 2)
 1-+ 2
 
 - 8u8.to_i8
+--------------------------------------------------------------------------------
 
----
 (source_file
   (op_call
     receiver: (identifier)
@@ -864,7 +835,8 @@ d_ (- 2)
     argument: (integer))
   (call
     method: (identifier)
-    arguments: (argument_list (integer)))
+    arguments: (argument_list
+      (integer)))
   (op_call
     receiver: (identifier)
     operator: (operator)
@@ -875,7 +847,6 @@ d_ (- 2)
       (op_call
         operator: (operator)
         receiver: (integer))))
-
   (op_call
     receiver: (identifier)
     operator: (operator)
@@ -886,7 +857,6 @@ d_ (- 2)
       (op_call
         operator: (operator)
         receiver: (integer))))
-
   (op_call
     receiver: (identifier)
     operator: (operator)
@@ -897,7 +867,6 @@ d_ (- 2)
       (op_call
         operator: (operator)
         receiver: (integer))))
-
   (op_call
     receiver: (call
       method: (identifier))
@@ -905,7 +874,8 @@ d_ (- 2)
     argument: (integer))
   (call
     method: (identifier)
-    arguments: (argument_list (integer)))
+    arguments: (argument_list
+      (integer)))
   (op_call
     receiver: (identifier)
     operator: (operator)
@@ -916,7 +886,6 @@ d_ (- 2)
       (op_call
         operator: (operator)
         receiver: (integer))))
-
   (op_call
     operator: (operator)
     receiver: (op_call
@@ -927,7 +896,6 @@ d_ (- 2)
     receiver: (op_call
       operator: (operator)
       receiver: (float)))
-
   (op_call
     receiver: (integer)
     operator: (operator)
@@ -938,16 +906,15 @@ d_ (- 2)
     argument: (op_call
       operator: (operator)
       receiver: (integer)))
-
   (op_call
     operator: (operator)
     receiver: (call
       receiver: (integer)
       method: (identifier))))
 
-========================
+================================================================================
 multiplicative operators
-========================
+================================================================================
 1 * 2 &* 3.0 / 4.5 // 6 % asdf
 
 pp 2*7..3/1.5
@@ -964,8 +931,8 @@ baz/ 7
 
 begin 1 end / 2
 foo(// // 3)
+--------------------------------------------------------------------------------
 
----
 (source_file
   (op_call
     receiver: (op_call
@@ -983,7 +950,6 @@ foo(// // 3)
       argument: (integer))
     operator: (operator)
     argument: (identifier))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -997,7 +963,6 @@ foo(// // 3)
           receiver: (integer)
           operator: (operator)
           argument: (float)))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1008,7 +973,6 @@ foo(// // 3)
           receiver: (float)
           operator: (operator)
           argument: (integer)))))
-
   (op_call
     receiver: (call
       method: (identifier))
@@ -1030,7 +994,6 @@ foo(// // 3)
     receiver: (identifier)
     operator: (operator)
     argument: (integer))
-
   (op_call
     receiver: (begin_block
       body: (integer))
@@ -1044,16 +1007,17 @@ foo(// // 3)
         operator: (operator)
         argument: (integer)))))
 
-=====================
+================================================================================
 exponential operators
-=====================
+================================================================================
 a ** B &** 7
 
 puts 2 **
 10
 
 42.0 % 2 ** EXP
----
+--------------------------------------------------------------------------------
+
 (source_file
   (op_call
     receiver: (identifier)
@@ -1062,7 +1026,6 @@ puts 2 **
       receiver: (constant)
       operator: (operator)
       argument: (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1070,7 +1033,6 @@ puts 2 **
         receiver: (integer)
         operator: (operator)
         argument: (integer))))
-
   (op_call
     receiver: (float)
     operator: (operator)
@@ -1079,15 +1041,16 @@ puts 2 **
       operator: (operator)
       argument: (constant))))
 
-===============
+================================================================================
 shift operators
-===============
+================================================================================
 a << "asdf"
 b << c >> D
 
 array << 1 << 2
 array << (13 >> 2)
----
+--------------------------------------------------------------------------------
+
 (source_file
   (op_call
     receiver: (identifier)
@@ -1100,7 +1063,6 @@ array << (13 >> 2)
       argument: (identifier))
     operator: (operator)
     argument: (constant))
-
   (op_call
     receiver: (op_call
       receiver: (identifier)
@@ -1116,9 +1078,9 @@ array << (13 >> 2)
       operator: (operator)
       argument: (integer))))
 
-========================
+================================================================================
 binary/bitwise operators
-========================
+================================================================================
 ~1 ^ 5
 
 a ^ b | c
@@ -1126,7 +1088,8 @@ a ^ b | c
 6 & a | 1 << AMT
 
 pp [1, 2, 3] | [4, 5, 6] & [1, 4]
----
+--------------------------------------------------------------------------------
+
 (source_file
   (op_call
     receiver: (op_call
@@ -1134,7 +1097,6 @@ pp [1, 2, 3] | [4, 5, 6] & [1, 4]
       receiver: (integer))
     operator: (operator)
     argument: (integer))
-
   (op_call
     receiver: (op_call
       receiver: (identifier)
@@ -1142,7 +1104,6 @@ pp [1, 2, 3] | [4, 5, 6] & [1, 4]
       argument: (identifier))
     operator: (operator)
     argument: (identifier))
-
   (op_call
     receiver: (op_call
       receiver: (integer)
@@ -1153,24 +1114,28 @@ pp [1, 2, 3] | [4, 5, 6] & [1, 4]
       receiver: (integer)
       operator: (operator)
       argument: (constant)))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (op_call
         receiver: (array
-          (integer) (integer) (integer))
+          (integer)
+          (integer)
+          (integer))
         operator: (operator)
         argument: (op_call
           receiver: (array
-            (integer) (integer) (integer))
+            (integer)
+            (integer)
+            (integer))
           operator: (operator)
           argument: (array
-            (integer) (integer)))))))
+            (integer)
+            (integer)))))))
 
-=================
+================================================================================
 logical operators
-=================
+================================================================================
 !thingy
 a.nil? || b
 foo && bar
@@ -1182,22 +1147,39 @@ false
 a || b && c
 
 d && e || f && g
-----
+--------------------------------------------------------------------------------
+
 (source_file
-  (not (identifier))
-  (or (call receiver: (identifier) method: (identifier)) (identifier))
-  (and (identifier) (identifier))
+  (not
+    (identifier))
+  (or
+    (call
+      receiver: (identifier)
+      method: (identifier))
+    (identifier))
+  (and
+    (identifier)
+    (identifier))
+  (or
+    (not
+      (true))
+    (false))
+  (or
+    (identifier)
+    (and
+      (identifier)
+      (identifier)))
+  (or
+    (and
+      (identifier)
+      (identifier))
+    (and
+      (identifier)
+      (identifier))))
 
-  (or (not (true)) (false))
-
-  (or (identifier) (and (identifier) (identifier)))
-
-  (or (and (identifier) (identifier)) (and (identifier) (identifier))))
-
-=============================
+================================================================================
 combined assignment operators
-=============================
-
+================================================================================
 a += b
 a &+= b
 a -= b
@@ -1217,8 +1199,7 @@ a ||= b
 a &&= b
 
 ary[0..2] //= val.bar **= 7
-
-----
+--------------------------------------------------------------------------------
 
 (source_file
   (op_assign
@@ -1272,7 +1253,6 @@ ary[0..2] //= val.bar **= 7
   (op_assign
     lhs: (identifier)
     rhs: (identifier))
-
   (op_assign
     lhs: (index_call
       receiver: (identifier)
@@ -1287,9 +1267,9 @@ ary[0..2] //= val.bar **= 7
         method: (identifier))
       rhs: (integer))))
 
-=============
+================================================================================
 if/elsif/else
-=============
+================================================================================
 if true;end
 
 if ABC
@@ -1310,16 +1290,16 @@ else if DO
     puts "this"
   end
 end
+--------------------------------------------------------------------------------
 
----
 (source_file
-  (if cond: (true))
-
+  (if
+    cond: (true))
   (if
     cond: (constant)
     then: (then
-      (return (integer))))
-
+      (return
+        (integer))))
   (if
     cond: (identifier)
     else: (elsif
@@ -1327,7 +1307,6 @@ end
       else: (elsif
         cond: (identifier)
         else: (else))))
-
   (if
     cond: (call
       method: (identifier)
@@ -1353,7 +1332,6 @@ end
           method: (identifier)
           arguments: (argument_list
             (string))))))
-
   (if
     cond: (identifier)
     then: (then
@@ -1370,9 +1348,9 @@ end
             arguments: (argument_list
               (string))))))))
 
-======
+================================================================================
 unless
-======
+================================================================================
 unless a; end
 
 unless true
@@ -1380,10 +1358,11 @@ unless true
 else
   pp "hjkl"
 end
----
-(source_file
-  (unless cond: (identifier))
+--------------------------------------------------------------------------------
 
+(source_file
+  (unless
+    cond: (identifier))
   (unless
     cond: (true)
     then: (then
@@ -1397,9 +1376,9 @@ end
         arguments: (argument_list
           (string))))))
 
-==========
+================================================================================
 ternary if
-==========
+================================================================================
 thingy? ? 1 : 2.0
 
 puts true ?
@@ -1409,13 +1388,14 @@ puts true ?
 'b'
 
 ans = foo ? "foo" : bar ? "bar" : nil
----
+--------------------------------------------------------------------------------
+
 (source_file
   (conditional
-    cond: (call method: (identifier))
+    cond: (call
+      method: (identifier))
     then: (integer)
     else: (float))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1424,7 +1404,6 @@ ans = foo ? "foo" : bar ? "bar" : nil
         then: (string)
         (comment)
         else: (char))))
-
   (assign
     lhs: (identifier)
     rhs: (conditional
@@ -1435,9 +1414,9 @@ ans = foo ? "foo" : bar ? "bar" : nil
         then: (string)
         else: (nil)))))
 
-============
+================================================================================
 if modifiers
-============
+================================================================================
 def foo
   return 7 if foo?
   puts 'c' if bar
@@ -1456,12 +1435,14 @@ def foo
   foo! if bar
   "foo" if bar
 end
----
+--------------------------------------------------------------------------------
+
 (source_file
   (method_def
     name: (identifier)
     (modifier_if
-      then: (return (integer))
+      then: (return
+        (integer))
       cond: (call
         method: (identifier)))
     (modifier_if
@@ -1474,9 +1455,10 @@ end
       then: (integer)
       cond: (if
         cond: (true)
-        then: (then (string))
-        else: (else (string))))
-
+        then: (then
+          (string))
+        else: (else
+          (string))))
     (call
       method: (identifier)
       arguments: (argument_list
@@ -1498,7 +1480,6 @@ end
           method: (identifier)
           arguments: (argument_list
             (false)))))
-
     (modifier_if
       then: (call
         method: (identifier))
@@ -1507,9 +1488,9 @@ end
       then: (string)
       cond: (identifier))))
 
-================
+================================================================================
 unless modifiers
-================
+================================================================================
 def foo
   return 7 unless foo?
   puts 'c' unless bar
@@ -1528,13 +1509,14 @@ def foo
   foo! unless bar
   "foo" unless bar
 end
----
+--------------------------------------------------------------------------------
 
 (source_file
   (method_def
     name: (identifier)
     (modifier_unless
-      then: (return (integer))
+      then: (return
+        (integer))
       cond: (call
         method: (identifier)))
     (modifier_unless
@@ -1547,9 +1529,10 @@ end
       then: (integer)
       cond: (unless
         cond: (true)
-        then: (then (string))
-        else: (else (string))))
-
+        then: (then
+          (string))
+        else: (else
+          (string))))
     (call
       method: (identifier)
       arguments: (argument_list
@@ -1571,20 +1554,17 @@ end
           method: (identifier)
           arguments: (argument_list
             (false)))))
-
     (modifier_unless
       then: (call
         method: (identifier))
       cond: (identifier))
-
     (modifier_unless
       then: (string)
       cond: (identifier))))
 
-========================
+================================================================================
 calls with do/end blocks
-========================
-
+================================================================================
 a do end
 
 a b do end
@@ -1596,20 +1576,17 @@ d do end; f g do end
 end
 
 a (b do 1 end) do 2 end
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (call
     method: (identifier)
     block: (block))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (identifier))
     block: (block))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1617,26 +1594,22 @@ a (b do 1 end) do 2 end
         method: (identifier)
         arguments: (argument_list)))
     block: (block))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (call
         method: (identifier)
         arguments: (argument_list
-          (identifier))
-        ))
+          (identifier))))
     block: (block
       (call
         method: (identifier)
         block: (block))
-
       (call
         method: (identifier)
         arguments: (argument_list
           (identifier))
         block: (block))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1647,10 +1620,9 @@ a (b do 1 end) do 2 end
     block: (block
       (integer))))
 
-====================
+================================================================================
 calls with {} blocks
-====================
-
+================================================================================
 a {}
 a() {}
 
@@ -1680,33 +1652,28 @@ a b { 1 } { 2 }
 a(b { 1 }) { 2 }
 
 a 1, {2, b { 4 }} { 3 }
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (call
     method: (identifier)
     block: (block))
-
   (call
     method: (identifier)
     arguments: (argument_list)
     block: (block))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (integer))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
       (integer))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     block: (block
@@ -1714,7 +1681,6 @@ a 1, {2, b { 4 }} { 3 }
         method: (identifier)
         block: (block
           (identifier)))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1725,7 +1691,6 @@ a 1, {2, b { 4 }} { 3 }
             method: (identifier)
             block: (block
               (integer)))))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1735,7 +1700,6 @@ a 1, {2, b { 4 }} { 3 }
           (identifier))))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1745,7 +1709,6 @@ a 1, {2, b { 4 }} { 3 }
           (integer))))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     block: (block
@@ -1753,7 +1716,6 @@ a 1, {2, b { 4 }} { 3 }
         method: (identifier)
         block: (block
           (integer)))))
-
   (call
     method: (identifier)
     block: (block
@@ -1761,7 +1723,6 @@ a 1, {2, b { 4 }} { 3 }
         method: (identifier)
         block: (block
           (integer)))))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1771,7 +1732,6 @@ a 1, {2, b { 4 }} { 3 }
           (integer))))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1781,7 +1741,6 @@ a 1, {2, b { 4 }} { 3 }
           (integer))))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1791,7 +1750,6 @@ a 1, {2, b { 4 }} { 3 }
           (integer))))
     block: (block
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
@@ -1805,10 +1763,9 @@ a 1, {2, b { 4 }} { 3 }
     block: (block
       (integer))))
 
-================
+================================================================================
 block parameters
-================
-
+================================================================================
 foo{|_|}
 
 (
@@ -1820,8 +1777,8 @@ foo{|_|}
 )
 
 foo { |a, *b, (c, d,),| }
+--------------------------------------------------------------------------------
 
----
 (source_file
   (call
     method: (identifier)
@@ -1829,7 +1786,6 @@ foo { |a, *b, (c, d,),| }
       params: (param_list
         (param
           name: (identifier)))))
-
   (call
     method: (identifier)
     arguments: (argument_list)
@@ -1837,8 +1793,6 @@ foo { |a, *b, (c, d,),| }
       params: (param_list
         (param
           name: (identifier)))))
-
-
   (call
     method: (identifier)
     block: (block
@@ -1852,10 +1806,9 @@ foo { |a, *b, (c, d,),| }
         (param
           name: (identifier))))))
 
-=====
+================================================================================
 yield
-=====
-
+================================================================================
 def foo; yield; end
 
 def bar
@@ -1867,22 +1820,19 @@ def bar
 
   yield &+ yield
 end
+--------------------------------------------------------------------------------
 
----
 (source_file
   (method_def
     name: (identifier)
     (yield))
-
   (method_def
     name: (identifier)
     (yield
       with: (yield)
       arguments: (argument_list
         (yield)))
-
     (comment)
-
     (yield
       with: (yield
         arguments: (argument_list
@@ -1892,7 +1842,6 @@ end
         (yield
           arguments: (argument_list
             (string)))))
-
     (yield
       with: (call
         method: (identifier)
@@ -1902,16 +1851,14 @@ end
       arguments: (argument_list
         (splat
           (identifier))))
-
     (op_call
       receiver: (yield)
       operator: (operator)
       argument: (yield))))
 
-=====================
+================================================================================
 operator method calls
-=====================
-
+================================================================================
 1.+
 1.+ 2
 
@@ -1920,8 +1867,8 @@ nil.
 !()
 
 a.[]=(1, 2)
+--------------------------------------------------------------------------------
 
----
 (source_file
   (call
     receiver: (integer)
@@ -1931,7 +1878,6 @@ a.[]=(1, 2)
     method: (operator)
     arguments: (argument_list
       (integer)))
-
   (call
     receiver: (false)
     method: (operator)
@@ -1941,7 +1887,6 @@ a.[]=(1, 2)
     receiver: (nil)
     method: (operator)
     arguments: (argument_list))
-
   (call
     receiver: (identifier)
     method: (operator)
@@ -1949,10 +1894,9 @@ a.[]=(1, 2)
       (integer)
       (integer))))
 
-===============
+================================================================================
 index accessors
-===============
-
+================================================================================
 foo[0]
 puts {0} [0]
 puts({0} [0]?)
@@ -1962,8 +1906,7 @@ puts({0} [0]?)
 ary[*{0}, **{count: 1}]
 
 a.[count: 1, values: [5]] =0
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (index_call
@@ -1977,25 +1920,22 @@ a.[count: 1, values: [5]] =0
         (integer)))
     arguments: (argument_list
       (integer)))
-
   (call
     method: (identifier)
     arguments: (argument_list
-    (index_call
-      receiver: (tuple
-        (integer))
-      arguments: (argument_list
-        (integer)))))
-
+      (index_call
+        receiver: (tuple
+          (integer))
+        arguments: (argument_list
+          (integer)))))
   (call
     receiver: (array
       (integer)
       (integer)
       (integer))
-      method: (operator)
-      arguments: (argument_list
-        (integer)))
-
+    method: (operator)
+    arguments: (argument_list
+      (integer)))
   (index_call
     receiver: (identifier)
     arguments: (argument_list
@@ -2007,7 +1947,6 @@ a.[count: 1, values: [5]] =0
           (named_tuple_entry
             (identifier)
             (integer))))))
-
   (call
     receiver: (identifier)
     method: (operator)
@@ -2022,10 +1961,9 @@ a.[count: 1, values: [5]] =0
     arguments: (argument_list
       (integer))))
 
-================
+================================================================================
 index assignment
-================
-
+================================================================================
 a.[]=(1, 2)
 
 a[1] = 2
@@ -2033,8 +1971,7 @@ a[1] = 2
 a[0], a[2, 3] = a[2], a[0]
 
 a[1], *b[0] = a
-
----
+--------------------------------------------------------------------------------
 
 (source_file
   (call
@@ -2043,14 +1980,12 @@ a[1], *b[0] = a
     arguments: (argument_list
       (integer)
       (integer)))
-
   (assign
     lhs: (index_call
       receiver: (identifier)
       arguments: (argument_list
         (integer)))
     rhs: (integer))
-
   (multi_assign
     lhs: (index_call
       receiver: (identifier)
@@ -2069,7 +2004,6 @@ a[1], *b[0] = a
       receiver: (identifier)
       arguments: (argument_list
         (integer))))
-
   (multi_assign
     lhs: (index_call
       receiver: (identifier)
@@ -2082,10 +2016,9 @@ a[1], *b[0] = a
           (integer))))
     rhs: (identifier)))
 
-================
+================================================================================
 case expressions
-================
-
+================================================================================
 a = case "foo"
     when /o/, /z/
       puts "asdf"
@@ -2116,7 +2049,7 @@ else
   when .[] 2, count: 3
   end
 end
----
+--------------------------------------------------------------------------------
 
 (source_file
   (assign
@@ -2139,14 +2072,12 @@ end
         (string))
       (else
         (integer))))
-
   (case
     cond: (integer)
     (when
       cond: (integer)
       cond: (integer))
     (else))
-
   (case
     cond: (identifier)
     (when
@@ -2172,7 +2103,6 @@ end
       (identifier))
     (else
       (identifier)))
-
   (case
     cond: (tuple
       (identifier)
@@ -2221,9 +2151,9 @@ end
                 name: (identifier)
                 (integer)))))))))
 
-===========================
+================================================================================
 exhaustive case expressions
-===========================
+================================================================================
 case nil
 in nil
 end
@@ -2238,13 +2168,13 @@ in true, Foo
 in .zero? then 0
 in Proc(Int32, -> (Int32))
 end
----
+--------------------------------------------------------------------------------
+
 (source_file
   (case
     cond: (nil)
     (in
       cond: (nil)))
-
   (case
     cond: (identifier)
     (in
