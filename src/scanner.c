@@ -79,6 +79,8 @@ enum Token {
     LINE_BREAK,
 
     START_OF_BRACE_BLOCK,
+    START_OF_HASH_OR_TUPLE,
+    START_OF_TUPLE_TYPE,
 
     START_OF_INDEX_OPERATOR,
 
@@ -130,6 +132,10 @@ enum Token {
     // Never returned
     START_OF_PARENLESS_ARGS,
     END_OF_RANGE,
+
+    // Only used when error recovery mode is active
+    ERROR_RECOVERY,
+
     NONE,
 };
 typedef enum Token Token;
@@ -372,6 +378,179 @@ bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols
     return false;
 }
 
+void skip_space(State *state, TSLexer *lexer) {
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        lex_skip(state, lexer);
+    }
+}
+
+void skip_space_and_newline(State *state, TSLexer *lexer) {
+    while (lexer->lookahead == ' '
+        || lexer->lookahead == '\t'
+        || lexer->lookahead == '\r'
+        || lexer->lookahead == '\n') {
+        lex_skip(state, lexer);
+    }
+}
+
+bool is_const_part(int32_t codepoint) {
+    // constant tokens are in the range [0-9A-Za-z_\u{00a0}-\u{10ffff}]
+    return ('0' <= codepoint && codepoint <= '9')
+        || ('A' <= codepoint && codepoint <= 'Z')
+        || ('a' <= codepoint && codepoint <= 'z')
+        || (codepoint == '_')
+        || (0x00a0 <= codepoint && codepoint <= 0x10ffffff);
+}
+
+void consume_const(State *state, TSLexer *lexer) {
+    if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
+        lex_advance(lexer);
+
+        while (is_const_part(lexer->lookahead)) {
+            lex_advance(lexer);
+        }
+    }
+}
+
+bool lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    if (lexer->eof(lexer)) { return true; }
+
+    switch (lexer->lookahead) {
+        case '.':
+            lex_advance(lexer);
+            skip_space_and_newline(state, lexer);
+            if (lexer->lookahead != 'c') { return false; }
+            lex_advance(lexer);
+            if (lexer->lookahead != 'l') { return false; }
+            lex_advance(lexer);
+            if (lexer->lookahead != 'a') { return false; }
+            lex_advance(lexer);
+            if (lexer->lookahead != 's') { return false; }
+            lex_advance(lexer);
+            if (lexer->lookahead != 's') { return false; }
+            lex_advance(lexer);
+            if (is_const_part(lexer->lookahead)) {
+                // the keyword doesn't end after `class`
+                return false;
+            } else {
+                // .class type
+                return true;
+            }
+
+        case '?':
+        case '*':
+            lex_advance(lexer);
+            return lookahead_delimiter_or_type_suffix(state, lexer, valid_symbols);
+
+        case '-':
+            lex_advance(lexer);
+            if (lexer->lookahead == '>') {
+                // Const -> is considered a type suffix
+                return true;
+            }
+            return false;
+
+        case '=':
+            lex_advance(lexer);
+            switch (lexer->lookahead) {
+                case '>':
+                    // Const => is considered a type suffix
+                    return true;
+                case '=':
+                case '~':
+                    // other operators
+                    return false;
+                default:
+                    // Const = is considered a type suffix
+                    return true;
+            }
+
+        case '|':
+        case ',':
+        case ';':
+        case '\n':
+        case '(':
+        case ')':
+        case '[':
+        case ']':
+            // other type delimiters
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+// Check to see if the next token is part of the type grammar or not. Based on
+// https://github.com/crystal-lang/crystal/blob/cd2b7d6490301e092cecc22dfbc91d0f9553ba20/src/compiler/crystal/syntax/parser.cr#L5195
+// As the compiler code notes, these conditions are not completely accurate in determining what
+// could or could not be a type.
+bool lookahead_start_of_type(State *state, TSLexer *lexer, const bool *valid_symbols) {
+
+    skip_space(state, lexer);
+
+    if (lexer->eof(lexer)) {
+        DEBUG("reached EOF\n");
+        return false;
+    }
+
+    while (lexer->lookahead == '{' || lexer->lookahead == '(') {
+        lex_advance(lexer);
+        skip_space_and_newline(state, lexer);
+    }
+
+    while ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
+        consume_const(state, lexer);
+
+        if (lexer->lookahead == ':') {
+            lex_advance(lexer);
+
+            if (lexer->lookahead == ':') {
+                lex_advance(lexer);
+                skip_space_and_newline(state, lexer);
+                // continue consuming const segments
+            } else {
+                // named tuple start
+                return false;
+            }
+        } else {
+            skip_space(state, lexer);
+            return lookahead_delimiter_or_type_suffix(state, lexer, valid_symbols);
+        }
+    }
+
+    switch (lexer->lookahead) {
+        // TODO: handle ident
+        case '_':
+            lex_advance(lexer);
+            if (!iswalnum(lexer->lookahead)) {
+                // This is just a plain underscore
+                return true;
+            }
+            break;
+        case '-':
+            lex_advance(lexer);
+            if (lexer->lookahead == '>') {
+                // proc type
+                return true;
+            }
+            break;
+        case '*':
+            lex_advance(lexer);
+            skip_space_and_newline(state, lexer);
+            if (lexer->lookahead == '*') {
+                // double splat is not a valid type operator
+                return false;
+            } else {
+                return lookahead_start_of_type(state, lexer, valid_symbols);
+            }
+            break;
+    }
+
+    DEBUG("Not the start of a type\n");
+    return false;
+}
+
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     DEBUG("\n ==> starting external scan\n");
     DEBUG(" ==> char is '%c'\n", lexer->lookahead);
@@ -382,6 +561,8 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     LOG_SYMBOL(LINE_BREAK);
     LOG_SYMBOL(START_OF_BRACE_BLOCK);
+    LOG_SYMBOL(START_OF_HASH_OR_TUPLE);
+    LOG_SYMBOL(START_OF_TUPLE_TYPE);
     LOG_SYMBOL(START_OF_INDEX_OPERATOR);
     LOG_SYMBOL(END_OF_WITH_EXPRESSSION);
     LOG_SYMBOL(UNARY_PLUS);
@@ -417,12 +598,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(REGEX_MODIFIER);
     LOG_SYMBOL(START_OF_PARENLESS_ARGS);
     LOG_SYMBOL(END_OF_RANGE);
-    LOG_SYMBOL(NONE);
+    LOG_SYMBOL(ERROR_RECOVERY);
 
     State *state = (State *)payload;
     state->has_leading_whitespace = false;
 
-    if (valid_symbols[DELIMITED_STRING_CONTENTS] && scan_string_contents(state, lexer, valid_symbols)) {
+    if (valid_symbols[DELIMITED_STRING_CONTENTS] && HAS_ACTIVE_LITERAL(state) && scan_string_contents(state, lexer, valid_symbols)) {
         return true;
     }
 
@@ -456,24 +637,96 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     switch (lexer->lookahead) {
         case '{':
-            // In Crystal, the '{' token may be used as the start of a block,
-            // or the start of another literal like a tuple. The language
-            // resolves this potential ambiguity by requiring that the first
-            // non-block argument to a method invoked without parentheses may
-            // not start with a '{'. In other words, if you want to pass a
-            // tuple as the first argument, the method call _must_ use
-            // parentheses.
-            //
-            // This means, if we see a '{' and we're in a context where a block
-            // could be valid, it must be the start of a block.
+            if (valid_symbols[START_OF_BRACE_BLOCK]
+                || valid_symbols[START_OF_HASH_OR_TUPLE]
+                || valid_symbols[START_OF_TUPLE_TYPE]) {
 
-            // TODO: do we need to check START_OF_PARENLESS_ARGS here?
-            /* if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_PARENLESS_ARGS]) { */
-            if (valid_symbols[START_OF_BRACE_BLOCK]) {
-                lex_advance(lexer);
-                lexer->result_symbol = START_OF_BRACE_BLOCK;
-                return true;
+                if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_HASH_OR_TUPLE]
+                    && valid_symbols[START_OF_TUPLE_TYPE]) {
+
+                    if (valid_symbols[ERROR_RECOVERY]) {
+                        return false;
+                    } else {
+                        // Shouldn't reach here
+                        ASSERT(!(
+                            valid_symbols[START_OF_BRACE_BLOCK]
+                            && valid_symbols[START_OF_HASH_OR_TUPLE]
+                            && valid_symbols[START_OF_TUPLE_TYPE]));
+                        return false;
+                    }
+                } else if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_HASH_OR_TUPLE]) {
+                    // In Crystal, the '{' token may be used as the start of a block,
+                    // or the start of another literal like a tuple. The language
+                    // resolves this potential ambiguity by requiring that the first
+                    // non-block argument to a method invoked without parentheses may
+                    // not start with a '{'. In other words, if you want to pass a
+                    // tuple as the first argument, the method call _must_ use
+                    // parentheses.
+                    //
+                    // This means, if we see a '{' and we're in a context where a block
+                    // could be valid, it must be the start of a block.
+                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
+
+                    lex_advance(lexer);
+                    lexer->result_symbol = START_OF_BRACE_BLOCK;
+                    return true;
+                } else if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_TUPLE_TYPE]) {
+
+                    lex_advance(lexer);
+
+                    // We don't want to consume while looking ahead
+                    lexer->mark_end(lexer);
+
+                    // Use type lookahead to resolve conflict between start of block and start of tuple type
+                    // For example, as a tuple type:
+                    //   -> : -> {->} {
+                    //     # ...
+                    //   }
+                    // Or as a block:
+                    //   -> : -> { ; Proc(Nil).new{} }
+                    if (lookahead_start_of_type(state, lexer, valid_symbols)) {
+                        lexer->result_symbol = START_OF_TUPLE_TYPE;
+                        return true;
+                    } else {
+                        lexer->result_symbol = START_OF_BRACE_BLOCK;
+                        return true;
+                    }
+                } else if (valid_symbols[START_OF_HASH_OR_TUPLE] && valid_symbols[START_OF_TUPLE_TYPE]) {
+
+                    lex_advance(lexer);
+
+                    // We don't want to consume while looking ahead
+                    lexer->mark_end(lexer);
+
+                    // Use type lookahead to resolve conflict between start of hash/tuple and start of tuple type
+                    // For example, as a tuple type:
+                    //   def foo : ->{Char,Char}; ->{ {'a','b'} } end
+                    // Or as a hash:
+                    //   def foo : ->{'a'=>'b'}; ->{ nil } end
+                    if (lookahead_start_of_type(state, lexer, valid_symbols)) {
+                        lexer->result_symbol = START_OF_TUPLE_TYPE;
+                        return true;
+                    } else {
+                        lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                        return true;
+                    }
+                } else if (valid_symbols[START_OF_TUPLE_TYPE]) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = START_OF_TUPLE_TYPE;
+                    return true;
+                } else if (valid_symbols[START_OF_BRACE_BLOCK]) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = START_OF_BRACE_BLOCK;
+                    return true;
+                } else if (valid_symbols[START_OF_HASH_OR_TUPLE]) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                    return true;
+                } else {
+                    ASSERT(!"This should never be reached");
+                }
             }
+
             break;
         case '[':
             if (valid_symbols[START_OF_INDEX_OPERATOR]) {

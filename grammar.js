@@ -46,6 +46,8 @@ module.exports = grammar({
     $._line_break,
 
     $._start_of_brace_block,
+    $._start_of_hash_or_tuple,
+    $._start_of_tuple_type,
 
     $._start_of_index_operator,
 
@@ -100,6 +102,10 @@ module.exports = grammar({
     // to the scanner.
     $._start_of_parenless_args,
     $._end_of_range,
+
+    // This symbol is not used in the grammar. It signals to the scanner when
+    // error recovery mode is active.
+    $._error_recovery,
   ],
 
   extras: $ => [
@@ -133,9 +139,32 @@ module.exports = grammar({
     ],
 
     // Operator precedence for the type grammar
+    // Union operator `|` binds tighter than splat or proc types
     [
-      $.union_type,
-      $.proc_type,
+      'union_type',
+      'splat_type',
+    ],
+    [
+      'union_type',
+      'proc_type',
+    ],
+    // Ensure '[] of A | B' parses correctly
+    [
+      'union_type',
+      $._splattable_type,
+    ],
+
+    [
+      'class_type',
+      'proc_type',
+    ],
+    [
+      'class_type',
+      'splat_type',
+    ],
+    [
+      'class_type',
+      $._splattable_type,
     ],
 
     // Ensure `*a = b` parses as `(*a) = b`, when encountered as a standalone statement
@@ -218,7 +247,55 @@ module.exports = grammar({
     // (which is equivalent to)
     //   { {} of A => Proc(B, C, D) }
     [
-      $.hash, $.proc_type,
+      $._bare_type, $.proc_type,
+    ],
+
+    // When the parser is in this state:
+    //   -> : ( A ,
+    //            ^
+    // we need to consider each of these interpretations as legitimate:
+    //   -> : ( A ,) -> do ... end
+    //   -> : ( A , B -> ) do ... end
+    //   -> : ( A , B ) -> do ... end
+    [
+      $._bare_type, $.proc_type, $.parenthesized_proc_type,
+    ],
+
+    // When the parser is in this state:
+    //   alias A = Foo(Bar,
+    //                     ^
+    // we need to consider each of these interpretations as legitimate:
+    //   alias A = Foo(Bar,)
+    //   alias A = Foo(Bar, Baz -> Qux)
+    //   alias A = Foo(Bar, Baz)
+    [
+      $._bare_type, $.proc_type, $.type_instance_param_list,
+    ],
+
+    // Determining when to end a proc type is very complex. For instance, when
+    // the parser is in this state:
+    //   def foo : Int32 -> (
+    //                      ^
+    // we need to consider both of these interpretations as legitimate:
+    //   def foo : Int32 -> ( Int32 )
+    //     Proc(Int32, Int32).new{7}
+    //   end
+    // and:
+    //   def foo : Int32 -> ( "a"; Proc(Int32, Nil).new{}) end
+    // The external scanner contains some logic to make this decision (see
+    // `lookahead_start_of_type`) but some parsing decisions don't invoke the
+    // scanner. The way tree-sitter resolves this conflict may not exactly
+    // match the behavior of Crystal's parser, but hopefully it's good enough.
+    [
+      $.proc_type,
+    ],
+
+    // Similar conflicts for the other proc type variations
+    [
+      $.no_args_proc_type,
+    ],
+    [
+      $.parenthesized_proc_type,
     ],
   ],
 
@@ -307,6 +384,7 @@ module.exports = grammar({
       // Symbols
       $.self,
       $.constant,
+      $.generic_instance_type,
       $.pseudo_constant,
       $.special_variable,
       $.identifier,
@@ -637,7 +715,7 @@ module.exports = grammar({
     ),
 
     array: $ => {
-      const of_type = field('of', seq('of', $._type))
+      const of_type = field('of', seq('of', $._bare_type))
 
       return choice(
         seq(
@@ -657,11 +735,16 @@ module.exports = grammar({
     },
 
     hash: $ => {
-      const of_type = seq('of', field('of_key', $._type), '=>', field('of_value', $._type))
+      const of_type = seq(
+        'of',
+        field('of_key', $._bare_type),
+        '=>',
+        field('of_value', $._bare_type),
+      )
 
       return choice(
         seq(
-          '{',
+          $._start_of_hash_or_tuple,
           $.hash_entry,
           repeat(seq(',', $.hash_entry)),
           optional(','),
@@ -669,7 +752,7 @@ module.exports = grammar({
           optional(of_type),
         ),
         seq(
-          '{',
+          $._start_of_hash_or_tuple,
           '}',
           of_type,
         ),
@@ -679,7 +762,7 @@ module.exports = grammar({
     hash_entry: $ => seq($._expression, '=>', $._expression),
 
     tuple: $ => seq(
-      '{',
+      $._start_of_hash_or_tuple,
       $._expression,
       repeat(seq(',', $._expression)),
       optional(','),
@@ -701,7 +784,7 @@ module.exports = grammar({
     },
 
     named_tuple: $ => seq(
-      '{',
+      $._start_of_hash_or_tuple,
       $.named_tuple_entry,
       repeat(seq(',', $.named_tuple_entry)),
       optional(','),
@@ -738,7 +821,7 @@ module.exports = grammar({
         field('params', optional(alias($.proc_param_list, $.param_list))),
         ')',
       )
-      const return_type = field('type', seq(/:\s/, $._type))
+      const return_type = field('type', seq(/:\s/, $._bare_type))
       const block = field('block', choice(
         alias($.do_end_block, $.block),
         alias($.brace_block, $.block),
@@ -760,16 +843,16 @@ module.exports = grammar({
 
     module_def: $ => seq(
       'module',
-      field('name', $.constant), // TODO: generics
+      field('name', choice($.constant, $.generic_type)),
       seq(optional($._statements)),
       'end',
     ),
 
     class_def: $ => seq(
       'class',
-      field('name', choice($.constant)), // TODO: generics
+      field('name', choice($.constant, $.generic_type)),
       optional(seq(
-        '<', field('superclass', $.constant),
+        '<', field('superclass', choice($.constant, $.generic_instance_type)),
       )),
       seq(optional($._statements)),
       'end',
@@ -786,7 +869,7 @@ module.exports = grammar({
         alias($.identifier_method_call, $.identifier),
       ))
       const params = seq('(', field('params', optional($.param_list)), ')')
-      const return_type = field('type', seq(/[ \t]:\s/, $._type))
+      const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       // Method defs require at least one of the following after the name
       // - parameters wrapped in ()
@@ -832,7 +915,7 @@ module.exports = grammar({
     param: $ => {
       const extern_name = field('extern_name', $.identifier)
       const name = field('name', choice($.identifier, $.instance_var, $.class_var))
-      const type = field('type', seq(/[ \t]:\s/, $._type))
+      const type = field('type', seq(/[ \t]:\s/, $._bare_type))
       const default_value = field('default', seq('=', $._expression))
 
       return seq(
@@ -845,7 +928,7 @@ module.exports = grammar({
 
     splat_param: $ => {
       const name = field('name', choice($.identifier, $.instance_var, $.class_var))
-      const type = field('type', seq(/[ \t]:\s/, $._type))
+      const type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       return seq(
         '*',
@@ -856,7 +939,7 @@ module.exports = grammar({
 
     double_splat_param: $ => {
       const name = field('name', choice($.identifier, $.instance_var, $.class_var))
-      const type = field('type', seq(/[ \t]:\s/, $._type))
+      const type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       return seq(
         '**',
@@ -867,7 +950,7 @@ module.exports = grammar({
 
     block_param: $ => {
       const name = field('name', choice($.identifier, $.instance_var, $.class_var))
-      const type = field('type', seq(/:\s/, $._type))
+      const type = field('type', seq(/:\s/, $._bare_type))
 
       return seq(
         '&',
@@ -932,43 +1015,170 @@ module.exports = grammar({
 
     self: $ => 'self',
 
-    _type: $ => choice(
-      seq('(', $._type, ')'),
-      $.constant,
-      $.generic_type,
-      $.union_type,
+    // Here is a rough definition of how the Crystal parser handles types, in
+    // EBNF form. This is extracted from
+    // https://github.com/crystal-lang/crystal/blob/master/src/compiler/crystal/syntax/parser.cr
+
+    // bare_proc_type = proc_type | splat_type ;
+    // proc_type = splat_type, { ",", splat_type }, "->", [ union_type ] ;
+    // splat_type = "*", union_type | union_type ;
+    // splat_arg_type = "*", type_arg | type_arg ;
+    // union_type = atomic_suffix_type, { "|", atomic_suffix_type } ;
+    // atomic_suffix_type = metaclass_type
+    //                    | nilable_type
+    //                    | pointer_type
+    //                    | double_pointer_type
+    //                    | static_array_type
+    //                    | atomic_type ;
+    // metaclass_type = atomic_type, ".class" ;
+    // nilable_type = atomic_type, "?" ;
+    // pointer_type = atomic_type, "*" ;
+    // double_pointer_type = atomic_type, "**" ;
+    // static_array_type = atomic_type, "[", type_arg, "]" ;
+    // type_arg = number | sizeof | instance_sizeof | offsetof | union_type ;
+    // atomic_type = "self"
+    //             | "self?"
+    //             | typeof
+    //             | "_"
+    //             | generic_type
+    //             | tuple_type
+    //             | named_tuple_type
+    //             | proc_output_type
+    //             | paren_type ;
+    // proc_output_type = "->", union_type ;
+    // paren_type = "(", bare_proc_type, ")" | paren_proc_type ;
+    // paren_proc_type = "(", splat_type, { ",", splat_type },  [ "," ], ")", "->", [ union_type ] ;
+    // generic_type = constant
+    //              | constant, "(", ")"
+    //              | constant, "(", bare_proc_type, ")"
+    //              | constant, "(", splat_arg_type, { ",", splat_arg_type }, [ "," ], ")"
+    //              | constant, "(", named_type_arg, { ",", named_type_arg }, [ "," ], ")" ;
+    // tuple_type = "{", splat_type, { ",", splat_type }, [ "," ], "}" ;
+    // named_type_arg = name, ":", bare_proc_type ;
+    // named_tuple_type = "{", named_type_arg, { ",", named_type_arg }, [ "," ], "}" ;
+    // fun_pointer = "->", identifier, "(", union_type, { ",", union_type }, [ "," ], ")" ;
+    // typeof = "typeof", "(", expression, { "," expression }, ")" ;
+    // sizeof = "sizeof", "(", bare_proc_type, ")" ;
+    // instance_sizeof = "instance_sizeof", "(", bare_proc_type, ")" ;
+    // offsetof = "offsetof", "(", bare_proc_type, ",", instance_var, ")"
+    //          | "offsetof", "(", bare_proc_type, ",", number, ")" ;
+    // is_a = "is_a?", "(", bare_proc_type, ")" |
+    //      | "is_a?", union_type ;
+    //
+    // as = "as", "(", bare_proc_type, ")" |
+    //    | "as", union_type ;
+    // fun = "fun", name, "(", { union_type }, ")" ;
+    // uninitialized = "uninitialized", bare_proc_type ;
+    //
+    // type_decl = name, ":", bare_proc_type
+
+
+    // _bare_type is the main entry point for type parsing. The full type grammar is valid here.
+    _bare_type: $ => choice(
       $.proc_type,
+      $._splattable_type,
+    ),
+
+    // _splattable_type contains all types except the full proc type. It is
+    // used in places where type splats are valid, but the full proc notation
+    // is not. For example, inside tuple types this is valid:
+    //   alias Foo = {*SomeAlias}
+    // but this is not:
+    //   alias Foo = {A, B -> C}
+    _splattable_type: $ => choice(
+      $.splat_type,
+      $._type,
+    ),
+
+    // _type contains the majority of the type grammar.
+    _type: $ => choice(
+      $._parenthesized_type,
+      $.constant,
+      $.generic_instance_type,
+      $.union_type,
+      $.tuple_type,
+      alias($.no_args_proc_type, $.proc_type),
+      alias($.parenthesized_proc_type, $.proc_type),
+      $.class_type,
       // TODO: rest of type grammar
+      // metaclass
       // nilable
       // pointer
-      // static array
-      // tuple
-      // named tuple
+      // double pointer
       // self
-      // class
-      // underscore
+      // self?
       // typeof
+      // underscore
+      // named tuple
+      // "numeric" types:
+      // - static array
+      // - integer constant
+      // - sizeof
+      // - instance_sizeof
+      // - offsetof
     ),
 
-    union_type: $ => prec.right(seq(
-      $._type, repeat1(prec.left(seq('|', $._type)))),
+    class_type: $ => prec('class_type', seq(
+      $._type,
+      '.',
+      'class',
+    )),
+
+    union_type: $ => prec.right('union_type', seq(
+      $._type,
+      repeat1(prec.left(seq('|', $._type))),
+    )),
+
+    _parenthesized_type: $ => seq('(', $._bare_type, ')'),
+
+    proc_type: $ => prec('proc_type', seq(
+      $._splattable_type,
+      repeat(seq(',', $._splattable_type)),
+      '->',
+      // use dynamic precedence so a valid return type is prefered
+      optional(prec.dynamic(10, field('return', $._type))),
+    )),
+
+    no_args_proc_type: $ => prec('proc_type', seq(
+      '->',
+      optional(prec.dynamic(10, field('return', $._type))),
+    )),
+
+    parenthesized_proc_type: $ => prec('proc_type', seq(
+      '(',
+      choice(
+        seq(
+          $._splattable_type,
+          repeat1(seq(',', $._splattable_type)),
+          optional(','),
+        ),
+        seq(
+          $._bare_type,
+          ',',
+        ),
+      ),
+      ')',
+      '->',
+      optional(prec.dynamic(10, field('return', $._type))),
+    )),
+
+    splat_type: $ => prec('splat_type', seq(
+      '*', $._type,
+    )),
+
+    tuple_type: $ => seq(
+      $._start_of_tuple_type,
+      $._splattable_type,
+      repeat(seq(',', $._splattable_type)),
+      optional(','),
+      '}',
     ),
 
-    proc_type: $ => {
-      const param_types = seq(
-        $._type,
-        repeat(prec.left(seq(',', $._type))),
-      )
-
-      const return_type = field('return', $._type)
-
-      return prec.left(seq(
-        optional(param_types),
-        '->',
-        optional(return_type),
-      ))
-    },
-
+    // `generic_type` is used for generic class/module/struct definitions, e.g.
+    //   class Foo(T, U); end
+    // `generic_instance_type` is used for instances of generic types, where
+    // the parameters are filled in with concrete types, e.g.
+    //   Foo(Int32, String).new
     generic_type: $ => seq(
       $.constant,
       token.immediate('('),
@@ -976,9 +1186,36 @@ module.exports = grammar({
       ')',
     ),
 
-    type_param_list: $ => seq(
-      $._type,
-      repeat(prec.left(seq(',', $._type))),
+    type_param_splat: $ => seq('*', $.constant),
+
+    type_param_list: $ => {
+      const type_param = choice(
+        $.constant,
+        alias($.type_param_splat, $.splat),
+      )
+
+      return seq(
+        type_param,
+        repeat(seq(',', type_param)),
+        optional(','),
+      )
+    },
+
+    generic_instance_type: $ => seq(
+      $.constant,
+      token.immediate('('),
+      field('params', optional(alias($.type_instance_param_list, $.param_list))),
+      ')',
+    ),
+
+    type_instance_param_list: $ => seq(
+      choice(
+        $._bare_type,
+        seq(
+          $._splattable_type,
+          repeat1(seq(',', $._splattable_type)),
+        ),
+      ),
       optional(','),
     ),
 
@@ -1094,7 +1331,7 @@ module.exports = grammar({
     },
 
     implicit_object_tuple: $ => seq(
-      '{',
+      $._start_of_hash_or_tuple,
       optional(seq(
         $._expression,
         repeat(seq(',', $._expression)),
@@ -1368,7 +1605,7 @@ module.exports = grammar({
       'alias',
       field('name', $.constant),
       '=',
-      field('type', $._type),
+      field('type', $._bare_type),
     ),
 
     block_body_param: $ => field('name', $.identifier),
@@ -1437,7 +1674,7 @@ module.exports = grammar({
 
     rescue_block: $ => {
       const rescue_variable = field('variable', $.identifier)
-      const rescue_type = field('type', $._type)
+      const rescue_type = field('type', $._bare_type)
       const rescue_body = field('body', optional($._statements))
 
       return seq(
@@ -1568,7 +1805,7 @@ module.exports = grammar({
 
     in: $ => {
       const cond = field('cond', choice(
-        $.generic_type,
+        $.generic_instance_type,
         $.constant,
         $.true,
         $.false,

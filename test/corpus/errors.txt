@@ -39,10 +39,10 @@ regex with incorrect modifiers
 ---
 
 (source_file
+  (regex
+    (regex_modifier))
   (ERROR
-    (regex
-      (regex_modifier)))
-  (identifier))
+    (identifier)))
 
 ===================================
 unterminated percent literal string
@@ -243,3 +243,12 @@ too many nested percent literals
                                                                 (ERROR)
                                                                 (interpolation
                                                                   (integer))))))))))))))))))))))))))))))))))
+
+=============================
+error recovery of curly brace
+=============================
+a {{{{{{{
+---
+(source_file
+  (identifier)
+  (ERROR))

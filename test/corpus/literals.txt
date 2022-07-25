@@ -1152,6 +1152,12 @@ String |
 -> : Gen(A, B, C, D) {  }
 -> : Gen(A, B, C -> D) {  }
 
+-> : Int32, Int32 ->  do
+  -> (a : Int32, b : Int32) {}
+end
+
+-> : -> {->} { -> { {->{}} } }
+
 ---
 (source_file
   (proc
@@ -1193,7 +1199,7 @@ String |
         block: (block))))
 
   (proc
-    type: (generic_type
+    type: (generic_instance_type
       (constant)
       params: (param_list
         (constant)
@@ -1202,7 +1208,7 @@ String |
         (constant)))
     block: (block))
   (proc
-    type: (generic_type
+    type: (generic_instance_type
       (constant)
       params: (param_list
         (proc_type
@@ -1210,7 +1216,34 @@ String |
           (constant)
           (constant)
           return: (constant))))
-    block: (block)))
+    block: (block))
+
+  (proc
+    type: (proc_type
+      (constant)
+      (constant))
+    block: (block
+      (proc
+        params: (param_list
+          (param
+            name: (identifier)
+            type: (constant))
+          (param
+            name: (identifier)
+            type: (constant)))
+        block: (block))))
+
+  (proc
+    type: (proc_type
+      return: (tuple_type
+        (proc_type)))
+    block: (block
+      (proc
+        block: (block
+          (tuple
+            (proc
+              block: (block)))))))
+)
 
 ================
 command literals

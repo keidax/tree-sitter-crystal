@@ -2264,7 +2264,7 @@ end
         method: (identifier))
       (integer))
     (in
-      cond: (generic_type
+      cond: (generic_instance_type
         (constant)
         params: (param_list
           (constant)
