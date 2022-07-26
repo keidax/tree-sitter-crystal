@@ -50,6 +50,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -549,6 +553,10 @@
           },
           {
             "type": "tuple_type",
+            "named": true
+          },
+          {
+            "type": "underscore_type",
             "named": true
           },
           {
@@ -1804,6 +1812,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -2849,6 +2861,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
           "named": true
         },
         {
@@ -4090,6 +4106,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -4670,6 +4690,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -4709,6 +4733,10 @@
           },
           {
             "type": "tuple_type",
+            "named": true
+          },
+          {
+            "type": "underscore_type",
             "named": true
           },
           {
@@ -6018,6 +6046,10 @@
           },
           {
             "type": "tuple_type",
+            "named": true
+          },
+          {
+            "type": "underscore_type",
             "named": true
           },
           {
@@ -9805,6 +9837,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -9862,6 +9898,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
           "named": true
         },
         {
@@ -9932,6 +9972,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -9980,6 +10024,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -10012,6 +10060,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
           "named": true
         },
         {
@@ -10803,6 +10855,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -11540,6 +11596,10 @@
             "named": true
           },
           {
+            "type": "underscore_type",
+            "named": true
+          },
+          {
             "type": "union_type",
             "named": true
           }
@@ -11577,6 +11637,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
           "named": true
         },
         {
@@ -12103,6 +12167,10 @@
           "named": true
         },
         {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
           "type": "union_type",
           "named": true
         }
@@ -12139,6 +12207,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
           "named": true
         },
         {
@@ -14302,6 +14374,10 @@
   },
   {
     "type": "true",
+    "named": true
+  },
+  {
+    "type": "underscore_type",
     "named": true
   },
   {

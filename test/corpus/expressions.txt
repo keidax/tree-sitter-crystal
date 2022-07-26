@@ -1198,6 +1198,8 @@ a >>= b
 a ||= b
 a &&= b
 
+@c %= 7
+
 ary[0..2] //= val.bar **= 7
 --------------------------------------------------------------------------------
 
@@ -1253,6 +1255,9 @@ ary[0..2] //= val.bar **= 7
   (op_assign
     lhs: (identifier)
     rhs: (identifier))
+  (op_assign
+    lhs: (instance_var)
+    rhs: (integer))
   (op_assign
     lhs: (index_call
       receiver: (identifier)

@@ -235,6 +235,21 @@ def p2 : ->{Int32,}; end
 
 def p3 : ->(Int32.to_s); end
 def p4 : ->(Int32.class); end
+
+def p3 : ->{Int32 . class_thinyg}; end
+def p4 : ->{Int32 . class}; end
+
+def p1 : ->{_}; end
+def p2 : ->{_a};end
+
+def p1 : ->(_); end
+def p2 : ->(_a);end
+
+def p1 : ->{(A🦝->B🐼)}; end
+def p2 : ->{(A🦝-B🐼)}; end
+
+def p1 : ->(Int8 -> Char); end
+def p2 : ->(Int8 - Char); end
 --------------------------------------------------------------------------------
 
 (source_file
@@ -265,7 +280,66 @@ def p4 : ->(Int32.class); end
     name: (identifier)
     type: (proc_type
       return: (class_type
-        (constant)))))
+        (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (call
+        receiver: (constant)
+        method: (identifier))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (class_type
+          (constant)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (underscore_type))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (underscore_type)))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (identifier))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (proc_type
+          (constant)
+          return: (constant)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (op_call
+        receiver: (constant)
+        operator: (operator)
+        argument: (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (proc_type
+        (constant)
+        return: (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (op_call
+      receiver: (constant)
+      operator: (operator)
+      argument: (constant))))
 
 ================================================================================
 tuple types
@@ -434,3 +508,34 @@ alias Bar = {Char, *Foo, String}
       (constant)))
   (comment)
   (comment))
+
+================================================================================
+underscore type
+================================================================================
+def foo(x : _, y : _, _ -> String)
+  _ = 7
+  a, _, b = expand_foo
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (underscore_type))
+      (param
+        name: (identifier)
+        type: (proc_type
+          (underscore_type)
+          (underscore_type)
+          return: (constant))))
+    (assign
+      lhs: (identifier)
+      rhs: (integer))
+    (multi_assign
+      lhs: (identifier)
+      lhs: (identifier)
+      lhs: (identifier)
+      rhs: (identifier))))

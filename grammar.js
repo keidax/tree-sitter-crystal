@@ -1100,15 +1100,14 @@ module.exports = grammar({
       alias($.no_args_proc_type, $.proc_type),
       alias($.parenthesized_proc_type, $.proc_type),
       $.class_type,
+      $.underscore_type,
       // TODO: rest of type grammar
-      // metaclass
       // nilable
       // pointer
       // double pointer
       // self
       // self?
       // typeof
-      // underscore
       // named tuple
       // "numeric" types:
       // - static array
@@ -1218,6 +1217,8 @@ module.exports = grammar({
       ),
       optional(','),
     ),
+
+    underscore_type: $ => '_',
 
     _dot_call: $ => {
       const receiver = field('receiver', $._expression)

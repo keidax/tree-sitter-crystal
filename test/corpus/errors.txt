@@ -245,3 +245,54 @@ a {{{{{{{
 (source_file
   (identifier)
   (ERROR))
+
+================================================================================
+invalid whitespace characters
+================================================================================
+# tab is okay
+a	=	1
+# vertical tab is not
+b=2
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (assign
+    (identifier)
+    (integer))
+  (comment)
+  (identifier)
+  (ERROR
+    (UNEXPECTED 11)
+    (UNEXPECTED 11)))
+
+================================================================================
+invalid symbols
+================================================================================
+alias A = +
+alias B = /
+alias C = %
+alias D = u
+puts(** foo)
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    (constant)
+    (ERROR)
+    (constant))
+  (ERROR
+    (operator))
+  (alias
+    (constant)
+    (ERROR
+      (operator))
+    (constant))
+  (ERROR
+    (identifier))
+  (call
+    (identifier)
+    (argument_list
+      (ERROR
+        (operator))
+      (identifier))))

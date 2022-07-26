@@ -4549,6 +4549,10 @@
         {
           "type": "SYMBOL",
           "name": "class_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "underscore_type"
         }
       ]
     },
@@ -5077,6 +5081,10 @@
           ]
         }
       ]
+    },
+    "underscore_type": {
+      "type": "STRING",
+      "value": "_"
     },
     "_dot_call": {
       "type": "PREC",

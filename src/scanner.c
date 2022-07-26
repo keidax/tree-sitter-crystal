@@ -200,6 +200,7 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
                     lex_skip(state, lexer);
                     break;
                 }
+                return false;
 
             default:
                 if (crossed_newline) {
@@ -904,7 +905,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         case '/':
             if (valid_symbols[REGEX_START]
                 || valid_symbols[BINARY_SLASH]
-                || BINARY_DOUBLE_SLASH) {
+                || valid_symbols[BINARY_DOUBLE_SLASH]) {
 
                 lex_advance(lexer);
 
@@ -1191,6 +1192,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 lexer->result_symbol = END_OF_WITH_EXPRESSSION;
                 return true;
             }
+            break;
     }
 
     DEBUG(" ==> returning nothing at end\n");
