@@ -486,6 +486,95 @@ def baz(*a, **b, &c); end
         name: (identifier)))))
 
 ================================================================================
+method definitions with free variables
+================================================================================
+abstract def f(a : {T} | T) forall T
+
+def foo(x : T.class, y : U) : Array(T | U).class forall T, U
+  Array(T | U)
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (abstract_method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (union_type
+          (tuple_type
+            (constant))
+          (constant))))
+    forall: (forall
+      (constant)))
+  (method_def
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier)
+        type: (class_type
+          (constant)))
+      (param
+        name: (identifier)
+        type: (constant)))
+    type: (class_type
+      (generic_instance_type
+        (constant)
+        params: (param_list
+          (union_type
+            (constant)
+            (constant)))))
+    forall: (forall
+      (constant)
+      (constant))
+    (generic_instance_type
+      (constant)
+      params: (param_list
+        (union_type
+          (constant)
+          (constant))))))
+
+================================================================================
+class method definitions
+================================================================================
+class A::B(U); end
+
+class D
+  def self.thing
+    "a"
+  end
+
+  def A::B . c (x)
+    puts U,x
+  end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (class_def
+    name: (generic_type
+      (constant)
+      params: (param_list
+        (constant))))
+  (class_def
+    name: (constant)
+    (method_def
+      class: (self)
+      name: (identifier)
+      (string))
+    (method_def
+      class: (constant)
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (identifier)))
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (constant)
+          (identifier))))))
+
+================================================================================
 annotations
 ================================================================================
 annotation Thing

@@ -911,16 +911,18 @@ module.exports = grammar({
     ),
 
     method_def: $ => {
-      // TODO:
-      // forall
-      // class methods
       const visibility = choice('private', 'protected')
+      const klass = field('class', seq(
+        choice($.constant, $.self),
+        '.',
+      ))
       const name = field('name', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
       ))
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
+      const forall = field('forall', $.forall)
 
       // Method defs require at least one of the following after the name
       // - parameters wrapped in ()
@@ -932,7 +934,7 @@ module.exports = grammar({
       //   def foo : Bool true end
       //   def foo; end
       const param_spec = choice(
-        seq(params, optional(return_type), optional($._terminator)),
+        seq(params, optional(return_type), optional(forall), optional($._terminator)),
         seq(optional(params), return_type, optional($._terminator)),
         seq(optional(params), optional(return_type), $._terminator),
       )
@@ -940,6 +942,7 @@ module.exports = grammar({
       return seq(
         optional(visibility),
         'def',
+        optional(klass),
         name,
         param_spec,
         optional($._statements),
@@ -955,6 +958,7 @@ module.exports = grammar({
       ))
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
+      const forall = field('forall', $.forall)
 
       return seq(
         optional(visibility),
@@ -963,6 +967,17 @@ module.exports = grammar({
         name,
         optional(params),
         optional(return_type),
+        optional(forall),
+      )
+    },
+
+    forall: $ => {
+      const constant = alias($._constant_segment, $.constant)
+
+      return seq(
+        'forall',
+        constant,
+        repeat(seq(',', constant)),
       )
     },
 
