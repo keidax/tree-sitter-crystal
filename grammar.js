@@ -331,8 +331,10 @@ module.exports = grammar({
       $.annotation_def,
       $.module_def,
       $.class_def,
+      $.struct_def,
       $.alias,
       $.method_def,
+      $.abstract_method_def,
       $.require,
       $.modifier_if,
       $.modifier_unless,
@@ -341,7 +343,6 @@ module.exports = grammar({
       $.next,
       $.break,
       // TODO:
-      // struct
       // enum
       // lib
       // fun def
@@ -885,7 +886,19 @@ module.exports = grammar({
     ),
 
     class_def: $ => seq(
+      optional('abstract'),
       'class',
+      field('name', choice($.constant, $.generic_type)),
+      optional(seq(
+        '<', field('superclass', choice($.constant, $.generic_instance_type)),
+      )),
+      seq(optional($._statements)),
+      'end',
+    ),
+
+    struct_def: $ => seq(
+      optional('abstract'),
+      'struct',
       field('name', choice($.constant, $.generic_type)),
       optional(seq(
         '<', field('superclass', choice($.constant, $.generic_instance_type)),
@@ -897,7 +910,6 @@ module.exports = grammar({
     method_def: $ => {
       // TODO:
       // visibility
-      // abstract
       // forall
       // class methods
       const name = field('name', choice(
@@ -928,6 +940,23 @@ module.exports = grammar({
         param_spec,
         optional($._statements),
         'end',
+      )
+    },
+
+    abstract_method_def: $ => {
+      const name = field('name', choice(
+        $.identifier,
+        alias($.identifier_method_call, $.identifier),
+      ))
+      const params = seq('(', field('params', optional($.param_list)), ')')
+      const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
+
+      return seq(
+        'abstract',
+        'def',
+        name,
+        optional(params),
+        optional(return_type),
       )
     },
 

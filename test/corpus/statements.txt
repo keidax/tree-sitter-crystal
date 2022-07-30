@@ -198,7 +198,7 @@ end
 ================================================================================
 classes
 ================================================================================
-class A < Super; end
+abstract class A < Super; end
 
 class B <
 A
@@ -250,6 +250,75 @@ end
         name: (constant)
         (self)
         (nil)))))
+
+================================================================================
+structs
+================================================================================
+abstract struct X(U)
+  property x
+
+  def initialize(@x : U) end
+
+  abstract def foo ( a : String) : String
+end
+
+struct Y < X(Int32)
+  property y
+
+  def initialize(@x, @y : Int32) end
+
+  def foo ( a ) : String "a" end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_def
+    name: (generic_type
+      (constant)
+      params: (param_list
+        (constant)))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (identifier)))
+    (method_def
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (instance_var)
+          type: (constant))))
+    (abstract_method_def
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (identifier)
+          type: (constant)))
+      type: (constant)))
+  (struct_def
+    name: (constant)
+    superclass: (generic_instance_type
+      (constant)
+      params: (param_list
+        (constant)))
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (identifier)))
+    (method_def
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (instance_var))
+        (param
+          name: (instance_var)
+          type: (constant))))
+    (method_def
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (identifier)))
+      type: (constant)
+      (string))))
 
 ================================================================================
 method definitions
