@@ -327,6 +327,8 @@ module.exports = grammar({
       $._expression,
       $.const_assign,
       $.multi_assign,
+      $.annotation,
+      $.annotation_def,
       $.module_def,
       $.class_def,
       $.alias,
@@ -421,8 +423,6 @@ module.exports = grammar({
       alias($.index_operator, $.index_call),
       $.assign,
       alias($.operator_assign, $.op_assign),
-      // TODO:
-      // annotations
 
       // Logical operators
       $.not,
@@ -841,6 +841,42 @@ module.exports = grammar({
       optional(','),
     ),
 
+    annotation_def: $ => seq(
+      'annotation',
+      field('name', $.constant),
+      repeat($._terminator),
+      'end',
+    ),
+
+    annotation: $ => {
+      return seq(
+        '@[',
+        $.constant,
+
+        optional(
+          field('arguments',
+            alias($.annotation_argument_list, $.argument_list),
+          ),
+        ),
+        ']',
+      )
+    },
+
+    // Same as argument_list_with_parens, except without `token.immediate`
+    annotation_argument_list: $ => {
+      const args = choice($._expression, $.splat, $.double_splat, $.named_arg)
+
+      return seq(
+        '(',
+        optional(seq(
+          args,
+          repeat(seq(',', args)),
+          optional(','),
+        )),
+        ')',
+      )
+    },
+
     module_def: $ => seq(
       'module',
       field('name', choice($.constant, $.generic_type)),
@@ -919,6 +955,7 @@ module.exports = grammar({
       const default_value = field('default', seq('=', $._expression))
 
       return seq(
+        repeat($.annotation),
         optional(extern_name),
         name,
         optional(type),
@@ -931,6 +968,7 @@ module.exports = grammar({
       const type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       return seq(
+        repeat($.annotation),
         '*',
         optional(name),
         optional(type),
@@ -942,6 +980,7 @@ module.exports = grammar({
       const type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       return seq(
+        repeat($.annotation),
         '**',
         name,
         optional(type),
@@ -953,6 +992,7 @@ module.exports = grammar({
       const type = field('type', seq(/:\s/, $._bare_type))
 
       return seq(
+        repeat($.annotation),
         '&',
         optional(name),
         optional(type),

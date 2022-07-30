@@ -415,3 +415,76 @@ def baz(*a, **b, &c); end
         name: (identifier))
       (block_param
         name: (identifier)))))
+
+================================================================================
+annotations
+================================================================================
+annotation Thing
+end
+
+annotation Foo::Thing2;;;;end
+
+@[Thing]
+@[Thing(  )]
+@[ Foo:: Thing2 (
+  1, *baz, foo: 2
+) ]
+class Asdf
+  @[Foo("on def")]
+  def c2(_, @[Foo("on param")] @[Foo2::Thing2] *arg, @[ Foo(1) ] **kwarg, @[Foo("on block")] &blk : Int32 ->)
+  end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (annotation_def
+    name: (constant))
+  (annotation_def
+    name: (constant))
+  (annotation
+    (constant))
+  (annotation
+    (constant)
+    arguments: (argument_list))
+  (annotation
+    (constant)
+    arguments: (argument_list
+      (integer)
+      (splat
+        (identifier))
+      (named_arg
+        name: (identifier)
+        (integer))))
+  (class_def
+    name: (constant)
+    (annotation
+      (constant)
+      arguments: (argument_list
+        (string)))
+    (method_def
+      name: (identifier)
+      params: (param_list
+        (param
+          name: (identifier))
+        (splat_param
+          (annotation
+            (constant)
+            arguments: (argument_list
+              (string)))
+          (annotation
+            (constant))
+          name: (identifier))
+        (double_splat_param
+          (annotation
+            (constant)
+            arguments: (argument_list
+              (integer)))
+          name: (identifier))
+        (block_param
+          (annotation
+            (constant)
+            arguments: (argument_list
+              (string)))
+          name: (identifier)
+          type: (proc_type
+            (constant)))))))

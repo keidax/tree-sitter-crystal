@@ -78,6 +78,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -281,6 +289,48 @@
     }
   },
   {
+    "type": "annotation",
+    "named": true,
+    "fields": {
+      "arguments": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "argument_list",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "constant",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation_def",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "constant",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "argument_list",
     "named": true,
     "fields": {},
@@ -294,6 +344,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -579,6 +637,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -836,6 +902,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -1078,6 +1152,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -1307,6 +1389,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -1548,6 +1638,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -1821,6 +1919,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1837,6 +1945,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -2105,6 +2221,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -2344,6 +2468,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -2626,6 +2758,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -2926,6 +3066,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -3152,6 +3300,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -3375,6 +3531,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -3620,6 +3784,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -3842,6 +4014,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -4115,6 +4295,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -4131,6 +4321,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -4362,6 +4560,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -4774,6 +4980,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -5002,6 +5216,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -5320,6 +5542,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -5561,6 +5791,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -5783,6 +6021,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -6072,6 +6318,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -6303,6 +6557,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -6526,6 +6788,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -6761,6 +7031,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -6984,6 +7262,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -7219,6 +7505,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -7483,6 +7777,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -7711,6 +8013,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -7948,6 +8258,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -8164,6 +8482,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -8388,6 +8714,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -8648,6 +8982,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -8877,6 +9219,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -9116,6 +9466,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -9333,6 +9691,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -9568,6 +9934,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -9846,6 +10220,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -10107,6 +10491,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -10330,6 +10722,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -10617,6 +11017,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -10893,6 +11301,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -11112,6 +11528,14 @@
           "named": true
         },
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
+          "named": true
+        },
+        {
           "type": "array",
           "named": true
         },
@@ -11328,6 +11752,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -11605,6 +12037,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -11706,6 +12148,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -11925,6 +12375,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -12249,6 +12707,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -12501,6 +12967,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -12713,6 +13187,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -12947,6 +13429,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -13163,6 +13653,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -13397,6 +13895,14 @@
             "named": true
           },
           {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
+            "named": true
+          },
+          {
             "type": "array",
             "named": true
           },
@@ -13609,6 +14115,14 @@
         },
         {
           "type": "and",
+          "named": true
+        },
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "annotation_def",
           "named": true
         },
         {
@@ -13850,6 +14364,14 @@
           },
           {
             "type": "and",
+            "named": true
+          },
+          {
+            "type": "annotation",
+            "named": true
+          },
+          {
+            "type": "annotation_def",
             "named": true
           },
           {
@@ -14213,6 +14735,10 @@
     "named": false
   },
   {
+    "type": "@[",
+    "named": false
+  },
+  {
     "type": "[",
     "named": false
   },
@@ -14250,6 +14776,10 @@
   },
   {
     "type": "alias",
+    "named": false
+  },
+  {
+    "type": "annotation",
     "named": false
   },
   {
