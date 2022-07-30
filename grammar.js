@@ -879,6 +879,7 @@ module.exports = grammar({
     },
 
     module_def: $ => seq(
+      optional('private'),
       'module',
       field('name', choice($.constant, $.generic_type)),
       seq(optional($._statements)),
@@ -886,6 +887,7 @@ module.exports = grammar({
     ),
 
     class_def: $ => seq(
+      optional('private'),
       optional('abstract'),
       'class',
       field('name', choice($.constant, $.generic_type)),
@@ -897,6 +899,7 @@ module.exports = grammar({
     ),
 
     struct_def: $ => seq(
+      optional('private'),
       optional('abstract'),
       'struct',
       field('name', choice($.constant, $.generic_type)),
@@ -909,9 +912,9 @@ module.exports = grammar({
 
     method_def: $ => {
       // TODO:
-      // visibility
       // forall
       // class methods
+      const visibility = choice('private', 'protected')
       const name = field('name', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
@@ -935,6 +938,7 @@ module.exports = grammar({
       )
 
       return seq(
+        optional(visibility),
         'def',
         name,
         param_spec,
@@ -944,6 +948,7 @@ module.exports = grammar({
     },
 
     abstract_method_def: $ => {
+      const visibility = choice('private', 'protected')
       const name = field('name', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
@@ -952,6 +957,7 @@ module.exports = grammar({
       const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
 
       return seq(
+        optional(visibility),
         'abstract',
         'def',
         name,
@@ -1599,6 +1605,7 @@ module.exports = grammar({
       const rhs = field('rhs', $._statement)
 
       return prec.right('assignment_operator', seq(
+        optional('private'),
         lhs, '=', rhs,
       ))
     },
@@ -1672,6 +1679,7 @@ module.exports = grammar({
     },
 
     alias: $ => seq(
+      optional('private'),
       'alias',
       field('name', $.constant),
       '=',

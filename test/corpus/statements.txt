@@ -557,3 +557,40 @@ end
           name: (identifier)
           type: (proc_type
             (constant)))))))
+
+================================================================================
+method and type visibility
+================================================================================
+private def foo; end
+
+private module Foo
+  private class Bar
+    private struct Baz
+      private CONST = 1
+    end
+
+    private alias Buzz = Baz
+
+    protected def bar; end
+
+  end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (method_def
+    name: (identifier))
+  (module_def
+    name: (constant)
+    (class_def
+      name: (constant)
+      (struct_def
+        name: (constant)
+        (const_assign
+          lhs: (constant)
+          rhs: (integer)))
+      (alias
+        name: (constant)
+        type: (constant))
+      (method_def
+        name: (identifier)))))
