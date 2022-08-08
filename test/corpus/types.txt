@@ -250,6 +250,18 @@ def p2 : ->{(A🦝-B🐼)}; end
 
 def p1 : ->(Int8 -> Char); end
 def p2 : ->(Int8 - Char); end
+
+def p1 : ->{A**,B*}; end
+def p2 : ->{A*B}; end
+
+def p1 : ->(A**); end
+def p2 : ->(A*B); end
+
+def p1 : ->{A?,}; end
+def p2 : ->{A?1:2}; end
+
+def p1 : ->(A?); end
+def p2 : ->(A?1:2); end
 --------------------------------------------------------------------------------
 
 (source_file
@@ -339,7 +351,63 @@ def p2 : ->(Int8 - Char); end
     (op_call
       receiver: (constant)
       operator: (operator)
-      argument: (constant))))
+      argument: (constant)))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (pointer_type
+          (pointer_type
+            (constant)))
+        (pointer_type
+          (constant)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (op_call
+        receiver: (constant)
+        operator: (operator)
+        argument: (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (pointer_type
+        (pointer_type
+          (constant)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (op_call
+      receiver: (constant)
+      operator: (operator)
+      argument: (constant)))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (nilable_type
+          (constant)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (conditional
+        cond: (constant)
+        then: (integer)
+        else: (integer))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (nilable_type
+        (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (conditional
+      cond: (constant)
+      then: (integer)
+      else: (integer))))
 
 ================================================================================
 tuple types
@@ -539,3 +607,89 @@ end
       lhs: (identifier)
       lhs: (identifier)
       rhs: (identifier))))
+
+================================================================================
+pointer type
+================================================================================
+alias ProcP = -> C *
+alias SP = String*
+alias SPP = String**
+alias SPNP = String*?*
+
+alias Foo = {*{Char, String}*} # compiler blocks this type of splat
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    name: (constant)
+    type: (proc_type
+      return: (pointer_type
+        (constant))))
+  (alias
+    name: (constant)
+    type: (pointer_type
+      (constant)))
+  (alias
+    name: (constant)
+    type: (pointer_type
+      (pointer_type
+        (constant))))
+  (alias
+    name: (constant)
+    type: (pointer_type
+      (nilable_type
+        (pointer_type
+          (constant)))))
+  (alias
+    name: (constant)
+    type: (tuple_type
+      (splat_type
+        (pointer_type
+          (tuple_type
+            (constant)
+            (constant))))))
+  (comment))
+
+================================================================================
+nilable type
+================================================================================
+alias S = String*?
+alias I = Foo(Bar?)?????
+
+a = [] of (String ?) ?
+b = ([] of (String?)?) ? 1 : 2
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    name: (constant)
+    type: (nilable_type
+      (pointer_type
+        (constant))))
+  (alias
+    name: (constant)
+    type: (nilable_type
+      (nilable_type
+        (nilable_type
+          (nilable_type
+            (nilable_type
+              (generic_instance_type
+                (constant)
+                params: (param_list
+                  (nilable_type
+                    (constant))))))))))
+  (assign
+    lhs: (identifier)
+    rhs: (array
+      of: (nilable_type
+        (nilable_type
+          (constant)))))
+  (assign
+    lhs: (identifier)
+    rhs: (conditional
+      cond: (array
+        of: (nilable_type
+          (nilable_type
+            (constant))))
+      then: (integer)
+      else: (integer))))

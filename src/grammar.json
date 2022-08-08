@@ -5140,12 +5140,20 @@
         {
           "type": "SYMBOL",
           "name": "underscore_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nilable_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pointer_type"
         }
       ]
     },
     "class_type": {
       "type": "PREC",
-      "value": "class_type",
+      "value": "atomic_type",
       "content": {
         "type": "SEQ",
         "members": [
@@ -5166,7 +5174,7 @@
     },
     "union_type": {
       "type": "PREC_RIGHT",
-      "value": "union_type",
+      "value": "atomic_type",
       "content": {
         "type": "SEQ",
         "members": [
@@ -5672,6 +5680,40 @@
     "underscore_type": {
       "type": "STRING",
       "value": "_"
+    },
+    "nilable_type": {
+      "type": "PREC",
+      "value": "atomic_type",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_type"
+          },
+          {
+            "type": "STRING",
+            "value": "?"
+          }
+        ]
+      }
+    },
+    "pointer_type": {
+      "type": "PREC",
+      "value": "atomic_type",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_type"
+          },
+          {
+            "type": "STRING",
+            "value": "*"
+          }
+        ]
+      }
     },
     "_dot_call": {
       "type": "PREC",
@@ -9525,7 +9567,7 @@
     [
       {
         "type": "STRING",
-        "value": "union_type"
+        "value": "atomic_type"
       },
       {
         "type": "STRING",
@@ -9535,7 +9577,7 @@
     [
       {
         "type": "STRING",
-        "value": "union_type"
+        "value": "atomic_type"
       },
       {
         "type": "STRING",
@@ -9545,37 +9587,7 @@
     [
       {
         "type": "STRING",
-        "value": "union_type"
-      },
-      {
-        "type": "SYMBOL",
-        "name": "_splattable_type"
-      }
-    ],
-    [
-      {
-        "type": "STRING",
-        "value": "class_type"
-      },
-      {
-        "type": "STRING",
-        "value": "proc_type"
-      }
-    ],
-    [
-      {
-        "type": "STRING",
-        "value": "class_type"
-      },
-      {
-        "type": "STRING",
-        "value": "splat_type"
-      }
-    ],
-    [
-      {
-        "type": "STRING",
-        "value": "class_type"
+        "value": "atomic_type"
       },
       {
         "type": "SYMBOL",

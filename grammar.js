@@ -139,31 +139,18 @@ module.exports = grammar({
     ],
 
     // Operator precedence for the type grammar
-    // Union operator `|` binds tighter than splat or proc types
+    // Most type operators bind tighter than splat or proc types
     [
-      'union_type',
+      'atomic_type',
       'splat_type',
     ],
     [
-      'union_type',
+      'atomic_type',
       'proc_type',
     ],
-    // Ensure '[] of A | B' parses correctly
+    // Ensure most type parsing happens before $._type is upgraded to $._splattable_type
     [
-      'union_type',
-      $._splattable_type,
-    ],
-
-    [
-      'class_type',
-      'proc_type',
-    ],
-    [
-      'class_type',
-      'splat_type',
-    ],
-    [
-      'class_type',
+      'atomic_type',
       $._splattable_type,
     ],
 
@@ -1191,10 +1178,9 @@ module.exports = grammar({
       alias($.parenthesized_proc_type, $.proc_type),
       $.class_type,
       $.underscore_type,
+      $.nilable_type,
+      $.pointer_type,
       // TODO: rest of type grammar
-      // nilable
-      // pointer
-      // double pointer
       // self
       // self?
       // typeof
@@ -1207,13 +1193,13 @@ module.exports = grammar({
       // - offsetof
     ),
 
-    class_type: $ => prec('class_type', seq(
+    class_type: $ => prec('atomic_type', seq(
       $._type,
       '.',
       'class',
     )),
 
-    union_type: $ => prec.right('union_type', seq(
+    union_type: $ => prec.right('atomic_type', seq(
       $._type,
       repeat1(prec.left(seq('|', $._type))),
     )),
@@ -1309,6 +1295,10 @@ module.exports = grammar({
     ),
 
     underscore_type: $ => '_',
+
+    nilable_type: $ => prec('atomic_type', seq($._type, '?')),
+
+    pointer_type: $ => prec('atomic_type', seq($._type, '*')),
 
     _dot_call: $ => {
       const receiver = field('receiver', $._expression)
