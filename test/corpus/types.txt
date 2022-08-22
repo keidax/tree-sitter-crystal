@@ -424,6 +424,20 @@ def p1 : ->(self?); end
 def p2 : ->(self2); end
 def p2 : ->(selfa); end
 def p2 : ->(self!); end
+
+def p1 : ->{typeof(7)}; end
+def p1 : ->{typeof ( "A" )}; end
+def p2 : ->{typeof!}; end
+def p2 : ->{typeof🆎}; end
+def p2 : ->{typeof: "t"}; end
+
+def p1 : ->(typeof(7)); end
+def p1 : ->(typeof ( "A" )); end
+def p2 : ->(typeof!); end
+def p2 : ->(typeof🆎); end
+
+def p1 : -> { A::B, }; end
+def p2 : -> { A: :B, }; end
 --------------------------------------------------------------------------------
 
 (source_file
@@ -482,7 +496,68 @@ def p2 : ->(self!); end
     name: (identifier)
     type: (proc_type)
     (call
-      method: (identifier))))
+      method: (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (typeof
+          (integer)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (typeof
+          (string)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (call
+        method: (identifier))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (named_tuple
+      (named_tuple_entry
+        (identifier)
+        (string))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (typeof
+        (integer))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (typeof
+        (string))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (call
+      method: (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (identifier))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (constant))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (named_tuple
+      (named_tuple_entry
+        (identifier)
+        (symbol)))))
 
 ================================================================================
 tuple types
@@ -768,3 +843,30 @@ b = ([] of (String?)?) ? 1 : 2
             (constant))))
       then: (integer)
       else: (integer))))
+
+================================================================================
+typeof
+================================================================================
+alias Foo = {Char, typeof(1 + w)}
+
+def p2 : ->{asdf: typeof(FOO)}; end
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    name: (constant)
+    type: (tuple_type
+      (constant)
+      (typeof
+        (op_call
+          receiver: (integer)
+          operator: (operator)
+          argument: (identifier)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (named_tuple
+      (named_tuple_entry
+        (identifier)
+        (typeof
+          (constant))))))

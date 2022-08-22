@@ -420,10 +420,10 @@ module.exports = grammar({
 
       // Keywords and special methods
       $.yield,
+      $.typeof,
       // TODO
       // super
       // previous_def
-      // typeof
       // is_a?
       // nil?
       // responds_to?
@@ -1058,6 +1058,15 @@ module.exports = grammar({
       )
     },
 
+    typeof: $ => seq(
+      'typeof',
+      '(',
+      $._expression,
+      repeat(seq(',', $._expression)),
+      optional(','),
+      ')',
+    ),
+
     _constant_segment: $ => token(seq(const_start, repeat(ident_part))),
 
     constant: $ => {
@@ -1182,8 +1191,8 @@ module.exports = grammar({
       $.nilable_type,
       $.pointer_type,
       $.self,
+      $.typeof,
       // TODO: rest of type grammar
-      // typeof
       // named tuple
       // "numeric" types:
       // - static array

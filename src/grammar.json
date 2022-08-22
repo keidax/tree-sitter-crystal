@@ -516,6 +516,10 @@
         {
           "type": "SYMBOL",
           "name": "yield"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "typeof"
         }
       ]
     },
@@ -3110,7 +3114,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_start_of_hash_or_tuple"
+          "name": "_start_of_named_tuple"
         },
         {
           "type": "SYMBOL",
@@ -4869,6 +4873,55 @@
         }
       ]
     },
+    "typeof": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "typeof"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_expression"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
     "_constant_segment": {
       "type": "TOKEN",
       "content": {
@@ -5148,6 +5201,14 @@
         {
           "type": "SYMBOL",
           "name": "pointer_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "self"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "typeof"
         }
       ]
     },
@@ -9687,6 +9748,10 @@
     {
       "type": "SYMBOL",
       "name": "_start_of_hash_or_tuple"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_start_of_named_tuple"
     },
     {
       "type": "SYMBOL",
