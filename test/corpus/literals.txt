@@ -1091,6 +1091,8 @@ named tuples
 
 named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
 ":7, fooB_r: {abc: 5.8},}
+
+{ self: self, true: true, nil: nil, _🎃: " " }
 --------------------------------------------------------------------------------
 
 (source_file
@@ -1123,7 +1125,20 @@ named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
         (named_tuple
           (named_tuple_entry
             (identifier)
-            (float)))))))
+            (float))))))
+  (named_tuple
+    (named_tuple_entry
+      (identifier)
+      (self))
+    (named_tuple_entry
+      (identifier)
+      (true))
+    (named_tuple_entry
+      (identifier)
+      (nil))
+    (named_tuple_entry
+      (identifier)
+      (string))))
 
 ================================================================================
 proc literals

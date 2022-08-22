@@ -47,6 +47,7 @@ module.exports = grammar({
 
     $._start_of_brace_block,
     $._start_of_hash_or_tuple,
+    $._start_of_named_tuple,
     $._start_of_tuple_type,
 
     $._start_of_index_operator,
@@ -772,7 +773,7 @@ module.exports = grammar({
     },
 
     named_tuple: $ => seq(
-      $._start_of_hash_or_tuple,
+      $._start_of_named_tuple,
       $.named_tuple_entry,
       repeat(seq(',', $.named_tuple_entry)),
       optional(','),
@@ -1180,9 +1181,8 @@ module.exports = grammar({
       $.underscore_type,
       $.nilable_type,
       $.pointer_type,
+      $.self,
       // TODO: rest of type grammar
-      // self
-      // self?
       // typeof
       // named tuple
       // "numeric" types:

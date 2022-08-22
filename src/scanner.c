@@ -80,6 +80,7 @@ enum Token {
 
     START_OF_BRACE_BLOCK,
     START_OF_HASH_OR_TUPLE,
+    START_OF_NAMED_TUPLE,
     START_OF_TUPLE_TYPE,
 
     START_OF_INDEX_OPERATOR,
@@ -139,6 +140,13 @@ enum Token {
     NONE,
 };
 typedef enum Token Token;
+
+enum LookaheadResult {
+    LOOKAHEAD_UNKNOWN = 0,
+    LOOKAHEAD_TYPE,
+    LOOKAHEAD_NAMED_TUPLE,
+};
+typedef enum LookaheadResult LookaheadResult;
 
 void *tree_sitter_crystal_external_scanner_create() {
     State *state;
@@ -394,8 +402,9 @@ void skip_space_and_newline(State *state, TSLexer *lexer) {
     }
 }
 
-bool is_const_part(int32_t codepoint) {
-    // constant tokens are in the range [0-9A-Za-z_\u{00a0}-\u{10ffff}]
+bool is_ident_part(int32_t codepoint) {
+    // identifier token characters are in the range [0-9A-Za-z_\u{00a0}-\u{10ffff}]
+    // (except for the first and last character)
     return ('0' <= codepoint && codepoint <= '9')
         || ('A' <= codepoint && codepoint <= 'Z')
         || ('a' <= codepoint && codepoint <= 'z')
@@ -407,13 +416,14 @@ void consume_const(State *state, TSLexer *lexer) {
     if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
         lex_advance(lexer);
 
-        while (is_const_part(lexer->lookahead)) {
+        while (is_ident_part(lexer->lookahead)) {
             lex_advance(lexer);
         }
     }
 }
 
-bool lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer, const bool *valid_symbols) {
+// Check if there is a type suffix (e.g. `?` or `.class`) or a delimiter like `|`
+LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer) {
     if (lexer->eof(lexer)) { return true; }
 
     switch (lexer->lookahead) {
@@ -430,40 +440,40 @@ bool lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer, const bool
             lex_advance(lexer);
             if (lexer->lookahead != 's') { return false; }
             lex_advance(lexer);
-            if (is_const_part(lexer->lookahead)) {
+            if (is_ident_part(lexer->lookahead)) {
                 // the keyword doesn't end after `class`
-                return false;
+                return LOOKAHEAD_UNKNOWN;
             } else {
                 // .class type
-                return true;
+                return LOOKAHEAD_TYPE;
             }
 
         case '?':
         case '*':
             lex_advance(lexer);
-            return lookahead_delimiter_or_type_suffix(state, lexer, valid_symbols);
+            return lookahead_delimiter_or_type_suffix(state, lexer);
 
         case '-':
             lex_advance(lexer);
             if (lexer->lookahead == '>') {
                 // Const -> is considered a type suffix
-                return true;
+                return LOOKAHEAD_TYPE;
             }
-            return false;
+            return LOOKAHEAD_UNKNOWN;
 
         case '=':
             lex_advance(lexer);
             switch (lexer->lookahead) {
                 case '>':
                     // Const => is considered a type suffix
-                    return true;
+                    return LOOKAHEAD_TYPE;
                 case '=':
                 case '~':
                     // other operators
-                    return false;
+                    return LOOKAHEAD_UNKNOWN;
                 default:
                     // Const = is considered a type suffix
-                    return true;
+                    return LOOKAHEAD_TYPE;
             }
 
         case '|':
@@ -475,24 +485,57 @@ bool lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer, const bool
         case '[':
         case ']':
             // other type delimiters
-            return true;
+            return LOOKAHEAD_TYPE;
 
         default:
-            return false;
+            return LOOKAHEAD_UNKNOWN;
     }
+}
+
+// Check if there is an identifier followed by `:` indicating the start of a named tuple item
+LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexer, bool started) {
+    if (started
+        || ('a' <= lexer->lookahead && lexer->lookahead <= 'z')
+        || ('A' <= lexer->lookahead && lexer->lookahead <= 'Z')
+        || (lexer->lookahead == '_')
+        || (0x00a0 <= lexer->lookahead && lexer->lookahead <= 0x10ffffff)) {
+
+        while (('0' <= lexer->lookahead && lexer->lookahead <= '9')
+            || ('A' <= lexer->lookahead && lexer->lookahead <= 'Z')
+            || ('a' <= lexer->lookahead && lexer->lookahead <= 'z')
+            || (lexer->lookahead == '_')
+            || (0x00a0 <= lexer->lookahead && lexer->lookahead <= 0x10ffffff)) {
+            lex_advance(lexer);
+        }
+
+        if ((lexer->lookahead == '!') || (lexer->lookahead == '?')) {
+            lex_advance(lexer);
+        }
+
+        if (lexer->lookahead == ':') {
+            lex_advance(lexer);
+            if (lexer->lookahead == ':') {
+                return LOOKAHEAD_UNKNOWN;
+            }
+
+            return LOOKAHEAD_NAMED_TUPLE;
+        }
+    }
+
+    return LOOKAHEAD_UNKNOWN;
 }
 
 // Check to see if the next token is part of the type grammar or not. Based on
 // https://github.com/crystal-lang/crystal/blob/cd2b7d6490301e092cecc22dfbc91d0f9553ba20/src/compiler/crystal/syntax/parser.cr#L5195
 // As the compiler code notes, these conditions are not completely accurate in determining what
 // could or could not be a type.
-bool lookahead_start_of_type(State *state, TSLexer *lexer, const bool *valid_symbols) {
+LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
 
     skip_space(state, lexer);
 
     if (lexer->eof(lexer)) {
         DEBUG("reached EOF\n");
-        return false;
+        return LOOKAHEAD_UNKNOWN;
     }
 
     while (lexer->lookahead == '{' || lexer->lookahead == '(') {
@@ -500,6 +543,70 @@ bool lookahead_start_of_type(State *state, TSLexer *lexer, const bool *valid_sym
         skip_space_and_newline(state, lexer);
     }
 
+    // Check for identifier
+    if (lexer->lookahead == 't') {
+        lex_advance(lexer);
+        if (lexer->lookahead == 'y') {
+            lex_advance(lexer);
+            if (lexer->lookahead == 'p') {
+                lex_advance(lexer);
+                if (lexer->lookahead == 'e') {
+                    lex_advance(lexer);
+                    if (lexer->lookahead == 'o') {
+                        lex_advance(lexer);
+                        if (lexer->lookahead == 'f') {
+                            lex_advance(lexer);
+
+                            if (lexer->lookahead == ':') {
+                                // named tuple start
+                                return LOOKAHEAD_NAMED_TUPLE;
+                            }
+
+                            if (is_ident_part(lexer->lookahead)
+                                || (lexer->lookahead == '!')
+                                || (lexer->lookahead == '?')) {
+                                // identifier continues beyond `typeof`
+                                return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                            }
+
+                            return LOOKAHEAD_TYPE;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (lexer->lookahead == 's') {
+        lex_advance(lexer);
+        if (lexer->lookahead == 'e') {
+            lex_advance(lexer);
+            if (lexer->lookahead == 'l') {
+                lex_advance(lexer);
+                if (lexer->lookahead == 'f') {
+                    lex_advance(lexer);
+
+                    if (lexer->lookahead == ':') {
+                        // named tuple start
+                        return LOOKAHEAD_NAMED_TUPLE;
+                    }
+
+                    if (is_ident_part(lexer->lookahead)
+                        || (lexer->lookahead == '!')) {
+                        // identifier continues beyond `self`
+                        return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                    }
+
+                    skip_space(state, lexer);
+                    return lookahead_delimiter_or_type_suffix(state, lexer);
+                }
+            }
+        }
+    } else if (('a' <= lexer->lookahead && lexer->lookahead <= 'z')
+        || (0x00a0 <= lexer->lookahead && lexer->lookahead <= 0x10ffffff)) {
+        // other identifiers are not part of the type grammar
+        return lookahead_start_of_named_tuple_entry(state, lexer, false);
+    }
+
+    // Check for constant
     while ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
         consume_const(state, lexer);
 
@@ -512,28 +619,27 @@ bool lookahead_start_of_type(State *state, TSLexer *lexer, const bool *valid_sym
                 // continue consuming const segments
             } else {
                 // named tuple start
-                return false;
+                return LOOKAHEAD_NAMED_TUPLE;
             }
         } else {
             skip_space(state, lexer);
-            return lookahead_delimiter_or_type_suffix(state, lexer, valid_symbols);
+            return lookahead_delimiter_or_type_suffix(state, lexer);
         }
     }
 
     switch (lexer->lookahead) {
-        // TODO: handle ident
         case '_':
             lex_advance(lexer);
             if (!iswalnum(lexer->lookahead)) {
                 // This is just a plain underscore
-                return true;
+                return LOOKAHEAD_TYPE;
             }
             break;
         case '-':
             lex_advance(lexer);
             if (lexer->lookahead == '>') {
                 // proc type
-                return true;
+                return LOOKAHEAD_TYPE;
             }
             break;
         case '*':
@@ -541,15 +647,22 @@ bool lookahead_start_of_type(State *state, TSLexer *lexer, const bool *valid_sym
             skip_space_and_newline(state, lexer);
             if (lexer->lookahead == '*') {
                 // double splat is not a valid type operator
-                return false;
+                return LOOKAHEAD_UNKNOWN;
             } else {
-                return lookahead_start_of_type(state, lexer, valid_symbols);
+                if (lookahead_start_of_type(state, lexer) == LOOKAHEAD_TYPE) {
+                    return LOOKAHEAD_TYPE;
+                } else {
+                    // If lookahead_start_of_type returns LOOKAHEAD_NAMED_TUPLE
+                    // at this point, it's not valid, because named tuple tags
+                    // can't start with '*'
+                    return LOOKAHEAD_UNKNOWN;
+                }
             }
             break;
     }
 
     DEBUG("Not the start of a type\n");
-    return false;
+    return LOOKAHEAD_UNKNOWN;
 }
 
 bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
@@ -563,6 +676,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(LINE_BREAK);
     LOG_SYMBOL(START_OF_BRACE_BLOCK);
     LOG_SYMBOL(START_OF_HASH_OR_TUPLE);
+    LOG_SYMBOL(START_OF_NAMED_TUPLE);
     LOG_SYMBOL(START_OF_TUPLE_TYPE);
     LOG_SYMBOL(START_OF_INDEX_OPERATOR);
     LOG_SYMBOL(END_OF_WITH_EXPRESSSION);
@@ -640,10 +754,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         case '{':
             if (valid_symbols[START_OF_BRACE_BLOCK]
                 || valid_symbols[START_OF_HASH_OR_TUPLE]
+                || valid_symbols[START_OF_NAMED_TUPLE]
                 || valid_symbols[START_OF_TUPLE_TYPE]) {
 
                 if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_HASH_OR_TUPLE]
-                    && valid_symbols[START_OF_TUPLE_TYPE]) {
+                    && valid_symbols[START_OF_NAMED_TUPLE] && valid_symbols[START_OF_TUPLE_TYPE]) {
 
                     if (valid_symbols[ERROR_RECOVERY]) {
                         return false;
@@ -652,10 +767,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         ASSERT(!(
                             valid_symbols[START_OF_BRACE_BLOCK]
                             && valid_symbols[START_OF_HASH_OR_TUPLE]
+                            && valid_symbols[START_OF_NAMED_TUPLE]
                             && valid_symbols[START_OF_TUPLE_TYPE]));
                         return false;
                     }
-                } else if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_HASH_OR_TUPLE]) {
+                } else if (valid_symbols[START_OF_BRACE_BLOCK]
+                    && (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])) {
                     // In Crystal, the '{' token may be used as the start of a block,
                     // or the start of another literal like a tuple. The language
                     // resolves this potential ambiguity by requiring that the first
@@ -674,7 +791,6 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 } else if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_TUPLE_TYPE]) {
 
                     lex_advance(lexer);
-
                     // We don't want to consume while looking ahead
                     lexer->mark_end(lexer);
 
@@ -685,17 +801,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     //   }
                     // Or as a block:
                     //   -> : -> { ; Proc(Nil).new{} }
-                    if (lookahead_start_of_type(state, lexer, valid_symbols)) {
+                    if (lookahead_start_of_type(state, lexer)) {
                         lexer->result_symbol = START_OF_TUPLE_TYPE;
                         return true;
                     } else {
                         lexer->result_symbol = START_OF_BRACE_BLOCK;
                         return true;
                     }
-                } else if (valid_symbols[START_OF_HASH_OR_TUPLE] && valid_symbols[START_OF_TUPLE_TYPE]) {
+                } else if (valid_symbols[START_OF_TUPLE_TYPE]
+                    && (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])) {
 
                     lex_advance(lexer);
-
                     // We don't want to consume while looking ahead
                     lexer->mark_end(lexer);
 
@@ -704,8 +820,31 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     //   def foo : ->{Char,Char}; ->{ {'a','b'} } end
                     // Or as a hash:
                     //   def foo : ->{'a'=>'b'}; ->{ nil } end
-                    if (lookahead_start_of_type(state, lexer, valid_symbols)) {
+                    LookaheadResult res = lookahead_start_of_type(state, lexer);
+
+                    if (res == LOOKAHEAD_TYPE) {
                         lexer->result_symbol = START_OF_TUPLE_TYPE;
+                        return true;
+                    } else if ((res == LOOKAHEAD_NAMED_TUPLE) && valid_symbols[START_OF_NAMED_TUPLE]) {
+                        lexer->result_symbol = START_OF_NAMED_TUPLE;
+                        return true;
+                    } else if (valid_symbols[START_OF_HASH_OR_TUPLE]) {
+                        lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                        return true;
+                    } else {
+                        ASSERT(!"expected named tuple");
+                        return false;
+                    }
+                } else if (valid_symbols[START_OF_HASH_OR_TUPLE] && valid_symbols[START_OF_NAMED_TUPLE]) {
+                    lex_advance(lexer);
+                    // We don't want to consume while looking ahead
+                    lexer->mark_end(lexer);
+
+                    skip_space_and_newline(state, lexer);
+                    LookaheadResult res = lookahead_start_of_named_tuple_entry(state, lexer, false);
+
+                    if (res == LOOKAHEAD_NAMED_TUPLE) {
+                        lexer->result_symbol = START_OF_NAMED_TUPLE;
                         return true;
                     } else {
                         lexer->result_symbol = START_OF_HASH_OR_TUPLE;
@@ -722,6 +861,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 } else if (valid_symbols[START_OF_HASH_OR_TUPLE]) {
                     lex_advance(lexer);
                     lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                    return true;
+                } else if (valid_symbols[START_OF_NAMED_TUPLE]) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = START_OF_NAMED_TUPLE;
                     return true;
                 } else {
                     ASSERT(!"This should never be reached");

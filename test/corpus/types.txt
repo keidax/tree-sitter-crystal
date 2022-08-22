@@ -410,6 +410,81 @@ def p2 : ->(A?1:2); end
       else: (integer))))
 
 ================================================================================
+proc ambiguity resolution, continued
+================================================================================
+def p1 : ->{self,}; end
+def p1 : ->{self?,}; end
+def p2 : ->{self2,}; end
+def p2 : ->{selfa,}; end
+def p2 : ->{self!,}; end
+def p2 : ->{self: self}; end
+
+def p1 : ->(self); end
+def p1 : ->(self?); end
+def p2 : ->(self2); end
+def p2 : ->(selfa); end
+def p2 : ->(self!); end
+--------------------------------------------------------------------------------
+
+(source_file
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (self))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (tuple_type
+        (nilable_type
+          (self)))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (identifier)))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (tuple
+      (call
+        method: (identifier))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (named_tuple
+      (named_tuple_entry
+        (identifier)
+        (self))))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (self)))
+  (method_def
+    name: (identifier)
+    type: (proc_type
+      return: (nilable_type
+        (self))))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (identifier))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (identifier))
+  (method_def
+    name: (identifier)
+    type: (proc_type)
+    (call
+      method: (identifier))))
+
+================================================================================
 tuple types
 ================================================================================
 alias Foo1 = {Int32}
