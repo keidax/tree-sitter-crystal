@@ -603,6 +603,35 @@ alias Foo2 = {Int32, Int32}
     block: (block)))
 
 ================================================================================
+named tuple types
+================================================================================
+alias Int32StringNamedTuple = {x: Int32, y: String}
+alias Int32StringNamedTuple = NamedTuple(x: Int32, y: String)
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    (constant)
+    (named_tuple_type
+      (named_tuple_type_entry
+        (identifier)
+        (constant))
+      (named_tuple_type_entry
+        (identifier)
+        (constant))))
+  (alias
+    (constant)
+    (generic_instance_type
+      (constant)
+      (param_list
+        (named_type_arg
+          (identifier)
+          (constant))
+        (named_type_arg
+          (identifier)
+          (constant))))))
+
+================================================================================
 generic types
 ================================================================================
 class Gen(*U)

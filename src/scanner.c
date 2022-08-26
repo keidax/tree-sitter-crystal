@@ -82,6 +82,7 @@ enum Token {
     START_OF_HASH_OR_TUPLE,
     START_OF_NAMED_TUPLE,
     START_OF_TUPLE_TYPE,
+    START_OF_NAMED_TUPLE_TYPE,
 
     START_OF_INDEX_OPERATOR,
 
@@ -678,6 +679,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(START_OF_HASH_OR_TUPLE);
     LOG_SYMBOL(START_OF_NAMED_TUPLE);
     LOG_SYMBOL(START_OF_TUPLE_TYPE);
+    LOG_SYMBOL(START_OF_NAMED_TUPLE_TYPE);
     LOG_SYMBOL(START_OF_INDEX_OPERATOR);
     LOG_SYMBOL(END_OF_WITH_EXPRESSSION);
     LOG_SYMBOL(UNARY_PLUS);
@@ -752,27 +754,28 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     switch (lexer->lookahead) {
         case '{':
-            if (valid_symbols[START_OF_BRACE_BLOCK]
-                || valid_symbols[START_OF_HASH_OR_TUPLE]
-                || valid_symbols[START_OF_NAMED_TUPLE]
-                || valid_symbols[START_OF_TUPLE_TYPE]) {
 
-                if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_HASH_OR_TUPLE]
-                    && valid_symbols[START_OF_NAMED_TUPLE] && valid_symbols[START_OF_TUPLE_TYPE]) {
+            // We expect these symbols to always be valid or not valid together
+            ASSERT(valid_symbols[START_OF_HASH_OR_TUPLE] == valid_symbols[START_OF_NAMED_TUPLE]);
+            ASSERT(valid_symbols[START_OF_TUPLE_TYPE] == valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
 
+#define BRACE_BLOCK (valid_symbols[START_OF_BRACE_BLOCK])
+#define BRACE_EXPR (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])
+#define BRACE_TYPE (valid_symbols[START_OF_TUPLE_TYPE] || valid_symbols[START_OF_NAMED_TUPLE_TYPE])
+
+            if (BRACE_BLOCK || BRACE_EXPR || BRACE_TYPE) {
+                if (BRACE_BLOCK && BRACE_EXPR && BRACE_TYPE) {
                     if (valid_symbols[ERROR_RECOVERY]) {
                         return false;
                     } else {
                         // Shouldn't reach here
                         ASSERT(!(
                             valid_symbols[START_OF_BRACE_BLOCK]
-                            && valid_symbols[START_OF_HASH_OR_TUPLE]
-                            && valid_symbols[START_OF_NAMED_TUPLE]
-                            && valid_symbols[START_OF_TUPLE_TYPE]));
+                            && (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])
+                            && (valid_symbols[START_OF_TUPLE_TYPE] || valid_symbols[START_OF_NAMED_TUPLE_TYPE])));
                         return false;
                     }
-                } else if (valid_symbols[START_OF_BRACE_BLOCK]
-                    && (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])) {
+                } else if (BRACE_BLOCK && BRACE_EXPR) {
                     // In Crystal, the '{' token may be used as the start of a block,
                     // or the start of another literal like a tuple. The language
                     // resolves this potential ambiguity by requiring that the first
@@ -788,7 +791,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lex_advance(lexer);
                     lexer->result_symbol = START_OF_BRACE_BLOCK;
                     return true;
-                } else if (valid_symbols[START_OF_BRACE_BLOCK] && valid_symbols[START_OF_TUPLE_TYPE]) {
+                } else if (BRACE_BLOCK && BRACE_TYPE) {
 
                     lex_advance(lexer);
                     // We don't want to consume while looking ahead
@@ -801,15 +804,24 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     //   }
                     // Or as a block:
                     //   -> : -> { ; Proc(Nil).new{} }
-                    if (lookahead_start_of_type(state, lexer)) {
-                        lexer->result_symbol = START_OF_TUPLE_TYPE;
-                        return true;
-                    } else {
-                        lexer->result_symbol = START_OF_BRACE_BLOCK;
-                        return true;
+
+                    switch (lookahead_start_of_type(state, lexer)) {
+                        case LOOKAHEAD_TYPE:
+                            ASSERT(valid_symbols[START_OF_TUPLE_TYPE]);
+                            lexer->result_symbol = START_OF_TUPLE_TYPE;
+                            return true;
+
+                        case LOOKAHEAD_NAMED_TUPLE:
+                            ASSERT(valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
+                            lexer->result_symbol = START_OF_NAMED_TUPLE_TYPE;
+                            return true;
+
+                        default:
+                            lexer->result_symbol = START_OF_BRACE_BLOCK;
+                            return true;
                     }
-                } else if (valid_symbols[START_OF_TUPLE_TYPE]
-                    && (valid_symbols[START_OF_HASH_OR_TUPLE] || valid_symbols[START_OF_NAMED_TUPLE])) {
+
+                } else if (BRACE_EXPR && BRACE_TYPE) {
 
                     lex_advance(lexer);
                     // We don't want to consume while looking ahead
@@ -820,51 +832,64 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     //   def foo : ->{Char,Char}; ->{ {'a','b'} } end
                     // Or as a hash:
                     //   def foo : ->{'a'=>'b'}; ->{ nil } end
-                    LookaheadResult res = lookahead_start_of_type(state, lexer);
 
-                    if (res == LOOKAHEAD_TYPE) {
-                        lexer->result_symbol = START_OF_TUPLE_TYPE;
-                        return true;
-                    } else if ((res == LOOKAHEAD_NAMED_TUPLE) && valid_symbols[START_OF_NAMED_TUPLE]) {
-                        lexer->result_symbol = START_OF_NAMED_TUPLE;
-                        return true;
-                    } else if (valid_symbols[START_OF_HASH_OR_TUPLE]) {
-                        lexer->result_symbol = START_OF_HASH_OR_TUPLE;
-                        return true;
-                    } else {
-                        ASSERT(!"expected named tuple");
-                        return false;
+                    switch (lookahead_start_of_type(state, lexer)) {
+                        case LOOKAHEAD_TYPE:
+                            ASSERT(valid_symbols[START_OF_TUPLE_TYPE]);
+                            lexer->result_symbol = START_OF_TUPLE_TYPE;
+                            return true;
+
+                        case LOOKAHEAD_NAMED_TUPLE:
+                            // TODO: how to we distingush type vs expr?
+                            ASSERT(valid_symbols[START_OF_NAMED_TUPLE]);
+                            lexer->result_symbol = START_OF_NAMED_TUPLE;
+                            return true;
+
+                        default:
+                            ASSERT(valid_symbols[START_OF_HASH_OR_TUPLE]);
+                            lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                            return true;
                     }
-                } else if (valid_symbols[START_OF_HASH_OR_TUPLE] && valid_symbols[START_OF_NAMED_TUPLE]) {
+
+                } else if (BRACE_EXPR) {
                     lex_advance(lexer);
                     // We don't want to consume while looking ahead
                     lexer->mark_end(lexer);
-
                     skip_space_and_newline(state, lexer);
-                    LookaheadResult res = lookahead_start_of_named_tuple_entry(state, lexer, false);
 
-                    if (res == LOOKAHEAD_NAMED_TUPLE) {
-                        lexer->result_symbol = START_OF_NAMED_TUPLE;
-                        return true;
-                    } else {
-                        lexer->result_symbol = START_OF_HASH_OR_TUPLE;
-                        return true;
+                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                        case LOOKAHEAD_NAMED_TUPLE:
+                            ASSERT(valid_symbols[START_OF_NAMED_TUPLE]);
+                            lexer->result_symbol = START_OF_NAMED_TUPLE;
+                            return true;
+
+                        default:
+                            ASSERT(valid_symbols[START_OF_HASH_OR_TUPLE]);
+                            lexer->result_symbol = START_OF_HASH_OR_TUPLE;
+                            return true;
                     }
-                } else if (valid_symbols[START_OF_TUPLE_TYPE]) {
+
+                } else if (BRACE_TYPE) {
                     lex_advance(lexer);
-                    lexer->result_symbol = START_OF_TUPLE_TYPE;
-                    return true;
-                } else if (valid_symbols[START_OF_BRACE_BLOCK]) {
+                    // We don't want to consume while looking ahead
+                    lexer->mark_end(lexer);
+                    skip_space_and_newline(state, lexer);
+
+                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                        case LOOKAHEAD_NAMED_TUPLE:
+                            ASSERT(valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
+                            lexer->result_symbol = START_OF_NAMED_TUPLE_TYPE;
+                            return true;
+
+                        default:
+                            ASSERT(valid_symbols[START_OF_TUPLE_TYPE]);
+                            lexer->result_symbol = START_OF_TUPLE_TYPE;
+                            return true;
+                    }
+
+                } else if (BRACE_BLOCK) {
                     lex_advance(lexer);
                     lexer->result_symbol = START_OF_BRACE_BLOCK;
-                    return true;
-                } else if (valid_symbols[START_OF_HASH_OR_TUPLE]) {
-                    lex_advance(lexer);
-                    lexer->result_symbol = START_OF_HASH_OR_TUPLE;
-                    return true;
-                } else if (valid_symbols[START_OF_NAMED_TUPLE]) {
-                    lex_advance(lexer);
-                    lexer->result_symbol = START_OF_NAMED_TUPLE;
                     return true;
                 } else {
                     ASSERT(!"This should never be reached");

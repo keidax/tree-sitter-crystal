@@ -58,6 +58,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -133,6 +137,10 @@
           },
           {
             "type": "generic_instance_type",
+            "named": true
+          },
+          {
+            "type": "named_tuple_type",
             "named": true
           },
           {
@@ -733,6 +741,10 @@
           },
           {
             "type": "generic_instance_type",
+            "named": true
+          },
+          {
+            "type": "named_tuple_type",
             "named": true
           },
           {
@@ -2112,6 +2124,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -3267,6 +3283,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {
@@ -4628,6 +4648,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -5293,6 +5317,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -5352,6 +5380,10 @@
           },
           {
             "type": "generic_instance_type",
+            "named": true
+          },
+          {
+            "type": "named_tuple_type",
             "named": true
           },
           {
@@ -6809,6 +6841,10 @@
           },
           {
             "type": "generic_instance_type",
+            "named": true
+          },
+          {
+            "type": "named_tuple_type",
             "named": true
           },
           {
@@ -9122,6 +9158,166 @@
     }
   },
   {
+    "type": "named_tuple_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "named_tuple_type_entry",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "named_tuple_type_entry",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "named_type_arg",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "next",
     "named": true,
     "fields": {},
@@ -9383,6 +9579,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {
@@ -10995,6 +11195,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -11073,6 +11277,14 @@
           "named": true
         },
         {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "named_type_arg",
+          "named": true
+        },
+        {
           "type": "nilable_type",
           "named": true
         },
@@ -11141,6 +11353,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {
@@ -11231,6 +11447,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -11299,6 +11519,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -11351,6 +11575,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {
@@ -12222,6 +12450,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -13039,6 +13271,10 @@
             "named": true
           },
           {
+            "type": "named_tuple_type",
+            "named": true
+          },
+          {
             "type": "nilable_type",
             "named": true
           },
@@ -13106,6 +13342,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {
@@ -13960,6 +14200,10 @@
           "named": true
         },
         {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
           "type": "nilable_type",
           "named": true
         },
@@ -14255,6 +14499,10 @@
         },
         {
           "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
           "named": true
         },
         {

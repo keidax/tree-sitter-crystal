@@ -49,6 +49,7 @@ module.exports = grammar({
     $._start_of_hash_or_tuple,
     $._start_of_named_tuple,
     $._start_of_tuple_type,
+    $._start_of_named_tuple_type,
 
     $._start_of_index_operator,
 
@@ -1184,6 +1185,7 @@ module.exports = grammar({
       $.generic_instance_type,
       $.union_type,
       $.tuple_type,
+      $.named_tuple_type,
       alias($.no_args_proc_type, $.proc_type),
       alias($.parenthesized_proc_type, $.proc_type),
       $.class_type,
@@ -1193,7 +1195,6 @@ module.exports = grammar({
       $.self,
       $.typeof,
       // TODO: rest of type grammar
-      // named tuple
       // "numeric" types:
       // - static array
       // - integer constant
@@ -1258,6 +1259,28 @@ module.exports = grammar({
       '}',
     ),
 
+    named_tuple_type_entry: $ => {
+      const symbol_name = choice(
+        alias($._constant_segment, $.identifier),
+        $.identifier,
+      )
+      const string_name = $.string
+
+      return seq(
+        choice(symbol_name, string_name),
+        token.immediate(':'),
+        $._bare_type,
+      )
+    },
+
+    named_tuple_type: $ => seq(
+      $._start_of_named_tuple_type,
+      $.named_tuple_type_entry,
+      repeat(seq(',', $.named_tuple_type_entry)),
+      optional(','),
+      '}',
+    ),
+
     // `generic_type` is used for generic class/module/struct definitions, e.g.
     //   class Foo(T, U); end
     // `generic_instance_type` is used for instances of generic types, where
@@ -1292,12 +1315,25 @@ module.exports = grammar({
       ')',
     ),
 
+    named_type_arg: $ => {
+      const name = field('name', $.identifier)
+      return seq(
+        name,
+        token.immediate(':'),
+        $._bare_type,
+      )
+    },
+
     type_instance_param_list: $ => seq(
       choice(
         $._bare_type,
         seq(
           $._splattable_type,
           repeat1(seq(',', $._splattable_type)),
+        ),
+        seq(
+          $.named_type_arg,
+          repeat(seq(',', $.named_type_arg)),
         ),
       ),
       optional(','),
