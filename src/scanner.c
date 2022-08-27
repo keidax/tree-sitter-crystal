@@ -423,6 +423,97 @@ void consume_const(State *state, TSLexer *lexer) {
     }
 }
 
+void consume_string_literal(State *state, TSLexer *lexer) {
+    bool can_escape = true, can_nest;
+    int32_t opening_char = 0, closing_char, nesting_level = 0;
+
+    if (lexer->lookahead == '"') {
+        opening_char = '"';
+        closing_char = '"';
+        can_nest = false;
+    } else if (lexer->lookahead == '%') {
+        lex_advance(lexer);
+
+        if (lexer->lookahead == 'q') {
+            can_escape = false;
+            lex_advance(lexer);
+        } else if (lexer->lookahead == 'Q') {
+            lex_advance(lexer);
+        }
+
+        switch (lexer->lookahead) {
+            case '{':
+                opening_char = '{';
+                closing_char = '}';
+                can_nest = true;
+                break;
+            case '(':
+                opening_char = '(';
+                closing_char = ')';
+                can_nest = true;
+                break;
+            case '[':
+                opening_char = '[';
+                closing_char = ']';
+                can_nest = true;
+                break;
+            case '<':
+                opening_char = '<';
+                closing_char = '>';
+                can_nest = true;
+                break;
+            case '|':
+                opening_char = '|';
+                closing_char = '|';
+                can_nest = false;
+                break;
+        }
+    }
+
+    if (!opening_char) {
+        // this isn't a string
+        return;
+    }
+
+    // advance past opening char
+    lex_advance(lexer);
+
+    for (;;) {
+
+        if (lexer->eof(lexer)) {
+            return;
+        }
+
+        if (lexer->lookahead == '\\' && can_escape) {
+            // consume the backslash and next character
+            lex_advance(lexer);
+            lex_advance(lexer);
+            continue;
+        }
+
+        if (lexer->lookahead == closing_char) {
+            lex_advance(lexer);
+
+            if (nesting_level == 0) {
+                // reached the end of the literal
+                return;
+            }
+
+            ASSERT(nesting_level > 0);
+            nesting_level--;
+            continue;
+        }
+
+        if (lexer->lookahead == opening_char && can_nest) {
+            lex_advance(lexer);
+            nesting_level++;
+            continue;
+        }
+
+        lex_advance(lexer);
+    }
+}
+
 // Check if there is a type suffix (e.g. `?` or `.class`) or a delimiter like `|`
 LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer) {
     if (lexer->eof(lexer)) { return true; }
@@ -512,6 +603,19 @@ LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexe
         if ((lexer->lookahead == '!') || (lexer->lookahead == '?')) {
             lex_advance(lexer);
         }
+
+        if (lexer->lookahead == ':') {
+            lex_advance(lexer);
+            if (lexer->lookahead == ':') {
+                return LOOKAHEAD_UNKNOWN;
+            }
+
+            return LOOKAHEAD_NAMED_TUPLE;
+        }
+    }
+
+    if (lexer->lookahead == '"' || lexer->lookahead == '%') {
+        consume_string_literal(state, lexer);
 
         if (lexer->lookahead == ':') {
             lex_advance(lexer);
@@ -660,6 +764,9 @@ LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
                 }
             }
             break;
+        case '"':
+        case '%':
+            return lookahead_start_of_named_tuple_entry(state, lexer, false);
     }
 
     DEBUG("Not the start of a type\n");
@@ -812,8 +919,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                             return true;
 
                         case LOOKAHEAD_NAMED_TUPLE:
-                            ASSERT(valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
-                            lexer->result_symbol = START_OF_NAMED_TUPLE_TYPE;
+                            // When the Crystal parser is trying to resolve whether a token is part
+                            // of a type or not, anything that looks like the start of a named
+                            // tuple is assumed _not_ to be a type.
+                            lexer->result_symbol = START_OF_BRACE_BLOCK;
                             return true;
 
                         default:
@@ -840,7 +949,9 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                             return true;
 
                         case LOOKAHEAD_NAMED_TUPLE:
-                            // TODO: how to we distingush type vs expr?
+                            // When the Crystal parser is trying to resolve whether a token is part
+                            // of a type or not, anything that looks like the start of a named
+                            // tuple is assumed _not_ to be a type.
                             ASSERT(valid_symbols[START_OF_NAMED_TUPLE]);
                             lexer->result_symbol = START_OF_NAMED_TUPLE;
                             return true;

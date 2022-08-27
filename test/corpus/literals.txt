@@ -1090,54 +1090,65 @@ named tuples
 {a: 123}
 
 named_tuple = {a2: "a", "55": 'b', A: "asdf#{a}", 🥰: 7, "
-":7, fooB_r: {abc: 5.8},}
+":7, fooB_r: {abc: 5.8}, %(str): "yes", %Q(q_str): "YES", nani?: {1,2}}
 
 { self: self, true: true, nil: nil, _🎃: " " }
 --------------------------------------------------------------------------------
 
 (source_file
   (named_tuple
-    (named_tuple_entry
-      (identifier)
+    (named_expr
+      name: (identifier)
       (integer)))
   (assign
     lhs: (identifier)
     rhs: (named_tuple
-      (named_tuple_entry
-        (identifier)
+      (named_expr
+        name: (identifier)
         (string))
-      (named_tuple_entry
-        (string)
+      (named_expr
+        name: (string)
         (char))
-      (named_tuple_entry
-        (identifier)
+      (named_expr
+        name: (identifier)
         (string
           (interpolation
             (identifier))))
-      (named_tuple_entry
-        (identifier)
+      (named_expr
+        name: (identifier)
         (integer))
-      (named_tuple_entry
-        (string)
+      (named_expr
+        name: (string)
         (integer))
-      (named_tuple_entry
-        (identifier)
+      (named_expr
+        name: (identifier)
         (named_tuple
-          (named_tuple_entry
-            (identifier)
-            (float))))))
+          (named_expr
+            name: (identifier)
+            (float))))
+      (named_expr
+        name: (string)
+        (string))
+      (named_expr
+        name: (string)
+        (string))
+      (named_expr
+        name: (identifier)
+        (tuple
+          (integer)
+          (integer)))))
   (named_tuple
-    (named_tuple_entry
-      (identifier)
+    (named_expr
+      name: (identifier)
       (self))
-    (named_tuple_entry
-      (identifier)
+    (named_expr
+      name: (identifier)
       (true))
-    (named_tuple_entry
-      (identifier)
+    (named_expr
+      name: (identifier)
       (nil))
-    (named_tuple_entry
-      (identifier)
+    (named_expr
+      name: (identifier)
       (string))))
 
 ================================================================================

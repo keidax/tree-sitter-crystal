@@ -356,7 +356,7 @@ puts **kwargs
 puts**kwargs
 puts(**kwargs)
 
-pp **{a: 1, "b": 2.0}, **{c: nil}
+pp **{a: 1, "b": 2.0, C: -3, }, **{c: nil}
 --------------------------------------------------------------------------------
 
 (source_file
@@ -383,16 +383,19 @@ pp **{a: 1, "b": 2.0}, **{c: nil}
     arguments: (argument_list
       (double_splat
         (named_tuple
-          (named_tuple_entry
-            (identifier)
+          (named_expr
+            name: (identifier)
             (integer))
-          (named_tuple_entry
-            (string)
-            (float))))
+          (named_expr
+            name: (string)
+            (float))
+          (named_expr
+            name: (identifier)
+            (integer))))
       (double_splat
         (named_tuple
-          (named_tuple_entry
-            (identifier)
+          (named_expr
+            name: (identifier)
             (nil)))))))
 
 ================================================================================
@@ -400,7 +403,7 @@ named arguments
 ================================================================================
 foo(named: 1)
 
-bar 1, *splat, a: 2 .. 3
+bar 1, *splat, a: 2 .. 3, LMNOP: nil, z!: -1, "    \n   ": 'a',  %q(8#{8}): 8
 
 bar 1, c: + 2,
   b:
@@ -413,7 +416,7 @@ bar 1, c: + 2,
   (call
     method: (identifier)
     arguments: (argument_list
-      (named_arg
+      (named_expr
         name: (identifier)
         (integer))))
   (call
@@ -422,22 +425,35 @@ bar 1, c: + 2,
       (integer)
       (splat
         (identifier))
-      (named_arg
+      (named_expr
         name: (identifier)
         (range
           begin: (integer)
           operator: (operator)
-          end: (integer)))))
+          end: (integer)))
+      (named_expr
+        name: (identifier)
+        (nil))
+      (named_expr
+        name: (identifier)
+        (integer))
+      (named_expr
+        name: (string
+          (string_escape_sequence))
+        (char))
+      (named_expr
+        name: (string)
+        (integer))))
   (call
     method: (identifier)
     arguments: (argument_list
       (integer)
-      (named_arg
+      (named_expr
         name: (identifier)
         (op_call
           operator: (operator)
           receiver: (integer)))
-      (named_arg
+      (named_expr
         name: (identifier)
         (integer)))
     block: (block)))
@@ -1911,6 +1927,7 @@ puts({0} [0]?)
 ary[*{0}, **{count: 1}]
 
 a.[count: 1, values: [5]] =0
+b.["q": 1, q?: 3, %q(stuff): [5]] =0
 --------------------------------------------------------------------------------
 
 (source_file
@@ -1949,18 +1966,34 @@ a.[count: 1, values: [5]] =0
           (integer)))
       (double_splat
         (named_tuple
-          (named_tuple_entry
-            (identifier)
+          (named_expr
+            name: (identifier)
             (integer))))))
   (call
     receiver: (identifier)
     method: (operator)
     (argument_list
-      (named_arg
+      (named_expr
         name: (identifier)
         (integer))
-      (named_arg
+      (named_expr
         name: (identifier)
+        (array
+          (integer))))
+    arguments: (argument_list
+      (integer)))
+  (call
+    receiver: (identifier)
+    method: (operator)
+    (argument_list
+      (named_expr
+        name: (string)
+        (integer))
+      (named_expr
+        name: (identifier)
+        (integer))
+      (named_expr
+        name: (string)
         (array
           (integer))))
     arguments: (argument_list
@@ -2038,7 +2071,7 @@ case 1 when 2,
 3; else end
 
 case exp
-when value1, .value2?(foo: :bar)  then do_something
+when value1, .value2?(foo: :bar, %( baz ): 'q')  then do_something
 when .ljust 5, 'a' do |xyz| 9 end then do_something_else
 else                                   do_another_thing
 end
@@ -2090,9 +2123,12 @@ end
       cond: (implicit_object_call
         method: (identifier)
         arguments: (argument_list
-          (named_arg
+          (named_expr
             name: (identifier)
-            (symbol))))
+            (symbol))
+          (named_expr
+            name: (string)
+            (char))))
       (identifier))
     (when
       cond: (implicit_object_call
@@ -2152,7 +2188,7 @@ end
             method: (operator)
             arguments: (argument_list
               (integer)
-              (named_arg
+              (named_expr
                 name: (identifier)
                 (integer)))))))))
 

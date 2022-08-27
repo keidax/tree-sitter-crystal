@@ -3066,49 +3066,6 @@
         }
       ]
     },
-    "named_tuple_entry": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_constant_segment"
-                  },
-                  "named": true,
-                  "value": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "string"
-            }
-          ]
-        },
-        {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": ":"
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_expression"
-        }
-      ]
-    },
     "named_tuple": {
       "type": "SEQ",
       "members": [
@@ -3118,7 +3075,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "named_tuple_entry"
+          "name": "named_expr"
         },
         {
           "type": "REPEAT",
@@ -3131,7 +3088,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "named_tuple_entry"
+                "name": "named_expr"
               }
             ]
           }
@@ -3507,7 +3464,7 @@
                     },
                     {
                       "type": "SYMBOL",
-                      "name": "named_arg"
+                      "name": "named_expr"
                     }
                   ]
                 },
@@ -3537,7 +3494,7 @@
                           },
                           {
                             "type": "SYMBOL",
-                            "name": "named_arg"
+                            "name": "named_expr"
                           }
                         ]
                       }
@@ -5531,35 +5488,52 @@
         }
       ]
     },
-    "named_tuple_type_entry": {
+    "named_type": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_constant_segment"
-                  },
-                  "named": true,
-                  "value": "identifier"
-                },
-                {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
                   "type": "SYMBOL",
-                  "name": "identifier"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "string"
-            }
-          ]
+                  "name": "_constant_segment"
+                },
+                "named": true,
+                "value": "identifier"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "identifier_method_call"
+                },
+                "named": true,
+                "value": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "string"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "string_percent_literal"
+                },
+                "named": true,
+                "value": "string"
+              }
+            ]
+          }
         },
         {
           "type": "IMMEDIATE_TOKEN",
@@ -5583,7 +5557,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "named_tuple_type_entry"
+          "name": "named_type"
         },
         {
           "type": "REPEAT",
@@ -5596,7 +5570,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "named_tuple_type_entry"
+                "name": "named_type"
               }
             ]
           }
@@ -5779,30 +5753,6 @@
         }
       ]
     },
-    "named_type_arg": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "name",
-          "content": {
-            "type": "SYMBOL",
-            "name": "identifier"
-          }
-        },
-        {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": ":"
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_bare_type"
-        }
-      ]
-    },
     "type_instance_param_list": {
       "type": "SEQ",
       "members": [
@@ -5843,7 +5793,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "named_type_arg"
+                  "name": "named_type"
                 },
                 {
                   "type": "REPEAT",
@@ -5856,7 +5806,7 @@
                       },
                       {
                         "type": "SYMBOL",
-                        "name": "named_type_arg"
+                        "name": "named_type"
                       }
                     ]
                   }
@@ -6174,7 +6124,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "named_arg"
+              "name": "named_expr"
             }
           ]
         },
@@ -6204,7 +6154,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "named_arg"
+                    "name": "named_expr"
                   }
                 ]
               }
@@ -7678,15 +7628,51 @@
         ]
       }
     },
-    "named_arg": {
+    "named_expr": {
       "type": "SEQ",
       "members": [
         {
           "type": "FIELD",
           "name": "name",
           "content": {
-            "type": "SYMBOL",
-            "name": "identifier"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_constant_segment"
+                },
+                "named": true,
+                "value": "identifier"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "identifier_method_call"
+                },
+                "named": true,
+                "value": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "string"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "string_percent_literal"
+                },
+                "named": true,
+                "value": "string"
+              }
+            ]
           }
         },
         {
@@ -7737,7 +7723,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "named_arg"
+                "name": "named_expr"
               }
             ]
           },
@@ -7770,7 +7756,7 @@
                       },
                       {
                         "type": "SYMBOL",
-                        "name": "named_arg"
+                        "name": "named_expr"
                       }
                     ]
                   }
@@ -7817,7 +7803,7 @@
                       },
                       {
                         "type": "SYMBOL",
-                        "name": "named_arg"
+                        "name": "named_expr"
                       }
                     ]
                   },
@@ -7847,7 +7833,7 @@
                             },
                             {
                               "type": "SYMBOL",
-                              "name": "named_arg"
+                              "name": "named_expr"
                             }
                           ]
                         }
@@ -9759,7 +9745,7 @@
       },
       {
         "type": "SYMBOL",
-        "name": "named_arg"
+        "name": "named_expr"
       },
       {
         "type": "STRING",

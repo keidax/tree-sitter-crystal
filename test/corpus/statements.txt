@@ -585,7 +585,8 @@ annotation Foo::Thing2;;;;end
 @[Thing]
 @[Thing(  )]
 @[ Foo:: Thing2 (
-  1, *baz, foo: 2
+  1, *baz, foo: 2,
+  "a": 3, Z: 4, %q(q): 5, _6a?: 6
 ) ]
 class Asdf
   @[Foo("on def")]
@@ -610,7 +611,19 @@ end
       (integer)
       (splat
         (identifier))
-      (named_arg
+      (named_expr
+        name: (identifier)
+        (integer))
+      (named_expr
+        name: (string)
+        (integer))
+      (named_expr
+        name: (identifier)
+        (integer))
+      (named_expr
+        name: (string)
+        (integer))
+      (named_expr
         name: (identifier)
         (integer))))
   (class_def
