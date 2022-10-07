@@ -277,22 +277,12 @@ puts(** foo)
 --------------------------------------------------------------------------------
 
 (source_file
-  (alias
-    (constant)
-    (ERROR)
-    (constant))
   (ERROR
-    (operator))
-  (alias
-    (constant)
-    (ERROR
-      (operator))
     (constant))
-  (ERROR
-    (identifier))
-  (call
-    (identifier)
-    (argument_list
-      (ERROR
-        (operator))
-      (identifier))))
+  (op_call
+    (operator)
+    (assign
+      (identifier)
+      (ERROR)
+      (regex
+        (MISSING "/")))))
