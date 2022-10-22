@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  corpus-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Tree-sitter
+        run: |
+          version=v0.20.7
+          archive=tree-sitter-linux-x64.gz
+
+          wget https://github.com/tree-sitter/tree-sitter/releases/download/${version}/${archive}
+          gunzip ${archive}
+          chmod +x tree-sitter-linux-x64
+          mkdir -p $HOME/.local/bin
+          mv tree-sitter-linux-x64 $HOME/.local/bin/tree-sitter
+
+      - name: Run tests
+        run: tree-sitter test
