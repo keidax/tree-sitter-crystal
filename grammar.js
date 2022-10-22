@@ -186,6 +186,12 @@ module.exports = grammar({
       'do_end_block_call',
     ],
 
+    // Ensure `(1; 2)` is considered an `expressions` node, but `(1)` is just an integer
+    [
+      $._parenthesized_statement,
+      $._statements,
+    ],
+
     // Ensure `[] of A | B` parses as `[] of (A | B)`
     [
       $.union_type,
@@ -308,9 +314,10 @@ module.exports = grammar({
       $._statement,
     ),
 
-    _parenthesized_statements: $ => seq(
-      '(', $._statements, ')',
-    ),
+
+    _parenthesized_statement: $ => prec(1, seq(
+      '(', $._statement, optional($._terminator), ')',
+    )),
 
     _statement: $ => choice(
       $._expression,
@@ -339,6 +346,11 @@ module.exports = grammar({
       // union
       // lib variables
       // lib type
+    ),
+
+    // Wrap multiple expressions/statements into a single node, if necessary
+    expressions: $ => seq(
+      '(', $._statements, ')',
     ),
 
     _expression: $ => choice(
@@ -370,7 +382,8 @@ module.exports = grammar({
 
       // Groupings
       alias($.empty_parens, $.nil),
-      $._parenthesized_statements,
+      $._parenthesized_statement,
+      $.expressions,
       $.begin_block,
 
       // Symbols
@@ -1712,7 +1725,6 @@ module.exports = grammar({
         lhs, choice(...combined_operators), rhs,
       ))
     },
-
 
     lhs_splat: $ => seq('*', choice(
       $.identifier,
