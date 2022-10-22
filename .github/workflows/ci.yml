@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  corpus-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Tree-sitter
+        run: .github/workflows/install-tree-sitter.sh v0.20.7
+
+      - name: Run tests
+        run: tree-sitter test
+
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Tree-sitter
+        run: .github/workflows/install-tree-sitter.sh v0.20.7
+
+      - name: Regenerate parser
+        run: tree-sitter generate
+
+      - name: Check for changes
+        run: git diff --stat --exit-code
