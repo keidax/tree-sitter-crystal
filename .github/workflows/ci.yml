@@ -25,4 +25,8 @@ jobs:
       - name: Download Tree-sitter
         run: .github/workflows/install-tree-sitter.sh v0.20.7
 
-      - run: tree-sitter-version
+      - name: Regenerate parser
+        run: tree-sitter generate
+
+      - name: Check for changes
+        run: git diff --stat --exit-code
