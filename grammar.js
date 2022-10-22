@@ -209,6 +209,12 @@ module.exports = grammar({
       $.union_type,
       $.hash,
     ],
+
+    // Ensure `foo ? a : Int32` parses as `foo ? (a) : Int32` instead of a type declaration
+    [
+      $._expression,
+      $.type_declaration,
+    ],
   ],
 
   conflicts: $ => [
@@ -395,6 +401,7 @@ module.exports = grammar({
       $.identifier,
       $.instance_var,
       $.class_var,
+      $.type_declaration,
 
       // Control structures
       $.while,
@@ -1755,6 +1762,23 @@ module.exports = grammar({
         seq(lhs_splat, '=', multi_rhs),
         seq(multi_lhs, '=', multi_rhs),
       )
+    },
+
+    type_declaration: $ => {
+      const variable = field('var', $.identifier)
+      const type = field('type', $._bare_type)
+      const value = field('value', $._expression)
+
+      return prec('assignment_operator', seq(
+        variable,
+        ':',
+        token.immediate(/\s/),
+        type,
+        optional(seq(
+          '=',
+          value,
+        )),
+      ))
     },
 
     alias: $ => seq(

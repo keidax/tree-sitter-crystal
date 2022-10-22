@@ -446,8 +446,7 @@ def p1 : ->{%Q<<>a>: "b"}; end
 def p1 : ->{%[[a]]: "b"}; end
 def p1 : ->{%{a{}a}: "b"}; end
 
-# TODO
-# f = -> : -> { a: String; ->{} }
+f = -> : -> { a: String; ->{} }
 --------------------------------------------------------------------------------
 
 (source_file
@@ -610,8 +609,16 @@ def p1 : ->{%{a{}a}: "b"}; end
       (named_expr
         name: (string)
         (string))))
-  (comment)
-  (comment))
+  (assign
+    lhs: (identifier)
+    rhs: (proc
+      type: (proc_type)
+      block: (block
+        (type_declaration
+          var: (identifier)
+          type: (constant))
+        (proc
+          block: (block))))))
 
 ================================================================================
 tuple types
@@ -816,8 +823,7 @@ alias Foo = {*{Int32 | Int8, Int8}}
 
 alias Bar = {Char, *Foo, String}
 
-# TODO
-# c : *Char | String = "c"
+c : *Char -> = ->(c : Char){}
 --------------------------------------------------------------------------------
 
 (source_file
@@ -845,8 +851,17 @@ alias Bar = {Char, *Foo, String}
       (splat_type
         (constant))
       (constant)))
-  (comment)
-  (comment))
+  (type_declaration
+    var: (identifier)
+    type: (proc_type
+      (splat_type
+        (constant)))
+    value: (proc
+      params: (param_list
+        (param
+          name: (identifier)
+          type: (constant)))
+      block: (block))))
 
 ================================================================================
 underscore type
