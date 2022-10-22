@@ -422,6 +422,9 @@ module.exports = grammar({
       // Keywords and special methods
       $.yield,
       $.typeof,
+      $.sizeof,
+      $.instance_sizeof,
+      $.offsetof,
       // TODO
       // super
       // previous_def
@@ -431,9 +434,6 @@ module.exports = grammar({
       // as
       // as?
       // pointerof
-      // sizeof
-      // instance_sizeof
-      // offsetof
       // uninitialized
     ),
 
@@ -1054,6 +1054,32 @@ module.exports = grammar({
       ')',
     ),
 
+    sizeof: $ => seq(
+      'sizeof',
+      '(',
+      $._bare_type,
+      ')',
+    ),
+
+    instance_sizeof: $ => seq(
+      'instance_sizeof',
+      '(',
+      $._bare_type,
+      ')',
+    ),
+
+    offsetof: $ => seq(
+      'offsetof',
+      '(',
+      $._bare_type,
+      ',',
+      choice(
+        $.instance_var,
+        $.integer,
+      ),
+      ')',
+    ),
+
     _constant_segment: $ => token(seq(const_start, repeat(ident_part))),
 
     constant: $ => {
@@ -1180,13 +1206,17 @@ module.exports = grammar({
       $.pointer_type,
       $.self,
       $.typeof,
-      // TODO: rest of type grammar
-      // "numeric" types:
-      // - static array
-      // - integer constant
-      // - sizeof
-      // - instance_sizeof
-      // - offsetof
+      $.static_array_type,
+    ),
+
+    // _numeric_type represents an expression in the type grammar that resolves
+    // to a number. Mostly used for StaticArrays, e.g. UInt8[sizeof(String)].
+    _numeric_type: $ => choice(
+      $.integer,
+      $.constant,
+      $.sizeof,
+      $.instance_sizeof,
+      $.offsetof,
     ),
 
     class_type: $ => prec('atomic_type', seq(
@@ -1323,6 +1353,8 @@ module.exports = grammar({
     nilable_type: $ => prec('atomic_type', seq($._type, '?')),
 
     pointer_type: $ => prec('atomic_type', seq($._type, '*')),
+
+    static_array_type: $ => prec('atomic_type', seq($._type, '[', $._numeric_type, ']')),
 
     _dot_call: $ => {
       const receiver = field('receiver', $._expression)
