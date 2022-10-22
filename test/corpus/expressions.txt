@@ -2241,3 +2241,43 @@ end
           (constant)
           (proc_type
             return: (constant)))))))
+
+================================================================================
+sizeof, instance_sizeof, offsetof
+================================================================================
+[
+  sizeof(String),
+  instance_sizeof(String ->),
+  offsetof(Foo(Bar), @a),
+  offsetof({Char, String, Int32}, 0x0_2),
+  offsetof({Char, String, Int32}, 0),
+].sum
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    receiver: (array
+      (sizeof
+        (constant))
+      (instance_sizeof
+        (proc_type
+          (constant)))
+      (offsetof
+        (generic_instance_type
+          (constant)
+          params: (param_list
+            (constant)))
+        (instance_var))
+      (offsetof
+        (tuple_type
+          (constant)
+          (constant)
+          (constant))
+        (integer))
+      (offsetof
+        (tuple_type
+          (constant)
+          (constant)
+          (constant))
+        (integer)))
+    method: (identifier)))

@@ -991,3 +991,63 @@ def p2 : ->{asdf: typeof(FOO)}; end
         name: (identifier)
         (typeof
           (constant))))))
+
+================================================================================
+static array types
+================================================================================
+alias A = Int8[+1_0i32]
+alias B = ->Int8[0xa]
+alias C = (->Int8)[42]
+alias D = UInt8[CONST]
+alias E = UInt8[sizeof(Int64)]
+alias F = UInt8[instance_sizeof(Foo(Bar))]
+alias G = LibC::Char[offsetof(String -> Int32, @a)]
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (constant)
+      (integer)))
+  (alias
+    name: (constant)
+    type: (proc_type
+      return: (static_array_type
+        (constant)
+        (integer))))
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (proc_type
+        return: (constant))
+      (integer)))
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (constant)
+      (constant)))
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (constant)
+      (sizeof
+        (constant))))
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (constant)
+      (instance_sizeof
+        (generic_instance_type
+          (constant)
+          params: (param_list
+            (constant))))))
+  (alias
+    name: (constant)
+    type: (static_array_type
+      (constant)
+      (offsetof
+        (proc_type
+          (constant)
+          return: (constant))
+        (instance_var)))))

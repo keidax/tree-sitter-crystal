@@ -82,6 +82,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -161,6 +165,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -292,6 +300,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -336,6 +348,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -373,6 +389,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -577,6 +597,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -625,6 +649,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -662,6 +690,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -769,6 +801,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -895,6 +931,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -939,6 +979,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -976,6 +1020,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -1172,6 +1220,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -1216,6 +1268,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -1253,6 +1309,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -1434,6 +1494,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -1478,6 +1542,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -1515,6 +1583,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -1686,6 +1758,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -1730,6 +1806,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -1767,6 +1847,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -1947,6 +2031,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -1991,6 +2079,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -2028,6 +2120,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -2145,6 +2241,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -2286,6 +2386,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -2330,6 +2434,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -2367,6 +2475,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -2571,6 +2683,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -2615,6 +2731,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -2652,6 +2772,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -2833,6 +2957,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -2877,6 +3005,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -2914,6 +3046,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -3135,6 +3271,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -3179,6 +3319,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -3216,6 +3360,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -3307,6 +3455,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -3472,6 +3624,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -3516,6 +3672,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -3553,6 +3713,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -3718,6 +3882,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -3762,6 +3930,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -3799,6 +3971,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -3964,6 +4140,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -4008,6 +4188,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -4045,6 +4229,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -4226,6 +4414,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -4270,6 +4462,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -4307,6 +4503,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -4471,6 +4671,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -4515,6 +4719,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -4552,6 +4760,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -4669,6 +4881,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -4810,6 +5026,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -4854,6 +5074,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -4891,6 +5115,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -5061,6 +5289,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -5105,6 +5337,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -5142,6 +5378,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -5341,6 +5581,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -5404,6 +5648,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -5545,6 +5793,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -5589,6 +5841,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -5626,6 +5882,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -5796,6 +6056,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -5840,6 +6104,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -5877,6 +6145,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -6131,6 +6403,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -6175,6 +6451,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -6212,6 +6492,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -6392,6 +6676,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -6436,6 +6724,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -6473,6 +6765,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -6521,6 +6817,73 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "instance_sizeof",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -6637,6 +7000,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -6681,6 +7048,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -6718,6 +7089,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -6868,6 +7243,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -6991,6 +7370,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -7035,6 +7418,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -7072,6 +7459,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -7242,6 +7633,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -7286,6 +7681,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -7323,6 +7722,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -7488,6 +7891,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -7532,6 +7939,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -7569,6 +7980,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -7740,6 +8155,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -7784,6 +8203,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -7821,6 +8244,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -7986,6 +8413,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -8030,6 +8461,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -8067,6 +8502,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -8241,6 +8680,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -8285,6 +8728,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -8322,6 +8769,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -8522,6 +8973,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -8566,6 +9021,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -8603,6 +9062,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -8777,6 +9240,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -8821,6 +9288,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -8858,6 +9329,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -8997,6 +9472,10 @@
           "named": true
         },
         {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
           "type": "tuple_type",
           "named": true
         },
@@ -9124,6 +9603,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -9168,6 +9651,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -9205,6 +9692,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -9301,6 +9792,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -9431,6 +9926,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -9475,6 +9974,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -9512,6 +10015,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -9556,6 +10063,81 @@
         },
         {
           "type": "yield",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "offsetof",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "instance_var",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
           "named": true
         }
       ]
@@ -9708,6 +10290,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -9752,6 +10338,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -9789,6 +10379,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -9960,6 +10554,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -10004,6 +10602,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -10041,6 +10643,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -10216,6 +10822,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -10260,6 +10870,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -10297,6 +10911,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -10456,6 +11074,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -10500,6 +11122,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -10537,6 +11163,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -10711,6 +11341,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -10755,6 +11389,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -10792,6 +11430,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -10917,6 +11559,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -11015,6 +11661,10 @@
           "named": true
         },
         {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
           "type": "tuple_type",
           "named": true
         },
@@ -11075,6 +11725,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -11169,6 +11823,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -11241,6 +11899,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -11297,6 +11959,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -11444,6 +12110,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -11488,6 +12158,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -11525,6 +12199,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -11690,6 +12368,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -11734,6 +12416,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -11771,6 +12457,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -11994,6 +12684,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -12038,6 +12732,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -12075,6 +12773,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -12169,6 +12871,10 @@
           },
           {
             "type": "splat_type",
+            "named": true
+          },
+          {
+            "type": "static_array_type",
             "named": true
           },
           {
@@ -12310,6 +13016,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -12354,6 +13064,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -12391,6 +13105,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -12435,6 +13153,73 @@
         },
         {
           "type": "yield",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sizeof",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
           "named": true
         }
       ]
@@ -12549,6 +13334,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -12593,6 +13382,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -12630,6 +13423,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -12792,6 +13589,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -12836,6 +13637,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -12873,6 +13678,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -12993,6 +13802,10 @@
             "named": true
           },
           {
+            "type": "static_array_type",
+            "named": true
+          },
+          {
             "type": "tuple_type",
             "named": true
           },
@@ -13064,6 +13877,93 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "typeof",
+          "named": true
+        },
+        {
+          "type": "underscore_type",
+          "named": true
+        },
+        {
+          "type": "union_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "static_array_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "class_type",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "generic_instance_type",
+          "named": true
+        },
+        {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "named_tuple_type",
+          "named": true
+        },
+        {
+          "type": "nilable_type",
+          "named": true
+        },
+        {
+          "type": "offsetof",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "proc_type",
+          "named": true
+        },
+        {
+          "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
+          "named": true
+        },
+        {
+          "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -13246,6 +14146,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -13290,6 +14194,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -13327,6 +14235,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -13504,6 +14416,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -13548,6 +14464,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -13585,6 +14505,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -13747,6 +14671,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -13791,6 +14719,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -13828,6 +14760,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -13919,6 +14855,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -14049,6 +14989,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -14093,6 +15037,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -14130,6 +15078,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -14221,6 +15173,10 @@
         },
         {
           "type": "splat_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {
@@ -14363,6 +15319,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -14407,6 +15367,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -14444,6 +15408,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -14635,6 +15603,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -14679,6 +15651,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -14716,6 +15692,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -14870,6 +15850,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -14914,6 +15898,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -14951,6 +15939,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -15125,6 +16117,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -15169,6 +16165,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -15206,6 +16206,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -15360,6 +16364,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -15404,6 +16412,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -15441,6 +16453,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -15611,6 +16627,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -15655,6 +16675,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -15692,6 +16716,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -15846,6 +16874,10 @@
           "named": true
         },
         {
+          "type": "instance_sizeof",
+          "named": true
+        },
+        {
           "type": "instance_var",
           "named": true
         },
@@ -15890,6 +16922,10 @@
           "named": true
         },
         {
+          "type": "offsetof",
+          "named": true
+        },
+        {
           "type": "op_assign",
           "named": true
         },
@@ -15927,6 +16963,10 @@
         },
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "sizeof",
           "named": true
         },
         {
@@ -16107,6 +17147,10 @@
             "named": true
           },
           {
+            "type": "instance_sizeof",
+            "named": true
+          },
+          {
             "type": "instance_var",
             "named": true
           },
@@ -16151,6 +17195,10 @@
             "named": true
           },
           {
+            "type": "offsetof",
+            "named": true
+          },
+          {
             "type": "op_assign",
             "named": true
           },
@@ -16188,6 +17236,10 @@
           },
           {
             "type": "self",
+            "named": true
+          },
+          {
+            "type": "sizeof",
             "named": true
           },
           {
@@ -16515,6 +17567,10 @@
     "named": false
   },
   {
+    "type": "instance_sizeof",
+    "named": false
+  },
+  {
     "type": "instance_var",
     "named": true
   },
@@ -16528,6 +17584,10 @@
   },
   {
     "type": "of",
+    "named": false
+  },
+  {
+    "type": "offsetof",
     "named": false
   },
   {
@@ -16565,6 +17625,10 @@
   {
     "type": "self",
     "named": true
+  },
+  {
+    "type": "sizeof",
+    "named": false
   },
   {
     "type": "special_variable",
