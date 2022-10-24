@@ -2281,3 +2281,139 @@ sizeof, instance_sizeof, offsetof
           (constant))
         (integer)))
     method: (identifier)))
+
+================================================================================
+type declaration
+================================================================================
+a : Int32
+b : Int32 = 7
+c = 7
+
+foo ? a : Int32
+
+foo a:7
+foo a : Int32
+foo a: Int32
+
+f : Proc(Proc(Nil)) = -> : -> { 1; ->{} }
+f : -> ->  = -> : -> { 1; ->{} }
+
+v1: Int32 = (v2: Int32 = 2 ; 1)
+
+v1 : Int32 = ( @[Foo]
+a = 7)
+
+d : Range(String, String) = "a" .. "b"
+
+f = g : Int32 = 7
+
+class K
+  getter asdf : String, hjkl : String = "hjkl"
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (type_declaration
+    var: (identifier)
+    type: (constant))
+  (type_declaration
+    var: (identifier)
+    type: (constant)
+    value: (integer))
+  (assign
+    lhs: (identifier)
+    rhs: (integer))
+  (conditional
+    cond: (identifier)
+    then: (identifier)
+    else: (constant))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (named_expr
+        name: (identifier)
+        (integer))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (type_declaration
+        var: (identifier)
+        type: (constant))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (named_expr
+        name: (identifier)
+        (constant))))
+  (type_declaration
+    var: (identifier)
+    type: (generic_instance_type
+      (constant)
+      params: (param_list
+        (generic_instance_type
+          (constant)
+          params: (param_list
+            (constant)))))
+    value: (proc
+      type: (proc_type)
+      block: (block
+        (integer)
+        (proc
+          block: (block)))))
+  (type_declaration
+    var: (identifier)
+    type: (proc_type
+      return: (proc_type))
+    value: (proc
+      type: (proc_type)
+      block: (block
+        (integer)
+        (proc
+          block: (block)))))
+  (type_declaration
+    var: (identifier)
+    type: (constant)
+    value: (expressions
+      (type_declaration
+        var: (identifier)
+        type: (constant)
+        value: (integer))
+      (integer)))
+  (type_declaration
+    var: (identifier)
+    type: (constant)
+    value: (expressions
+      (annotation
+        (constant))
+      (assign
+        lhs: (identifier)
+        rhs: (integer))))
+  (type_declaration
+    var: (identifier)
+    type: (generic_instance_type
+      (constant)
+      params: (param_list
+        (constant)
+        (constant)))
+    value: (range
+      begin: (string)
+      operator: (operator)
+      end: (string)))
+  (assign
+    lhs: (identifier)
+    rhs: (type_declaration
+      var: (identifier)
+      type: (constant)
+      value: (integer)))
+  (class_def
+    name: (constant)
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (type_declaration
+          var: (identifier)
+          type: (constant))
+        (type_declaration
+          var: (identifier)
+          type: (constant)
+          value: (string))))))

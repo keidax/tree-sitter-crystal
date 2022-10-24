@@ -186,6 +186,12 @@ module.exports = grammar({
       'do_end_block_call',
     ],
 
+    // Ensure `(1; 2)` is considered an `expressions` node, but `(1)` is just an integer
+    [
+      $._parenthesized_statement,
+      $._statements,
+    ],
+
     // Ensure `[] of A | B` parses as `[] of (A | B)`
     [
       $.union_type,
@@ -202,6 +208,12 @@ module.exports = grammar({
     [
       $.union_type,
       $.hash,
+    ],
+
+    // Ensure `foo ? a : Int32` parses as `foo ? (a) : Int32` instead of a type declaration
+    [
+      $._expression,
+      $.type_declaration,
     ],
   ],
 
@@ -308,9 +320,10 @@ module.exports = grammar({
       $._statement,
     ),
 
-    _parenthesized_statements: $ => seq(
-      '(', $._statements, ')',
-    ),
+
+    _parenthesized_statement: $ => prec(1, seq(
+      '(', $._statement, optional($._terminator), ')',
+    )),
 
     _statement: $ => choice(
       $._expression,
@@ -339,6 +352,11 @@ module.exports = grammar({
       // union
       // lib variables
       // lib type
+    ),
+
+    // Wrap multiple expressions/statements into a single node, if necessary
+    expressions: $ => seq(
+      '(', $._statements, ')',
     ),
 
     _expression: $ => choice(
@@ -370,7 +388,8 @@ module.exports = grammar({
 
       // Groupings
       alias($.empty_parens, $.nil),
-      $._parenthesized_statements,
+      $._parenthesized_statement,
+      $.expressions,
       $.begin_block,
 
       // Symbols
@@ -382,6 +401,7 @@ module.exports = grammar({
       $.identifier,
       $.instance_var,
       $.class_var,
+      $.type_declaration,
 
       // Control structures
       $.while,
@@ -1713,7 +1733,6 @@ module.exports = grammar({
       ))
     },
 
-
     lhs_splat: $ => seq('*', choice(
       $.identifier,
       $.instance_var,
@@ -1743,6 +1762,23 @@ module.exports = grammar({
         seq(lhs_splat, '=', multi_rhs),
         seq(multi_lhs, '=', multi_rhs),
       )
+    },
+
+    type_declaration: $ => {
+      const variable = field('var', $.identifier)
+      const type = field('type', $._bare_type)
+      const value = field('value', $._expression)
+
+      return prec('assignment_operator', seq(
+        variable,
+        ':',
+        token.immediate(/\s/),
+        type,
+        optional(seq(
+          '=',
+          value,
+        )),
+      ))
     },
 
     alias: $ => seq(

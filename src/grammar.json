@@ -87,22 +87,38 @@
         }
       ]
     },
-    "_parenthesized_statements": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_statements"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+    "_parenthesized_statement": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_statement"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_terminator"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "_statement": {
       "type": "CHOICE",
@@ -174,6 +190,23 @@
         {
           "type": "SYMBOL",
           "name": "break"
+        }
+      ]
+    },
+    "expressions": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_statements"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
         }
       ]
     },
@@ -332,7 +365,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_parenthesized_statements"
+          "name": "_parenthesized_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expressions"
         },
         {
           "type": "SYMBOL",
@@ -369,6 +406,10 @@
         {
           "type": "SYMBOL",
           "name": "class_var"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_declaration"
         },
         {
           "type": "SYMBOL",
@@ -8646,6 +8687,67 @@
         }
       ]
     },
+    "type_declaration": {
+      "type": "PREC",
+      "value": "assignment_operator",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "var",
+            "content": {
+              "type": "SYMBOL",
+              "name": "identifier"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "IMMEDIATE_TOKEN",
+            "content": {
+              "type": "PATTERN",
+              "value": "\\s"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "type",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_bare_type"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "="
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "value",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_expression"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "alias": {
       "type": "SEQ",
       "members": [
@@ -9981,6 +10083,16 @@
     [
       {
         "type": "SYMBOL",
+        "name": "_parenthesized_statement"
+      },
+      {
+        "type": "SYMBOL",
+        "name": "_statements"
+      }
+    ],
+    [
+      {
+        "type": "SYMBOL",
         "name": "union_type"
       },
       {
@@ -10006,6 +10118,16 @@
       {
         "type": "SYMBOL",
         "name": "hash"
+      }
+    ],
+    [
+      {
+        "type": "SYMBOL",
+        "name": "_expression"
+      },
+      {
+        "type": "SYMBOL",
+        "name": "type_declaration"
       }
     ]
   ],
