@@ -98,6 +98,10 @@ module.exports = grammar({
     $._delimited_array_element_start,
     $._delimited_array_element_end,
 
+    $.heredoc_start,
+    $._heredoc_body_start,
+    $.heredoc_end,
+
     $.regex_modifier,
 
     // These symbols are never actually returned. They signal the current scope
@@ -113,6 +117,7 @@ module.exports = grammar({
   extras: $ => [
     /\s/,
     $.comment,
+    $.heredoc_body,
   ],
 
   word: $ => $.identifier,
@@ -376,6 +381,7 @@ module.exports = grammar({
       alias($.unquoted_symbol, $.symbol),
       alias($.quoted_symbol, $.symbol),
       alias($.symbol_array_percent_literal, $.array),
+      $.heredoc_start,
       $.range,
       alias($.beginless_range, $.range),
       $.tuple,
@@ -626,6 +632,17 @@ module.exports = grammar({
         $.ignored_backslash,
       )),
       $._delimited_array_element_end,
+    ),
+
+    heredoc_body: $ => seq(
+      $._heredoc_body_start,
+      repeat(choice(
+        $._delimited_string_contents,
+        $.interpolation,
+        $.string_escape_sequence,
+        $.ignored_backslash,
+      )),
+      $.heredoc_end,
     ),
 
     operator_symbol: $ => token(seq(

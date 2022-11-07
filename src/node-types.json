@@ -292,6 +292,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -594,6 +598,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -939,6 +947,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -1236,6 +1248,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -1518,6 +1534,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -1787,6 +1807,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -2068,6 +2092,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -2434,6 +2462,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -2739,6 +2771,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -3018,6 +3054,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -3340,6 +3380,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -3704,6 +3748,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -3970,6 +4018,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -4233,6 +4285,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -4518,6 +4574,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -4780,6 +4840,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -5146,6 +5210,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -5414,6 +5482,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -5698,6 +5770,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -6188,6 +6264,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -6347,6 +6427,33 @@
     }
   },
   {
+    "type": "heredoc_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "heredoc_end",
+          "named": true
+        },
+        {
+          "type": "ignored_backslash",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "string_escape_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "if",
     "named": true,
     "fields": {
@@ -6456,6 +6563,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -6814,6 +6925,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -7092,6 +7207,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -7424,6 +7543,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -7805,6 +7928,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -8076,6 +8203,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -8339,6 +8470,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -8614,6 +8749,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -8877,6 +9016,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -9152,6 +9295,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -9456,6 +9603,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -9728,6 +9879,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -10102,6 +10257,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -10430,6 +10589,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -10805,6 +10968,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -11074,6 +11241,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -11353,6 +11524,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -11610,6 +11785,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -11885,6 +12064,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -12665,6 +12848,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -12928,6 +13115,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -13252,6 +13443,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -13595,6 +13790,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -13921,6 +14120,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -14181,6 +14384,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -14749,6 +14956,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -15027,6 +15238,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -15283,6 +15498,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -15698,6 +15917,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -15965,6 +16188,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -16306,6 +16533,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -16598,6 +16829,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -16850,6 +17085,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -17124,6 +17363,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -17380,6 +17623,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -17654,6 +17901,10 @@
             "named": true
           },
           {
+            "type": "heredoc_start",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -17906,6 +18157,10 @@
         },
         {
           "type": "hash",
+          "named": true
+        },
+        {
+          "type": "heredoc_start",
           "named": true
         },
         {
@@ -18187,6 +18442,10 @@
           },
           {
             "type": "hash",
+            "named": true
+          },
+          {
+            "type": "heredoc_start",
             "named": true
           },
           {
@@ -18612,6 +18871,14 @@
   {
     "type": "forall",
     "named": false
+  },
+  {
+    "type": "heredoc_end",
+    "named": true
+  },
+  {
+    "type": "heredoc_start",
+    "named": true
   },
   {
     "type": "identifier",

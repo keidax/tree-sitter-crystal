@@ -25,7 +25,15 @@ struct PercentLiteral {
 };
 typedef struct PercentLiteral PercentLiteral;
 
+struct Heredoc {
+    uint8_t word_size;
+    bool allow_escapes;
+};
+typedef struct Heredoc Heredoc;
+
 #define MAX_LITERAL_COUNT 16
+#define MAX_HEREDOC_COUNT 16
+#define HEREDOC_BUFFER_SIZE 230
 
 struct State {
     bool has_leading_whitespace;
@@ -35,8 +43,16 @@ struct State {
     // We can handle up to MAX_LITERAL_COUNT levels of nesting.
     uint8_t literal_count;
     PercentLiteral literal_stack[MAX_LITERAL_COUNT];
+
+    uint8_t heredoc_count;
+    Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
+
+    // TODO: use this space more efficiently by encoding as UTF-8?
+    int32_t heredoc_buffer[HEREDOC_BUFFER_SIZE];
 };
 typedef struct State State;
+
+_Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
 
 #define HAS_ACTIVE_LITERAL(state) \
     (state->literal_count > 0)
@@ -128,6 +144,10 @@ enum Token {
 
     DELIMITED_ARRAY_ELEMENT_START,
     DELIMITED_ARRAY_ELEMENT_END,
+
+    HEREDOC_START,
+    HEREDOC_BODY_START,
+    HEREDOC_END,
 
     REGEX_MODIFIER,
 
@@ -819,6 +839,9 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_START);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
+    LOG_SYMBOL(HEREDOC_START);
+    LOG_SYMBOL(HEREDOC_BODY_START);
+    LOG_SYMBOL(HEREDOC_END);
     LOG_SYMBOL(REGEX_MODIFIER);
     LOG_SYMBOL(START_OF_PARENLESS_ARGS);
     LOG_SYMBOL(END_OF_RANGE);
@@ -1028,6 +1051,65 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 }
             }
             break;
+
+        case '<':
+            if (valid_symbols[HEREDOC_START]) {
+                lex_advance(lexer);
+
+                if (lexer->lookahead == '<') {
+                    lex_advance(lexer);
+
+                    if (lexer->lookahead == '-') {
+                        lex_advance(lexer);
+
+                        if (lexer->lookahead == '\'') {
+                            // quoted heredoc
+                        }
+
+                        // TODO: calculate how much space is left if this isn't
+                        // the first heredoc on the stack. Should be 255 bytes
+                        // at most (since Heredoc.word_size is a uint8_t).
+                        const uint8_t max_word_size = HEREDOC_BUFFER_SIZE;
+
+                        int32_t word[max_word_size];
+                        uint8_t word_length = 0;
+
+                        while (is_ident_part(lexer->lookahead) && (word_length + 1) < max_word_size) {
+                            word[word_length++] = lexer->lookahead;
+                            lex_advance(lexer);
+                        }
+
+                        if (word_length == 0) {
+                            // There wasn't a valid heredoc identifier
+                            return false;
+                        } else if ((word_length + 1) == max_word_size && is_ident_part(lexer->lookahead)) {
+                            // The heredoc identifier is too big to store in state.
+                            return false;
+                        } else {
+                            // word contains a heredoc identifier we can store.
+
+                            // make sure the buffer ends with a 0
+                            word[word_length++] = 0;
+
+                            Heredoc heredoc = {
+                                .allow_escapes = true,
+                                .word_size = word_length,
+                            };
+
+                            state->heredoc_queue[state->heredoc_count++] = heredoc;
+
+                            // TODO: preserve existing buffer contents
+                            memcpy(state->heredoc_buffer, word, word_length * sizeof(int32_t));
+
+                            lexer->result_symbol = HEREDOC_START;
+                            DEBUG(" ==> returning HEREDOC_START\n");
+                            return true;
+                        }
+                    }
+                }
+            }
+            break;
+
         case '+':
             if (valid_symbols[UNARY_PLUS] || valid_symbols[BINARY_PLUS]) {
                 lex_advance(lexer);
