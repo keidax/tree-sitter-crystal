@@ -2289,7 +2289,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_delimited_string_contents"
+                "name": "_heredoc_body_contents"
               },
               {
                 "type": "SYMBOL",
@@ -10336,6 +10336,10 @@
     {
       "type": "SYMBOL",
       "name": "_heredoc_body_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_heredoc_body_contents"
     },
     {
       "type": "SYMBOL",

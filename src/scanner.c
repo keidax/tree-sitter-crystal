@@ -147,6 +147,7 @@ enum Token {
 
     HEREDOC_START,
     HEREDOC_BODY_START,
+    HEREDOC_BODY_CONTENTS,
     HEREDOC_END,
 
     REGEX_MODIFIER,
@@ -212,7 +213,12 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
                 break;
 
             case '\n':
-                if (valid_symbols[LINE_BREAK] && !crossed_newline) {
+                // TODO: do this properly
+                if (valid_symbols[HEREDOC_BODY_START] && state->heredoc_count > 0) {
+                    lex_advance(lexer);
+                    lexer->result_symbol = HEREDOC_BODY_START;
+                    return true;
+                } else if (valid_symbols[LINE_BREAK] && !crossed_newline) {
                     lex_advance(lexer);
                     lexer->mark_end(lexer);
                     crossed_newline = true;
@@ -374,6 +380,96 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
                     ACTIVE_LITERAL(state).nesting_level--;
                 }
                 break;
+        }
+
+        lex_advance(lexer);
+        lexer->mark_end(lexer);
+        found_content = true;
+    }
+}
+
+bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    bool found_content = false;
+
+    if (valid_symbols[HEREDOC_END] && lexer->get_column(lexer) == 0) {
+        while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
+            lex_skip(state, lexer);
+        }
+
+        // TODO: handle more than 1 heredoc + buffer
+        uint8_t word_size = state->heredoc_queue[0].word_size;
+        int32_t *word = state->heredoc_buffer;
+        bool possible_match = true;
+
+        for (uint8_t i = 0; (i + 1) < word_size; i++) {
+            if (lexer->lookahead == word[i]) {
+                // matched the word so far
+                lex_advance(lexer);
+                found_content = true;
+            } else {
+                possible_match = false;
+                break;
+            }
+        }
+
+        if (possible_match) {
+            if (lexer->lookahead == '\n' || lexer->lookahead == '\r' || lexer->eof(lexer)) {
+                // TODO: do this properly
+                memset(state->heredoc_buffer, 0, state->heredoc_queue[0].word_size * sizeof(int32_t));
+                state->heredoc_queue[0] = (Heredoc){0, 0};
+                state->heredoc_count--;
+
+                lexer->result_symbol = HEREDOC_END;
+                return true;
+            }
+        }
+    }
+
+    // we found either a partial or no match for the heredoc identifier, so scan for string contents
+    lexer->result_symbol = HEREDOC_BODY_CONTENTS;
+
+    for (;;) {
+        if (lexer->eof(lexer)) {
+            DEBUG("reached EOF\n");
+            return found_content;
+        }
+
+        switch (lexer->lookahead) {
+            case '\\':
+                // TODO: do this properly
+                if (state->heredoc_queue[0].allow_escapes) {
+                    return found_content;
+                }
+                break;
+
+            case '#':
+                // TODO: do this properly
+                if (!state->heredoc_queue[0].allow_escapes) {
+                    break;
+                }
+
+                lexer->mark_end(lexer);
+                lex_advance(lexer);
+
+                if (lexer->lookahead == '{') {
+                    return found_content;
+                }
+
+                found_content = true;
+                lexer->mark_end(lexer);
+                continue;
+
+            case '\r':
+                lex_advance(lexer);
+                lexer->mark_end(lexer);
+
+                if (lexer->lookahead != '\n') {
+                    break;
+                }
+            case '\n':
+                lex_advance(lexer);
+                lexer->mark_end(lexer);
+                return found_content;
         }
 
         lex_advance(lexer);
@@ -841,6 +937,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
     LOG_SYMBOL(HEREDOC_START);
     LOG_SYMBOL(HEREDOC_BODY_START);
+    LOG_SYMBOL(HEREDOC_BODY_CONTENTS);
     LOG_SYMBOL(HEREDOC_END);
     LOG_SYMBOL(REGEX_MODIFIER);
     LOG_SYMBOL(START_OF_PARENLESS_ARGS);
@@ -851,6 +948,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     state->has_leading_whitespace = false;
 
     if (valid_symbols[DELIMITED_STRING_CONTENTS] && HAS_ACTIVE_LITERAL(state) && scan_string_contents(state, lexer, valid_symbols)) {
+        return true;
+    }
+
+    if (valid_symbols[HEREDOC_BODY_CONTENTS] && state->heredoc_count > 0 && scan_heredoc_contents(state, lexer, valid_symbols)) {
         return true;
     }
 

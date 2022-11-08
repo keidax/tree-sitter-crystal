@@ -100,6 +100,7 @@ module.exports = grammar({
 
     $.heredoc_start,
     $._heredoc_body_start,
+    $._heredoc_body_contents,
     $.heredoc_end,
 
     $.regex_modifier,
@@ -637,7 +638,7 @@ module.exports = grammar({
     heredoc_body: $ => seq(
       $._heredoc_body_start,
       repeat(choice(
-        $._delimited_string_contents,
+        $._heredoc_body_contents,
         $.interpolation,
         $.string_escape_sequence,
         $.ignored_backslash,
