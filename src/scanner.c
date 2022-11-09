@@ -27,7 +27,8 @@ typedef struct PercentLiteral PercentLiteral;
 
 struct Heredoc {
     uint8_t word_size;
-    bool allow_escapes;
+    bool allow_escapes : 1;
+    bool started : 1;
 };
 typedef struct Heredoc Heredoc;
 
@@ -65,6 +66,65 @@ _Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
 
 #define POP_LITERAL(state) \
     (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
+
+#define ACTIVE_HEREDOC(state) \
+    (state->heredoc_queue[0])
+
+bool has_unstarted_heredoc(State *state) {
+    if (state->heredoc_count == 0) {
+        return false;
+    }
+
+    return !state->heredoc_queue[0].started;
+}
+
+// Return the number of codepoints currently stored in the heredoc word buffer
+size_t heredoc_current_buffer_size(State *state) {
+    size_t codepoints = 0;
+    for (int i = 0; i < state->heredoc_count; i++) {
+        codepoints += state->heredoc_queue[i].word_size;
+    }
+    return codepoints;
+}
+
+// Pop the active heredoc off the queue
+void pop_heredoc(State *state) {
+    uint8_t old_word_size = ACTIVE_HEREDOC(state).word_size;
+
+    uint8_t count = state->heredoc_count - 1;
+    state->heredoc_count = count;
+
+    // Shift the queue forward by one element
+    memmove(state->heredoc_queue, state->heredoc_queue + 1, sizeof(Heredoc) * count);
+
+    // Zero out the empty space at the tail of the queue
+    state->heredoc_queue[count] = (Heredoc){0, 0, 0};
+
+    // Shift the word buffer forward
+    size_t word_buffer_size = sizeof(int32_t) * heredoc_current_buffer_size(state);
+    memmove(state->heredoc_buffer, state->heredoc_buffer + old_word_size, word_buffer_size);
+
+    // Zero out the empty space in the word buffer
+    memset(state->heredoc_buffer + word_buffer_size, 0, sizeof(int32_t) * old_word_size);
+}
+
+bool has_room_for_heredoc(State *state, Heredoc heredoc) {
+    if (state->heredoc_count >= MAX_HEREDOC_COUNT) {
+        return false;
+    }
+
+    size_t current_codepoints = heredoc_current_buffer_size(state);
+    return (current_codepoints + heredoc.word_size) <= HEREDOC_BUFFER_SIZE;
+}
+
+// Push a heredoc onto the end of the state queue
+void push_heredoc(State *state, Heredoc heredoc, int32_t *word) {
+    size_t current_codepoints = heredoc_current_buffer_size(state);
+
+    state->heredoc_queue[state->heredoc_count++] = heredoc;
+
+    memcpy(state->heredoc_buffer + current_codepoints, word, sizeof(uint32_t) * heredoc.word_size);
+}
 
 #ifdef TREE_SITTER_INTERNAL_BUILD
 #define DEBUG(...)                                                                          \
@@ -213,9 +273,11 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
                 break;
 
             case '\n':
-                // TODO: do this properly
-                if (valid_symbols[HEREDOC_BODY_START] && state->heredoc_count > 0) {
-                    lex_advance(lexer);
+                if (valid_symbols[HEREDOC_BODY_START] && has_unstarted_heredoc(state)) {
+                    ACTIVE_HEREDOC(state).started = true;
+                    // HEREDOC_BODY_START is a zero-width token. Use skip instead
+                    // of advance because we don't want to include the newline.
+                    lex_skip(state, lexer);
                     lexer->result_symbol = HEREDOC_BODY_START;
                     return true;
                 } else if (valid_symbols[LINE_BREAK] && !crossed_newline) {
@@ -396,13 +458,12 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
             lex_skip(state, lexer);
         }
 
-        // TODO: handle more than 1 heredoc + buffer
-        uint8_t word_size = state->heredoc_queue[0].word_size;
-        int32_t *word = state->heredoc_buffer;
+        uint8_t word_size = ACTIVE_HEREDOC(state).word_size;
         bool possible_match = true;
 
         for (uint8_t i = 0; (i + 1) < word_size; i++) {
-            if (lexer->lookahead == word[i]) {
+            // The active heredoc's word is always the first word stored in the buffer.
+            if (lexer->lookahead == state->heredoc_buffer[i]) {
                 // matched the word so far
                 lex_advance(lexer);
                 found_content = true;
@@ -414,10 +475,7 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
 
         if (possible_match) {
             if (lexer->lookahead == '\n' || lexer->lookahead == '\r' || lexer->eof(lexer)) {
-                // TODO: do this properly
-                memset(state->heredoc_buffer, 0, state->heredoc_queue[0].word_size * sizeof(int32_t));
-                state->heredoc_queue[0] = (Heredoc){0, 0};
-                state->heredoc_count--;
+                pop_heredoc(state);
 
                 lexer->result_symbol = HEREDOC_END;
                 return true;
@@ -436,15 +494,13 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
 
         switch (lexer->lookahead) {
             case '\\':
-                // TODO: do this properly
-                if (state->heredoc_queue[0].allow_escapes) {
+                if (ACTIVE_HEREDOC(state).allow_escapes) {
                     return found_content;
                 }
                 break;
 
             case '#':
-                // TODO: do this properly
-                if (!state->heredoc_queue[0].allow_escapes) {
+                if (!ACTIVE_HEREDOC(state).allow_escapes) {
                     break;
                 }
 
@@ -1164,13 +1220,14 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         lex_advance(lexer);
 
                         if (lexer->lookahead == '\'') {
-                            // quoted heredoc
+                            // TODO: quoted heredoc
                         }
 
-                        // TODO: calculate how much space is left if this isn't
-                        // the first heredoc on the stack. Should be 255 bytes
-                        // at most (since Heredoc.word_size is a uint8_t).
-                        const uint8_t max_word_size = HEREDOC_BUFFER_SIZE;
+                        // How much space is left for this heredoc identifier.
+                        const size_t max_word_size = HEREDOC_BUFFER_SIZE - heredoc_current_buffer_size(state);
+                        if (max_word_size < 2) {
+                            return false;
+                        }
 
                         int32_t word[max_word_size];
                         uint8_t word_length = 0;
@@ -1194,16 +1251,19 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                             Heredoc heredoc = {
                                 .allow_escapes = true,
+                                .started = false,
                                 .word_size = word_length,
                             };
 
-                            state->heredoc_queue[state->heredoc_count++] = heredoc;
+                            // double check we can safely store the new heredoc
+                            if (!has_room_for_heredoc(state, heredoc)) {
+                                return false;
+                            }
 
-                            // TODO: preserve existing buffer contents
-                            memcpy(state->heredoc_buffer, word, word_length * sizeof(int32_t));
+                            push_heredoc(state, heredoc, word);
 
                             lexer->result_symbol = HEREDOC_START;
-                            DEBUG(" ==> returning HEREDOC_START\n");
+                            DEBUG(" ==> returning HEREDOC_START (size %d)\n", word_length);
                             return true;
                         }
                     }

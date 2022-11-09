@@ -414,6 +414,12 @@ heredoc strings
 puts 1, <<-C, 3
           1
   C
+
+a,b = <<-a, <<-b
+aaaa
+a
+bbbbb
+b
 --------------------------------------------------------------------------------
 
 (source_file
@@ -424,7 +430,16 @@ puts 1, <<-C, 3
       (heredoc_start)
       (integer)))
   (heredoc_body
-    (heredoc_end)))
+    (heredoc_end))
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (heredoc_start)
+    rhs: (heredoc_start))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+      (heredoc_end)))
 
 ================================================================================
 percent strings
