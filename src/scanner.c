@@ -461,7 +461,7 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
         uint8_t word_size = ACTIVE_HEREDOC(state).word_size;
         bool possible_match = true;
 
-        for (uint8_t i = 0; (i + 1) < word_size; i++) {
+        for (uint8_t i = 0; i < word_size; i++) {
             // The active heredoc's word is always the first word stored in the buffer.
             if (lexer->lookahead == state->heredoc_buffer[i]) {
                 // matched the word so far
@@ -1225,14 +1225,14 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                         // How much space is left for this heredoc identifier.
                         const size_t max_word_size = HEREDOC_BUFFER_SIZE - heredoc_current_buffer_size(state);
-                        if (max_word_size < 2) {
+                        if (max_word_size < 1) {
                             return false;
                         }
 
                         int32_t word[max_word_size];
                         uint8_t word_length = 0;
 
-                        while (is_ident_part(lexer->lookahead) && (word_length + 1) < max_word_size) {
+                        while (is_ident_part(lexer->lookahead) && word_length < max_word_size) {
                             word[word_length++] = lexer->lookahead;
                             lex_advance(lexer);
                         }
@@ -1240,15 +1240,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         if (word_length == 0) {
                             // There wasn't a valid heredoc identifier
                             return false;
-                        } else if ((word_length + 1) == max_word_size && is_ident_part(lexer->lookahead)) {
+                        } else if (word_length == max_word_size && is_ident_part(lexer->lookahead)) {
                             // The heredoc identifier is too big to store in state.
                             return false;
                         } else {
                             // word contains a heredoc identifier we can store.
-
-                            // make sure the buffer ends with a 0
-                            word[word_length++] = 0;
-
                             Heredoc heredoc = {
                                 .allow_escapes = true,
                                 .started = false,
