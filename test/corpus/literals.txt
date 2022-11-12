@@ -416,9 +416,9 @@ puts 1, <<-C, 3
   C
 
 a,b = <<-a, <<-b
-aaaa
+aaaa\na\ aa
 a
-bbbbb
+bbbbb#{1}bbb
 b
 --------------------------------------------------------------------------------
 
@@ -437,9 +437,13 @@ b
     rhs: (heredoc_start)
     rhs: (heredoc_start))
   (heredoc_body
+    (string_escape_sequence)
+    (ignored_backslash)
     (heredoc_end))
   (heredoc_body
-      (heredoc_end)))
+    (interpolation
+      (integer))
+    (heredoc_end)))
 
 ================================================================================
 percent strings

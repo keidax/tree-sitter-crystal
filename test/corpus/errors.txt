@@ -286,3 +286,135 @@ puts(** foo)
       (ERROR)
       (regex
         (MISSING "/")))))
+
+================================================================================
+too many heredocs
+================================================================================
+[<<-a, <<-b, <<-c, <<-d, <<-e, <<-f, <<-g, <<-h, <<-i, <<-j, <<-k, <<-l, <<-m, <<-n, <<-o, <<-p, <<-q]
+1
+a
+2
+b
+3
+c
+4
+d
+5
+e
+6
+f
+7
+g
+8
+h
+9
+i
+10
+j
+11
+k
+12
+l
+13
+m
+14
+n
+15
+o
+16
+p
+17
+q
+--------------------------------------------------------------------------------
+
+(source_file
+  (array
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (heredoc_start)
+    (op_call
+      (MISSING identifier)
+      (operator)
+      (op_call
+        (operator)
+        (identifier))))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (integer)
+  (identifier))
+
+================================================================================
+heredoc identifier too long
+================================================================================
+# okay
+a = <<-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+       aaaaaa
+       aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+# too long
+b = <<-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+       bbbbbb
+       bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (assign
+    (identifier)
+    (heredoc_start))
+  (heredoc_body
+    (heredoc_end))
+  (comment)
+  (op_call
+    (identifier)
+    (ERROR)
+    (operator)
+    (op_call
+      (operator)
+      (identifier)))
+  (identifier)
+  (identifier))
