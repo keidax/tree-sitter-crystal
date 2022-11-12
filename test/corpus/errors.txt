@@ -345,12 +345,11 @@ q
     (heredoc_start)
     (heredoc_start)
     (heredoc_start)
+    (ERROR
+      (operator))
     (op_call
-      (MISSING identifier)
       (operator)
-      (op_call
-        (operator)
-        (identifier))))
+      (identifier)))
   (heredoc_body
     (heredoc_end))
   (heredoc_body

@@ -5,151 +5,9 @@
 #include <string.h>
 #include <wctype.h>
 
-enum LiteralTypeEnum {
-    STRING,
-    STRING_NO_ESCAPE,
-    COMMAND,
-    STRING_ARRAY,
-    SYMBOL_ARRAY,
-    REGEX,
-};
-typedef uint8_t LiteralType;
-
-struct PercentLiteral {
-    // We compare these chars with int32_t codepoints, but all valid delimiters
-    // in Crystal are in the ASCII range, so we won't overflow.
-    uint8_t opening_char;
-    uint8_t closing_char;
-    uint8_t nesting_level;
-    LiteralType type;
-};
-typedef struct PercentLiteral PercentLiteral;
-
-struct Heredoc {
-    uint8_t word_size;
-    bool allow_escapes : 1;
-    bool started : 1;
-};
-typedef struct Heredoc Heredoc;
-
-#define MAX_LITERAL_COUNT 16
-#define MAX_HEREDOC_COUNT 16
-#define HEREDOC_BUFFER_SIZE 230
-
-struct State {
-    bool has_leading_whitespace;
-
-    // It's possible to have nested delimited literals, like
-    //   %(#{%(foo)})
-    // We can handle up to MAX_LITERAL_COUNT levels of nesting.
-    uint8_t literal_count;
-    PercentLiteral literal_stack[MAX_LITERAL_COUNT];
-
-    uint8_t heredoc_count;
-    Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
-
-    // TODO: use this space more efficiently by encoding as UTF-8?
-    int32_t heredoc_buffer[HEREDOC_BUFFER_SIZE];
-};
-typedef struct State State;
-
-_Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
-
-#define HAS_ACTIVE_LITERAL(state) \
-    (state->literal_count > 0)
-
-#define ACTIVE_LITERAL(state) \
-    (state->literal_stack[state->literal_count - 1])
-
-#define PUSH_LITERAL(state, literal) \
-    (state->literal_stack[state->literal_count++] = literal)
-
-#define POP_LITERAL(state) \
-    (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
-
-#define ACTIVE_HEREDOC(state) \
-    (state->heredoc_queue[0])
-
-bool has_unstarted_heredoc(State *state) {
-    if (state->heredoc_count == 0) {
-        return false;
-    }
-
-    return !state->heredoc_queue[0].started;
-}
-
-// Return the number of codepoints currently stored in the heredoc word buffer
-size_t heredoc_current_buffer_size(State *state) {
-    size_t codepoints = 0;
-    for (int i = 0; i < state->heredoc_count; i++) {
-        codepoints += state->heredoc_queue[i].word_size;
-    }
-    return codepoints;
-}
-
-// Pop the active heredoc off the queue
-void pop_heredoc(State *state) {
-    uint8_t old_word_size = ACTIVE_HEREDOC(state).word_size;
-
-    uint8_t count = state->heredoc_count - 1;
-    state->heredoc_count = count;
-
-    // Shift the queue forward by one element
-    memmove(state->heredoc_queue, state->heredoc_queue + 1, sizeof(Heredoc) * count);
-
-    // Zero out the empty space at the tail of the queue
-    state->heredoc_queue[count] = (Heredoc){0, 0, 0};
-
-    // Shift the word buffer forward
-    size_t word_buffer_size = sizeof(int32_t) * heredoc_current_buffer_size(state);
-    memmove(state->heredoc_buffer, state->heredoc_buffer + old_word_size, word_buffer_size);
-
-    // Zero out the empty space in the word buffer
-    memset(state->heredoc_buffer + word_buffer_size, 0, sizeof(int32_t) * old_word_size);
-}
-
-bool has_room_for_heredoc(State *state, Heredoc heredoc) {
-    if (state->heredoc_count >= MAX_HEREDOC_COUNT) {
-        return false;
-    }
-
-    size_t current_codepoints = heredoc_current_buffer_size(state);
-    return (current_codepoints + heredoc.word_size) <= HEREDOC_BUFFER_SIZE;
-}
-
-// Push a heredoc onto the end of the state queue
-void push_heredoc(State *state, Heredoc heredoc, int32_t *word) {
-    size_t current_codepoints = heredoc_current_buffer_size(state);
-
-    state->heredoc_queue[state->heredoc_count++] = heredoc;
-
-    memcpy(state->heredoc_buffer + current_codepoints, word, sizeof(uint32_t) * heredoc.word_size);
-}
-
-#ifdef TREE_SITTER_INTERNAL_BUILD
-#define DEBUG(...)                                                                          \
-    if (getenv("TREE_SITTER_DEBUG") && strncmp(getenv("TREE_SITTER_DEBUG"), "1", 1) == 0) { \
-        fprintf(stderr, __VA_ARGS__);                                                       \
-    }
-
-#define ASSERT(expr)                                                          \
-    if (expr) {                                                               \
-        ;                                                                     \
-    } else {                                                                  \
-        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
-        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
-        abort();                                                              \
-    }
-#else
-#define DEBUG(...)
-#define ASSERT(expr)                                                          \
-    if (expr) {                                                               \
-        ;                                                                     \
-    } else {                                                                  \
-        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
-        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
-    }
-#endif
+/*
+ * Token types
+ */
 
 enum Token {
     LINE_BREAK,
@@ -223,6 +81,183 @@ enum Token {
 };
 typedef enum Token Token;
 
+/*
+ * Helpful macros
+ */
+#ifdef TREE_SITTER_INTERNAL_BUILD
+#define DEBUG(...)                                                                          \
+    if (getenv("TREE_SITTER_DEBUG") && strncmp(getenv("TREE_SITTER_DEBUG"), "1", 1) == 0) { \
+        fprintf(stderr, __VA_ARGS__);                                                       \
+    }
+
+#define ASSERT(expr)                                                          \
+    if (expr) {                                                               \
+        ;                                                                     \
+    } else {                                                                  \
+        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
+        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
+        abort();                                                              \
+    }
+#else
+#define DEBUG(...)
+#define ASSERT(expr)                                                          \
+    if (expr) {                                                               \
+        ;                                                                     \
+    } else {                                                                  \
+        fprintf(stderr, "tree-sitter-crystal: src/scanner.c:%d: ", __LINE__); \
+        fprintf(stderr, "Assertion `%s` failed\n", #expr);                    \
+    }
+#endif
+
+/*
+ * State types
+ */
+
+enum LiteralTypeEnum {
+    STRING,
+    STRING_NO_ESCAPE,
+    COMMAND,
+    STRING_ARRAY,
+    SYMBOL_ARRAY,
+    REGEX,
+};
+typedef uint8_t LiteralType;
+
+struct PercentLiteral {
+    // We compare these chars with int32_t codepoints, but all valid delimiters
+    // in Crystal are in the ASCII range, so we won't overflow.
+    uint8_t opening_char;
+    uint8_t closing_char;
+    uint8_t nesting_level;
+    LiteralType type;
+};
+typedef struct PercentLiteral PercentLiteral;
+
+struct Heredoc {
+    uint8_t word_size;
+    bool allow_escapes : 1;
+    bool started : 1;
+};
+typedef struct Heredoc Heredoc;
+
+#define MAX_LITERAL_COUNT 16
+#define MAX_HEREDOC_COUNT 16
+#define HEREDOC_BUFFER_SIZE 230
+
+struct State {
+    bool has_leading_whitespace;
+
+    // It's possible to have nested delimited literals, like
+    //   %(#{%(foo)})
+    // We can handle up to MAX_LITERAL_COUNT levels of nesting.
+    uint8_t literal_count;
+    PercentLiteral literal_stack[MAX_LITERAL_COUNT];
+
+    uint8_t heredoc_count;
+    Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
+
+    // TODO: use this space more efficiently by encoding as UTF-8?
+    int32_t heredoc_buffer[HEREDOC_BUFFER_SIZE];
+};
+typedef struct State State;
+
+_Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
+
+/*
+ * State-related macros and functions
+ */
+
+#define HAS_ACTIVE_LITERAL(state) \
+    (state->literal_count > 0)
+
+#define ACTIVE_LITERAL(state) \
+    (state->literal_stack[state->literal_count - 1])
+
+#define PUSH_LITERAL(state, literal) \
+    (state->literal_stack[state->literal_count++] = literal)
+
+#define POP_LITERAL(state) \
+    (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
+
+static bool has_active_heredoc(State *state) {
+    for (uint8_t i = 0; i < state->heredoc_count; i++) {
+        if (state->heredoc_queue[i].started) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static Heredoc *active_heredoc(State *state) {
+    for (uint8_t i = 0; i < state->heredoc_count; i++) {
+        if (state->heredoc_queue[i].started) {
+            return &(state->heredoc_queue[i]);
+        }
+    }
+
+    ASSERT(!"This should never be reached");
+    return state->heredoc_queue;
+}
+
+static bool has_unstarted_heredoc(State *state) {
+    if (state->heredoc_count == 0) {
+        return false;
+    }
+
+    return !state->heredoc_queue[0].started;
+}
+
+// Return the number of codepoints currently stored in the heredoc word buffer
+static size_t heredoc_current_buffer_size(State *state) {
+    size_t codepoints = 0;
+    for (int i = 0; i < state->heredoc_count; i++) {
+        codepoints += state->heredoc_queue[i].word_size;
+    }
+    return codepoints;
+}
+
+// Pop the active heredoc off the queue
+static void pop_heredoc(State *state) {
+    ASSERT(state->heredoc_count > 0);
+    ASSERT(state->heredoc_queue[0].started);
+
+    uint8_t old_word_size = state->heredoc_queue[0].word_size;
+
+    uint8_t count = state->heredoc_count - 1;
+    state->heredoc_count = count;
+
+    // Shift the queue forward by one element
+    memmove(state->heredoc_queue, state->heredoc_queue + 1, sizeof(Heredoc) * count);
+
+    // Zero out the empty space at the tail of the queue
+    state->heredoc_queue[count] = (Heredoc){0, 0, 0};
+
+    // Shift the word buffer forward
+    size_t word_buffer_size = sizeof(int32_t) * heredoc_current_buffer_size(state);
+    memmove(state->heredoc_buffer, state->heredoc_buffer + old_word_size, word_buffer_size);
+
+    // Zero out the empty space in the word buffer
+    memset(state->heredoc_buffer + word_buffer_size, 0, sizeof(int32_t) * old_word_size);
+}
+
+static bool has_room_for_heredoc(State *state, Heredoc heredoc) {
+    if (state->heredoc_count >= MAX_HEREDOC_COUNT) {
+        return false;
+    }
+
+    size_t current_codepoints = heredoc_current_buffer_size(state);
+    return (current_codepoints + heredoc.word_size) <= HEREDOC_BUFFER_SIZE;
+}
+
+// Push a heredoc onto the end of the state queue
+static void push_heredoc(State *state, Heredoc heredoc, int32_t *word) {
+    size_t current_codepoints = heredoc_current_buffer_size(state);
+
+    state->heredoc_queue[state->heredoc_count++] = heredoc;
+
+    memcpy(state->heredoc_buffer + current_codepoints, word, sizeof(uint32_t) * heredoc.word_size);
+}
+
 enum LookaheadResult {
     LOOKAHEAD_UNKNOWN = 0,
     LOOKAHEAD_TYPE,
@@ -240,18 +275,18 @@ void *tree_sitter_crystal_external_scanner_create() {
     return state;
 }
 
-void lex_skip(State *state, TSLexer *lexer) {
+static void lex_skip(State *state, TSLexer *lexer) {
     state->has_leading_whitespace = true;
     lexer->advance(lexer, true);
 }
 
 // NOTE: apparently this can't be called `advance` because it conflicts with a
 // symbol in glibc
-void lex_advance(TSLexer *lexer) {
+static void lex_advance(TSLexer *lexer) {
     lexer->advance(lexer, false);
 }
 
-bool next_char_is_identifier(TSLexer *lexer) {
+static bool next_char_is_identifier(TSLexer *lexer) {
     int32_t lookahead = lexer->lookahead;
 
     return iswalnum(lookahead)
@@ -261,7 +296,7 @@ bool next_char_is_identifier(TSLexer *lexer) {
         || lookahead >= 0xa0;
 }
 
-bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
     bool crossed_newline = false;
 
     for (;;) {
@@ -274,7 +309,10 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 
             case '\n':
                 if (valid_symbols[HEREDOC_BODY_START] && has_unstarted_heredoc(state)) {
-                    ACTIVE_HEREDOC(state).started = true;
+                    ASSERT(state->heredoc_count > 0);
+                    ASSERT(!state->heredoc_queue[0].started);
+
+                    state->heredoc_queue[0].started = true;
                     // HEREDOC_BODY_START is a zero-width token. Use skip instead
                     // of advance because we don't want to include the newline.
                     lex_skip(state, lexer);
@@ -322,7 +360,7 @@ bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
 }
 
 // Returns true if a string content token is found
-bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
     bool found_content = false;
     LiteralType active_type;
 
@@ -450,15 +488,24 @@ bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid_symbol
     }
 }
 
-bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    if (valid_symbols[ERROR_RECOVERY] && !state->heredoc_queue[0].started) {
+        return false;
+    }
+
+    ASSERT(state->heredoc_count > 0);
+    ASSERT(state->heredoc_queue[0].started);
+
     bool found_content = false;
+
+    Heredoc active_heredoc = state->heredoc_queue[0];
 
     if (valid_symbols[HEREDOC_END] && lexer->get_column(lexer) == 0) {
         while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
             lex_skip(state, lexer);
         }
 
-        uint8_t word_size = ACTIVE_HEREDOC(state).word_size;
+        uint8_t word_size = active_heredoc.word_size;
         bool possible_match = true;
 
         for (uint8_t i = 0; i < word_size; i++) {
@@ -494,13 +541,13 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
 
         switch (lexer->lookahead) {
             case '\\':
-                if (ACTIVE_HEREDOC(state).allow_escapes) {
+                if (active_heredoc.allow_escapes) {
                     return found_content;
                 }
                 break;
 
             case '#':
-                if (!ACTIVE_HEREDOC(state).allow_escapes) {
+                if (!active_heredoc.allow_escapes) {
                     break;
                 }
 
@@ -534,7 +581,7 @@ bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbo
     }
 }
 
-bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols) {
     if (!state->has_leading_whitespace) {
         bool found_modifier = false;
 
@@ -560,13 +607,13 @@ bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols
     return false;
 }
 
-void skip_space(State *state, TSLexer *lexer) {
+static void skip_space(State *state, TSLexer *lexer) {
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
         lex_skip(state, lexer);
     }
 }
 
-void skip_space_and_newline(State *state, TSLexer *lexer) {
+static void skip_space_and_newline(State *state, TSLexer *lexer) {
     while (lexer->lookahead == ' '
         || lexer->lookahead == '\t'
         || lexer->lookahead == '\r'
@@ -575,7 +622,7 @@ void skip_space_and_newline(State *state, TSLexer *lexer) {
     }
 }
 
-bool is_ident_part(int32_t codepoint) {
+static bool is_ident_part(int32_t codepoint) {
     // identifier token characters are in the range [0-9A-Za-z_\u{00a0}-\u{10ffff}]
     // (except for the first and last character)
     return ('0' <= codepoint && codepoint <= '9')
@@ -585,7 +632,7 @@ bool is_ident_part(int32_t codepoint) {
         || (0x00a0 <= codepoint && codepoint <= 0x10ffffff);
 }
 
-void consume_const(State *state, TSLexer *lexer) {
+static void consume_const(State *state, TSLexer *lexer) {
     if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
         lex_advance(lexer);
 
@@ -595,7 +642,7 @@ void consume_const(State *state, TSLexer *lexer) {
     }
 }
 
-void consume_string_literal(State *state, TSLexer *lexer) {
+static void consume_string_literal(State *state, TSLexer *lexer) {
     bool can_escape = true, can_nest;
     int32_t opening_char = 0, closing_char, nesting_level = 0;
 
@@ -687,7 +734,7 @@ void consume_string_literal(State *state, TSLexer *lexer) {
 }
 
 // Check if there is a type suffix (e.g. `?` or `.class`) or a delimiter like `|`
-LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer) {
+static LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer) {
     if (lexer->eof(lexer)) { return true; }
 
     switch (lexer->lookahead) {
@@ -757,7 +804,7 @@ LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer *lexer)
 }
 
 // Check if there is an identifier followed by `:` indicating the start of a named tuple item
-LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexer, bool started) {
+static LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexer, bool started) {
     if (started
         || ('a' <= lexer->lookahead && lexer->lookahead <= 'z')
         || ('A' <= lexer->lookahead && lexer->lookahead <= 'Z')
@@ -806,7 +853,7 @@ LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexe
 // https://github.com/crystal-lang/crystal/blob/cd2b7d6490301e092cecc22dfbc91d0f9553ba20/src/compiler/crystal/syntax/parser.cr#L5195
 // As the compiler code notes, these conditions are not completely accurate in determining what
 // could or could not be a type.
-LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
+static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
 
     skip_space(state, lexer);
 
