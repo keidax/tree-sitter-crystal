@@ -179,6 +179,7 @@ _Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
 #define POP_LITERAL(state) \
     (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
 
+// Return true if any heredoc is started
 static bool has_active_heredoc(State *state) {
     for (uint8_t i = 0; i < state->heredoc_count; i++) {
         if (state->heredoc_queue[i].started) {
@@ -188,17 +189,7 @@ static bool has_active_heredoc(State *state) {
     return false;
 }
 
-static Heredoc *active_heredoc(State *state) {
-    for (uint8_t i = 0; i < state->heredoc_count; i++) {
-        if (state->heredoc_queue[i].started) {
-            return &(state->heredoc_queue[i]);
-        }
-    }
-
-    ASSERT(!"This should never be reached");
-    return state->heredoc_queue;
-}
-
+// Return true if the first heredoc on the queue is unstarted
 static bool has_unstarted_heredoc(State *state) {
     if (state->heredoc_count == 0) {
         return false;
@@ -233,13 +224,14 @@ static void pop_heredoc(State *state) {
     state->heredoc_queue[count] = (Heredoc){0, 0, 0};
 
     // Shift the word buffer forward
-    size_t word_buffer_size = sizeof(int32_t) * heredoc_current_buffer_size(state);
-    memmove(state->heredoc_buffer, state->heredoc_buffer + old_word_size, word_buffer_size);
+    size_t word_buffer_size = heredoc_current_buffer_size(state);
+    memmove(state->heredoc_buffer, state->heredoc_buffer + old_word_size, sizeof(int32_t) * word_buffer_size);
 
     // Zero out the empty space in the word buffer
     memset(state->heredoc_buffer + word_buffer_size, 0, sizeof(int32_t) * old_word_size);
 }
 
+// Return true if state has room to track another heredoc
 static bool has_room_for_heredoc(State *state, Heredoc heredoc) {
     if (state->heredoc_count >= MAX_HEREDOC_COUNT) {
         return false;
@@ -249,13 +241,54 @@ static bool has_room_for_heredoc(State *state, Heredoc heredoc) {
     return (current_codepoints + heredoc.word_size) <= HEREDOC_BUFFER_SIZE;
 }
 
-// Push a heredoc onto the end of the state queue
+// Push a heredoc onto the end of the state queue. If there's already an active
+// heredoc, the new heredoc must be nested, so it is added to the queue before
+// the active heredoc.
 static void push_heredoc(State *state, Heredoc heredoc, int32_t *word) {
-    size_t current_codepoints = heredoc_current_buffer_size(state);
+    ASSERT(state->heredoc_count < MAX_HEREDOC_COUNT);
 
-    state->heredoc_queue[state->heredoc_count++] = heredoc;
+    if (has_active_heredoc(state)) {
+        // This must be a nested heredoc, so insert it before the currently-active heredoc
+        uint8_t index;
+        for (index = 0; index < state->heredoc_count; index++) {
+            if (state->heredoc_queue[index].started) {
+                break;
+            }
+        }
+        ASSERT(index < state->heredoc_count);
 
-    memcpy(state->heredoc_buffer + current_codepoints, word, sizeof(uint32_t) * heredoc.word_size);
+        size_t heredocs_to_shift = state->heredoc_count - index;
+
+        int32_t *start_of_codepoint_shift = state->heredoc_buffer;
+        for (int i = 0; i < index; i++) {
+            start_of_codepoint_shift += state->heredoc_queue[i].word_size;
+        }
+
+        size_t codepoints_to_shift = 0;
+        for (int i = index; i < state->heredoc_count; i++) {
+            codepoints_to_shift += state->heredoc_queue[i].word_size;
+        }
+
+        // Make room in the word buffer
+        memcpy(start_of_codepoint_shift + heredoc.word_size, start_of_codepoint_shift, sizeof(uint32_t) * codepoints_to_shift);
+
+        // Copy in the new word
+        memcpy(start_of_codepoint_shift, word, sizeof(uint32_t) * heredoc.word_size);
+
+        // Make room in the queue
+        memcpy(state->heredoc_queue + index + 1, state->heredoc_queue + index, sizeof(Heredoc) * heredocs_to_shift);
+
+        // Copy in the new heredoc
+        state->heredoc_queue[index] = heredoc;
+        state->heredoc_count++;
+
+    } else {
+        size_t current_codepoints = heredoc_current_buffer_size(state);
+
+        state->heredoc_queue[state->heredoc_count++] = heredoc;
+
+        memcpy(state->heredoc_buffer + current_codepoints, word, sizeof(uint32_t) * heredoc.word_size);
+    }
 }
 
 enum LookaheadResult {
@@ -294,6 +327,25 @@ static bool next_char_is_identifier(TSLexer *lexer) {
         || lookahead == '?'
         || lookahead == '!'
         || lookahead >= 0xa0;
+}
+
+// Usually scan_whitespace will
+static bool check_for_heredoc_start(State *state, TSLexer *lexer, const bool *valid_symbols) {
+    // Note: calling get_column(lexer) at EOF seems to cause loops, so make sure EOF is checked first
+    if (valid_symbols[HEREDOC_BODY_START]
+        && has_unstarted_heredoc(state)
+        && !lexer->eof(lexer)
+        && lexer->get_column(lexer) == 0) {
+
+        ASSERT(state->heredoc_count > 0);
+        ASSERT(!state->heredoc_queue[0].started);
+
+        state->heredoc_queue[0].started = true;
+
+        lexer->result_symbol = HEREDOC_BODY_START;
+        return true;
+    }
+    return false;
 }
 
 static bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symbols) {
@@ -489,16 +541,23 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
 }
 
 static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
-    if (valid_symbols[ERROR_RECOVERY] && !state->heredoc_queue[0].started) {
+    if (valid_symbols[ERROR_RECOVERY] && !has_active_heredoc(state)) {
         return false;
     }
 
     ASSERT(state->heredoc_count > 0);
-    ASSERT(state->heredoc_queue[0].started);
+    ASSERT(has_active_heredoc(state));
 
     bool found_content = false;
 
-    Heredoc active_heredoc = state->heredoc_queue[0];
+    Heredoc active_heredoc;
+
+    for (uint8_t i = 0; i < state->heredoc_count; i++) {
+        if (state->heredoc_queue[i].started) {
+            active_heredoc = state->heredoc_queue[i];
+            break;
+        }
+    }
 
     if (valid_symbols[HEREDOC_END] && lexer->get_column(lexer) == 0) {
         while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
@@ -565,6 +624,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
             case '\r':
                 lex_advance(lexer);
                 lexer->mark_end(lexer);
+                found_content = true;
 
                 if (lexer->lookahead != '\n') {
                     break;
@@ -572,6 +632,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
             case '\n':
                 lex_advance(lexer);
                 lexer->mark_end(lexer);
+                found_content = true;
                 return found_content;
         }
 
@@ -1049,6 +1110,10 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     State *state = (State *)payload;
     state->has_leading_whitespace = false;
+
+    if (check_for_heredoc_start(state, lexer, valid_symbols)) {
+        return true;
+    }
 
     if (valid_symbols[DELIMITED_STRING_CONTENTS] && HAS_ACTIVE_LITERAL(state) && scan_string_contents(state, lexer, valid_symbols)) {
         return true;

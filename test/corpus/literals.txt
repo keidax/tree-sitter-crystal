@@ -415,11 +415,12 @@ puts 1, <<-C, 3
           1
   C
 
-a,b = <<-a, <<-b
+a,b,c = <<-a, <<-b, <<-c
 aaaa\na\ aa
 a
 bbbbb#{1}bbb
 b
+c
 --------------------------------------------------------------------------------
 
 (source_file
@@ -434,6 +435,8 @@ b
   (multi_assign
     lhs: (identifier)
     lhs: (identifier)
+    lhs: (identifier)
+    rhs: (heredoc_start)
     rhs: (heredoc_start)
     rhs: (heredoc_start))
   (heredoc_body
@@ -443,6 +446,100 @@ b
   (heredoc_body
     (interpolation
       (integer))
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_end)))
+
+================================================================================
+nested heredoc strings
+================================================================================
+# Nested heredocs aren't actually valid in interpolations, but that restriction
+# is only on a semantic level. We can still parse this syntax just fine.
+
+<<-A
+1
+#{
+<<-E }
+2
+E
+5
+A
+
+<<-B
+1
+#{<<-F + <<-G
+2
+F
+3
+G
+}
+5
+B
+
+p <<-A
+1
+#{[<<-BB, <<-CCC].reverse.join("")}4
+3
+BB
+#{<<-E}
+  #{<<-F
+  2.5
+  F
+  }
+2
+E
+
+CCC
+5
+A
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (comment)
+  (heredoc_start)
+  (heredoc_body
+    (interpolation
+      (heredoc_start))
+    (heredoc_body
+      (heredoc_end))
+    (heredoc_end))
+  (heredoc_start)
+  (heredoc_body
+    (interpolation
+      (op_call
+        (heredoc_start)
+        (operator)
+        (heredoc_start))
+      (heredoc_body
+        (heredoc_end))
+      (heredoc_body
+        (heredoc_end)))
+    (heredoc_end))
+  (call
+    (identifier)
+    (argument_list
+      (heredoc_start)))
+  (heredoc_body
+    (interpolation
+      (call
+        (call
+          (array
+            (heredoc_start)
+            (heredoc_start))
+          (identifier))
+        (identifier)
+        (argument_list
+          (string))))
+    (heredoc_body
+      (heredoc_end))
+    (heredoc_body
+      (interpolation
+        (heredoc_start))
+      (heredoc_body
+        (comment)
+        (heredoc_end))
+      (heredoc_end))
     (heredoc_end)))
 
 ================================================================================
