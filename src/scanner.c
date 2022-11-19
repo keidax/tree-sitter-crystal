@@ -1330,9 +1330,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                     if (lexer->lookahead == '-') {
                         lex_advance(lexer);
+                        bool quoted = false;
 
                         if (lexer->lookahead == '\'') {
-                            // TODO: quoted heredoc
+                            quoted = true;
+                            lex_advance(lexer);
                         }
 
                         // How much space is left for this heredoc identifier.
@@ -1344,9 +1346,34 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         int32_t word[max_word_size];
                         uint8_t word_length = 0;
 
-                        while (is_ident_part(lexer->lookahead) && word_length < max_word_size) {
+                        // First character must be valid in an identifier, even for a quoted heredoc
+                        if (is_ident_part(lexer->lookahead)) {
                             word[word_length++] = lexer->lookahead;
                             lex_advance(lexer);
+                        } else {
+                            return false;
+                        }
+
+                        while (word_length < max_word_size) {
+                            if (lexer->lookahead == '\r' || lexer->lookahead == '\n' || lexer->eof(lexer)) {
+                                // Reached the end of the line
+                                break;
+                            }
+
+                            if (lexer->lookahead == '\'' && quoted) {
+                                // This must be the end of the identifier
+                                lex_advance(lexer);
+                                break;
+                            }
+
+                            if (quoted || is_ident_part(lexer->lookahead)) {
+                                // Add to the identifier buffer
+                                word[word_length++] = lexer->lookahead;
+                                lex_advance(lexer);
+                            } else {
+                                // Not a valid identifier character
+                                break;
+                            }
                         }
 
                         if (word_length == 0) {
@@ -1358,7 +1385,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         } else {
                             // word contains a heredoc identifier we can store.
                             Heredoc heredoc = {
-                                .allow_escapes = true,
+                                .allow_escapes = !quoted,
                                 .started = false,
                                 .word_size = word_length,
                             };

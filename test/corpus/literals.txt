@@ -421,6 +421,11 @@ a
 bbbbb#{1}bbb
 b
 c
+
+<<-'Quo ted!"'
+  a\nb#{1}c
+  'Quo ted!"'
+  Quo ted!"
 --------------------------------------------------------------------------------
 
 (source_file
@@ -447,6 +452,9 @@ c
     (interpolation
       (integer))
     (heredoc_end))
+  (heredoc_body
+    (heredoc_end))
+  (heredoc_start)
   (heredoc_body
     (heredoc_end)))
 
