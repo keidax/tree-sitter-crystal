@@ -1331,6 +1331,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     if (lexer->lookahead == '-') {
                         lex_advance(lexer);
                         bool quoted = false;
+                        bool got_end_quote = false;
 
                         if (lexer->lookahead == '\'') {
                             quoted = true;
@@ -1362,6 +1363,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                             if (lexer->lookahead == '\'' && quoted) {
                                 // This must be the end of the identifier
+                                got_end_quote = true;
                                 lex_advance(lexer);
                                 break;
                             }
@@ -1381,6 +1383,9 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                             return false;
                         } else if (word_length == max_word_size && is_ident_part(lexer->lookahead)) {
                             // The heredoc identifier is too big to store in state.
+                            return false;
+                        } else if (quoted && !got_end_quote) {
+                            // Unterminated quoted heredoc
                             return false;
                         } else {
                             // word contains a heredoc identifier we can store.

@@ -417,3 +417,19 @@ b = <<-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
       (identifier)))
   (identifier)
   (identifier))
+
+================================================================================
+unterminated quoted heredoc
+================================================================================
+<<-'missing_quote
+missing_quote
+--------------------------------------------------------------------------------
+
+(source_file
+  (ERROR
+    (operator))
+  (op_call
+    (operator)
+    (ERROR)
+    (identifier))
+  (identifier))
