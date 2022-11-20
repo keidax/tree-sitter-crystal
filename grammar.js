@@ -561,7 +561,6 @@ module.exports = grammar({
 
     // TODO:
     // multiple string literals joined by backslashes
-    // heredocs
     string: $ => seq(
       '"',
       repeat(choice(

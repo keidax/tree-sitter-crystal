@@ -134,6 +134,7 @@ struct PercentLiteral {
 typedef struct PercentLiteral PercentLiteral;
 
 struct Heredoc {
+    // Number of codepoints in the heredoc identifier
     uint8_t word_size;
     bool allow_escapes : 1;
     bool started : 1;
@@ -142,6 +143,7 @@ typedef struct Heredoc Heredoc;
 
 #define MAX_LITERAL_COUNT 16
 #define MAX_HEREDOC_COUNT 16
+// The maximum number of codepoints that can be stored in the state, across all heredocs
 #define HEREDOC_BUFFER_SIZE 230
 
 struct State {
@@ -157,6 +159,8 @@ struct State {
     Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
 
     // TODO: use this space more efficiently by encoding as UTF-8?
+    // It would require custom UTF-8 <-> UTF-32 conversion code,
+    // because c32rtomb and mbrtoc32 aren't available on macOS.
     int32_t heredoc_buffer[HEREDOC_BUFFER_SIZE];
 };
 typedef struct State State;
@@ -329,7 +333,9 @@ static bool next_char_is_identifier(TSLexer *lexer) {
         || lookahead >= 0xa0;
 }
 
-// Usually scan_whitespace will
+// Usually scan_whitespace will handle starting heredocs, but it won't be called if a heredoc is
+// already active. This function is called before heredoc contents or whitespace is scanned, so it
+// can handle the start of a nested heredoc.
 static bool check_for_heredoc_start(State *state, TSLexer *lexer, const bool *valid_symbols) {
     // Note: calling get_column(lexer) at EOF seems to cause loops, so make sure EOF is checked first
     if (valid_symbols[HEREDOC_BODY_START]
@@ -540,6 +546,8 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
     }
 }
 
+// Scan for heredoc contents, and return true if the body or end tag of the current heredoc is
+// matched.
 static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[ERROR_RECOVERY] && !has_active_heredoc(state)) {
         return false;
