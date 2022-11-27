@@ -340,6 +340,7 @@ module.exports = grammar({
       $.module_def,
       $.class_def,
       $.struct_def,
+      $.enum_def,
       $.alias,
       $.method_def,
       $.abstract_method_def,
@@ -351,7 +352,6 @@ module.exports = grammar({
       $.next,
       $.break,
       // TODO:
-      // enum
       // lib
       // fun def
       // macro def
@@ -919,6 +919,15 @@ module.exports = grammar({
         '<', field('superclass', choice($.constant, $.generic_instance_type)),
       )),
       seq(optional($._statements)),
+      'end',
+    ),
+
+    enum_def: $ => seq(
+      'enum',
+      field('name', alias($._constant_segment, $.constant)),
+      optional(field('type', seq(/:\s/, $._bare_type))),
+      // Technically not all statements are valid here, but this works fine
+      optional($._statements),
       'end',
     ),
 

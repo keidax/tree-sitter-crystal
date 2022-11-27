@@ -700,3 +700,60 @@ end
         type: (constant))
       (method_def
         name: (identifier)))))
+
+================================================================================
+enum definitions
+================================================================================
+enum Nums
+  One
+  Two
+  Three = 3
+end
+
+alias Bar = Int8
+enum Foo:	Bar Red; Blue; Green end
+enum Foo2; Thing end
+
+@[Flags]
+enum Bar : UInt8
+  Red
+  Green
+  Blue
+
+  def thingy
+    "asdf"
+  end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (enum_def
+    name: (constant)
+    (constant)
+    (constant)
+    (const_assign
+      lhs: (constant)
+      rhs: (integer)))
+  (alias
+    name: (constant)
+    type: (constant))
+  (enum_def
+    name: (constant)
+    type: (constant)
+    (constant)
+    (constant)
+    (constant))
+  (enum_def
+    name: (constant)
+    (constant))
+  (annotation
+    (constant))
+  (enum_def
+    name: (constant)
+    type: (constant)
+    (constant)
+    (constant)
+    (constant)
+    (method_def
+      name: (identifier)
+      (string))))
