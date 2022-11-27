@@ -408,10 +408,9 @@ b = <<-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
   (heredoc_body
     (heredoc_end))
   (comment)
-  (op_call
+  (assign
     (identifier)
     (ERROR)
-    (operator)
     (op_call
       (operator)
       (identifier)))
@@ -440,21 +439,19 @@ p <<-🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥�
 
 (source_file
   (comment)
-  (op_call
-    (call
-      (identifier)
-      (argument_list
-        (heredoc_start)
-        (heredoc_start)
-        (heredoc_start)
-        (heredoc_start)
-        (heredoc_start)
-        (heredoc_start)))
-    (ERROR)
-    (operator)
-    (op_call
-      (operator)
-      (identifier)))
+  (call
+    (identifier)
+    (argument_list
+      (heredoc_start)
+      (heredoc_start)
+      (heredoc_start)
+      (heredoc_start)
+      (heredoc_start)
+      (heredoc_start)
+      (ERROR)
+      (op_call
+        (operator)
+        (identifier))))
   (heredoc_body
     (heredoc_end))
   (heredoc_body
@@ -476,8 +473,7 @@ missing_quote
 --------------------------------------------------------------------------------
 
 (source_file
-  (ERROR
-    (operator))
+  (ERROR)
   (op_call
     (operator)
     (ERROR)
