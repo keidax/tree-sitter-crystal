@@ -689,7 +689,11 @@ p% ()
 %Q|\|\n|
 
 %q(\)
+%q(\
+)
 %Q(\\)
+%Q(\
+\\)
 
 %(1#{2}3)
 %{#{""}}
@@ -731,7 +735,11 @@ p% ()
     (ignored_backslash)
     (string_escape_sequence))
   (string)
+  (string)
   (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence)
     (string_escape_sequence))
   (string
     (interpolation
@@ -784,7 +792,8 @@ d)
 %w((\)))
 %w|\|\)|
 
-%w| a\b c\d |
+%w| a\b c\\
+d |
 
 %w[1 2		3
 4567]
@@ -825,6 +834,7 @@ d)
     (string
       (ignored_backslash))
     (string
+      (ignored_backslash)
       (ignored_backslash)))
   (array
     (string)
@@ -853,6 +863,8 @@ d)
 %i(1\ 2)
   %i( a\	b)
 %i{a\  a }
+%i{1\
+1 2}
 %i{a \ \ }
 %i((\)))
 %i|\|\)|
@@ -879,6 +891,10 @@ d)
   (array
     (symbol
       (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash))
+    (symbol))
   (array
     (symbol
       (ignored_backslash))

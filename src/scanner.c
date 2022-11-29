@@ -55,13 +55,16 @@ enum Token {
 
     MODULO_OPERATOR,
 
+    STRING_LITERAL_START,
+    DELIMITED_STRING_CONTENTS,
+    STRING_LITERAL_END,
+
     STRING_PERCENT_LITERAL_START,
     COMMAND_PERCENT_LITERAL_START,
     STRING_ARRAY_PERCENT_LITERAL_START,
     SYMBOL_ARRAY_PERCENT_LITERAL_START,
     REGEX_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
-    DELIMITED_STRING_CONTENTS,
 
     DELIMITED_ARRAY_ELEMENT_START,
     DELIMITED_ARRAY_ELEMENT_END,
@@ -1148,13 +1151,15 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(REGULAR_UNLESS_KEYWORD);
     LOG_SYMBOL(MODIFIER_UNLESS_KEYWORD);
     LOG_SYMBOL(MODULO_OPERATOR);
+    LOG_SYMBOL(STRING_LITERAL_START);
+    LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
+    LOG_SYMBOL(STRING_LITERAL_END);
     LOG_SYMBOL(STRING_PERCENT_LITERAL_START);
     LOG_SYMBOL(COMMAND_PERCENT_LITERAL_START);
     LOG_SYMBOL(STRING_ARRAY_PERCENT_LITERAL_START);
     LOG_SYMBOL(SYMBOL_ARRAY_PERCENT_LITERAL_START);
     LOG_SYMBOL(REGEX_PERCENT_LITERAL_START);
     LOG_SYMBOL(PERCENT_LITERAL_END);
-    LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_START);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
     LOG_SYMBOL(HEREDOC_START);
@@ -1196,6 +1201,17 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             lex_advance(lexer);
             POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
+            return true;
+        }
+    }
+
+    if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
+        ASSERT(ACTIVE_LITERAL(state).type == STRING);
+
+        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+            lex_advance(lexer);
+            POP_LITERAL(state);
+            lexer->result_symbol = STRING_LITERAL_END;
             return true;
         }
     }
@@ -1813,6 +1829,26 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 }
 
                 lexer->result_symbol = MODULO_OPERATOR;
+                return true;
+            }
+            break;
+
+        case '"':
+            if (valid_symbols[STRING_LITERAL_START]) {
+                lex_advance(lexer);
+
+                PUSH_LITERAL(state, ((PercentLiteral){
+                                        .opening_char = '"',
+                                        .closing_char = '"',
+                                        .type = STRING,
+                                        .nesting_level = 0,
+                                    }));
+
+                lexer->result_symbol = STRING_LITERAL_START;
+                return true;
+            } else if (valid_symbols[STRING_LITERAL_END]) {
+                lex_advance(lexer);
+                lexer->result_symbol = STRING_LITERAL_END;
                 return true;
             }
             break;
