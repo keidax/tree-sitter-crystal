@@ -9123,8 +9123,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_brace_block"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_brace_block"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "CHOICE",
