@@ -1863,7 +1863,7 @@ module.exports = grammar({
       const params = seq('|', field('params', alias($.block_param_list, $.param_list)), '|')
 
       return seq(
-        $._start_of_brace_block,
+        alias($._start_of_brace_block, '{'),
         optional(params),
         optional($._statements),
         '}',
