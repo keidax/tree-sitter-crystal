@@ -2648,8 +2648,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_regex_start"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_regex_start"
+          },
+          "named": false,
+          "value": "/"
         },
         {
           "type": "REPEAT",
@@ -2980,8 +2985,13 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_start_of_hash_or_tuple"
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_start_of_hash_or_tuple"
+              },
+              "named": false,
+              "value": "{"
             },
             {
               "type": "SYMBOL",
@@ -3062,8 +3072,13 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_start_of_hash_or_tuple"
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_start_of_hash_or_tuple"
+              },
+              "named": false,
+              "value": "{"
             },
             {
               "type": "STRING",
@@ -3123,8 +3138,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_hash_or_tuple"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_hash_or_tuple"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "SYMBOL",
@@ -3168,8 +3188,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_named_tuple"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_named_tuple"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "SYMBOL",
@@ -5717,8 +5742,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_tuple_type"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_tuple_type"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "SYMBOL",
@@ -5822,8 +5852,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_named_tuple_type"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_named_tuple_type"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "SYMBOL",
@@ -7297,8 +7332,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_start_of_hash_or_tuple"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_start_of_hash_or_tuple"
+          },
+          "named": false,
+          "value": "{"
         },
         {
           "type": "CHOICE",
@@ -7428,8 +7468,13 @@
             }
           },
           {
-            "type": "SYMBOL",
-            "name": "_start_of_index_operator"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_start_of_index_operator"
+            },
+            "named": false,
+            "value": "["
           },
           {
             "type": "FIELD",
@@ -7896,8 +7941,13 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_unary_star"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_unary_star"
+            },
+            "named": false,
+            "value": "*"
           },
           {
             "type": "SYMBOL",
@@ -7913,8 +7963,13 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "_unary_double_star"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_unary_double_star"
+            },
+            "named": false,
+            "value": "**"
           },
           {
             "type": "SYMBOL",
@@ -9401,8 +9456,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_regular_if_keyword"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_regular_if_keyword"
+          },
+          "named": false,
+          "value": "if"
         },
         {
           "type": "FIELD",
@@ -9467,8 +9527,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_regular_unless_keyword"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_regular_unless_keyword"
+          },
+          "named": false,
+          "value": "unless"
         },
         {
           "type": "FIELD",
@@ -9665,8 +9730,13 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "_modifier_if_keyword"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_modifier_if_keyword"
+          },
+          "named": false,
+          "value": "if"
         },
         {
           "type": "FIELD",
@@ -9690,8 +9760,13 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "_modifier_unless_keyword"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_modifier_unless_keyword"
+          },
+          "named": false,
+          "value": "unless"
         },
         {
           "type": "FIELD",

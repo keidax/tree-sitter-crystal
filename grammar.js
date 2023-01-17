@@ -698,7 +698,7 @@ module.exports = grammar({
     ),
 
     regex: $ => seq(
-      $._regex_start,
+      alias($._regex_start, '/'),
       repeat(choice(
         token.immediate(prec(1, /[^\\/]/)),
         $.regex_escape_sequence,
@@ -771,7 +771,7 @@ module.exports = grammar({
 
       return choice(
         seq(
-          $._start_of_hash_or_tuple,
+          alias($._start_of_hash_or_tuple, '{'),
           $.hash_entry,
           repeat(seq(',', $.hash_entry)),
           optional(','),
@@ -779,7 +779,7 @@ module.exports = grammar({
           optional(of_type),
         ),
         seq(
-          $._start_of_hash_or_tuple,
+          alias($._start_of_hash_or_tuple, '{'),
           '}',
           of_type,
         ),
@@ -789,7 +789,7 @@ module.exports = grammar({
     hash_entry: $ => seq($._expression, '=>', $._expression),
 
     tuple: $ => seq(
-      $._start_of_hash_or_tuple,
+      alias($._start_of_hash_or_tuple, '{'),
       $._expression,
       repeat(seq(',', $._expression)),
       optional(','),
@@ -797,7 +797,7 @@ module.exports = grammar({
     ),
 
     named_tuple: $ => seq(
-      $._start_of_named_tuple,
+      alias($._start_of_named_tuple, '{'),
       $.named_expr,
       repeat(seq(',', $.named_expr)),
       optional(','),
@@ -1314,7 +1314,7 @@ module.exports = grammar({
     )),
 
     tuple_type: $ => seq(
-      $._start_of_tuple_type,
+      alias($._start_of_tuple_type, '{'),
       $._splattable_type,
       repeat(seq(',', $._splattable_type)),
       optional(','),
@@ -1338,7 +1338,7 @@ module.exports = grammar({
     },
 
     named_tuple_type: $ => seq(
-      $._start_of_named_tuple_type,
+      alias($._start_of_named_tuple_type, '{'),
       $.named_type,
       repeat(seq(',', $.named_type)),
       optional(','),
@@ -1514,7 +1514,7 @@ module.exports = grammar({
     },
 
     implicit_object_tuple: $ => seq(
-      $._start_of_hash_or_tuple,
+      alias($._start_of_hash_or_tuple, '{'),
       optional(seq(
         $._expression,
         repeat(seq(',', $._expression)),
@@ -1540,7 +1540,7 @@ module.exports = grammar({
 
       return prec('index_operator', seq(
         receiver,
-        $._start_of_index_operator,
+        alias($._start_of_index_operator, '['),
         args,
         choice(']', ']?'),
       ))
@@ -1654,9 +1654,9 @@ module.exports = grammar({
       ))
     },
 
-    splat: $ => prec('splat_operator', seq($._unary_star, $._expression)),
+    splat: $ => prec('splat_operator', seq(alias($._unary_star, '*'), $._expression)),
 
-    double_splat: $ => prec('splat_operator', seq($._unary_double_star, $._expression)),
+    double_splat: $ => prec('splat_operator', seq(alias($._unary_double_star, '**'), $._expression)),
 
     named_expr: $ => {
       const name = field('name', choice(
@@ -1918,7 +1918,7 @@ module.exports = grammar({
       const else_ = field('else', choice($.elsif, $.else))
 
       return seq(
-        $._regular_if_keyword,
+        alias($._regular_if_keyword, 'if'),
         cond,
         $._terminator,
         optional(then),
@@ -1933,7 +1933,7 @@ module.exports = grammar({
       const else_ = field('else', $.else)
 
       return seq(
-        $._regular_unless_keyword,
+        alias($._regular_unless_keyword, 'unless'),
         cond,
         $._terminator,
         optional(then),
@@ -1970,13 +1970,13 @@ module.exports = grammar({
 
     modifier_if: $ => seq(
       field('then', $._statement),
-      $._modifier_if_keyword,
+      alias($._modifier_if_keyword, 'if'),
       field('cond', $._expression),
     ),
 
     modifier_unless: $ => seq(
       field('then', $._statement),
-      $._modifier_unless_keyword,
+      alias($._modifier_unless_keyword, 'unless'),
       field('cond', $._expression),
     ),
 
