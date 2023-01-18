@@ -595,7 +595,7 @@ module.exports = grammar({
     },
 
     interpolation: $ => seq(
-      token.immediate(prec(1, '#{')), $._expression, '}',
+      token(prec(1, '#{')), $._expression, '}',
     ),
 
     string_percent_literal: $ => seq(

@@ -419,6 +419,7 @@ a,b,c = <<-a, <<-b, <<-c, <<-'😀嚤&÷🔮'
 aaaa\na\ aa
 a
 bbbbb#{1}bbb
+  #{2}
 b
 c
 😀嚤&÷🔮
@@ -451,6 +452,8 @@ c
     (ignored_backslash)
     (heredoc_end))
   (heredoc_body
+    (interpolation
+      (integer))
     (interpolation
       (integer))
     (heredoc_end))
@@ -549,7 +552,10 @@ A
       (interpolation
         (heredoc_start))
       (heredoc_body
-        (comment)
+        (interpolation
+          (heredoc_start)
+          (heredoc_body
+            (heredoc_end)))
         (heredoc_end))
       (heredoc_end))
     (heredoc_end)))
