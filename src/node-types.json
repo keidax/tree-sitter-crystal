@@ -6863,6 +6863,10 @@
       "required": true,
       "types": [
         {
+          "type": "heredoc_content",
+          "named": true
+        },
+        {
           "type": "heredoc_end",
           "named": true
         },
@@ -19455,6 +19459,10 @@
   {
     "type": "forall",
     "named": false
+  },
+  {
+    "type": "heredoc_content",
+    "named": true
   },
   {
     "type": "heredoc_end",
