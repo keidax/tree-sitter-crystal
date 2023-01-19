@@ -419,6 +419,7 @@ a,b,c = <<-a, <<-b, <<-c, <<-'😀嚤&÷🔮'
 aaaa\na\ aa
 a
 bbbbb#{1}bbb
+  #{2}
 b
 c
 😀嚤&÷🔮
@@ -437,6 +438,7 @@ c
       (heredoc_start)
       (integer)))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (multi_assign
     lhs: (identifier)
@@ -447,12 +449,20 @@ c
     rhs: (heredoc_start)
     rhs: (heredoc_start))
   (heredoc_body
+    (heredoc_content)
     (string_escape_sequence)
+    (heredoc_content)
     (ignored_backslash)
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (interpolation
       (integer))
+    (heredoc_content)
+    (interpolation
+      (integer))
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
     (heredoc_end))
@@ -460,6 +470,7 @@ c
     (heredoc_end))
   (heredoc_start)
   (heredoc_body
+    (heredoc_content)
     (heredoc_end)))
 
 ================================================================================
@@ -511,28 +522,37 @@ A
   (comment)
   (heredoc_start)
   (heredoc_body
+    (heredoc_content)
     (interpolation
       (heredoc_start))
+    (heredoc_content)
     (heredoc_body
+      (heredoc_content)
       (heredoc_end))
+    (heredoc_content)
     (heredoc_end))
   (heredoc_start)
   (heredoc_body
+    (heredoc_content)
     (interpolation
       (op_call
         (heredoc_start)
         (operator)
         (heredoc_start))
       (heredoc_body
+        (heredoc_content)
         (heredoc_end))
       (heredoc_body
+        (heredoc_content)
         (heredoc_end)))
+    (heredoc_content)
     (heredoc_end))
   (call
     (identifier)
     (argument_list
       (heredoc_start)))
   (heredoc_body
+    (heredoc_content)
     (interpolation
       (call
         (call
@@ -543,15 +563,26 @@ A
         (identifier)
         (argument_list
           (string))))
+    (heredoc_content)
     (heredoc_body
+      (heredoc_content)
       (heredoc_end))
+    (heredoc_content)
     (heredoc_body
       (interpolation
         (heredoc_start))
+      (heredoc_content)
       (heredoc_body
-        (comment)
+        (interpolation
+          (heredoc_start)
+          (heredoc_body
+            (heredoc_content)
+            (heredoc_end)))
+        (heredoc_content)
         (heredoc_end))
+      (heredoc_content)
       (heredoc_end))
+    (heredoc_content)
     (heredoc_end)))
 
 ================================================================================
@@ -626,10 +657,13 @@ Heredoc 3
       (heredoc_start)
       (heredoc_start)))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end)))
 
 ================================================================================

@@ -100,7 +100,7 @@ module.exports = grammar({
 
     $.heredoc_start,
     $._heredoc_body_start,
-    $._heredoc_body_contents,
+    $.heredoc_content,
     $.heredoc_end,
 
     $.regex_modifier,
@@ -595,7 +595,7 @@ module.exports = grammar({
     },
 
     interpolation: $ => seq(
-      token.immediate(prec(1, '#{')), $._expression, '}',
+      token(prec(1, '#{')), $._expression, '}',
     ),
 
     string_percent_literal: $ => seq(
@@ -637,7 +637,7 @@ module.exports = grammar({
     heredoc_body: $ => seq(
       $._heredoc_body_start,
       repeat(choice(
-        $._heredoc_body_contents,
+        $.heredoc_content,
         $.interpolation,
         $.string_escape_sequence,
         $.ignored_backslash,

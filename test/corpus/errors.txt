@@ -351,36 +351,52 @@ q
       (operator)
       (identifier)))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (integer)
   (identifier))
@@ -406,6 +422,7 @@ b = <<-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
     (identifier)
     (heredoc_start))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (comment)
   (assign
@@ -453,16 +470,22 @@ p <<-🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥�
         (operator)
         (identifier))))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end))
   (heredoc_body
+    (heredoc_content)
     (heredoc_end)))
 
 ================================================================================

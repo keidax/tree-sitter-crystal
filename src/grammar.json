@@ -2143,7 +2143,7 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "IMMEDIATE_TOKEN",
+          "type": "TOKEN",
           "content": {
             "type": "PREC",
             "value": 1,
@@ -2293,7 +2293,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_heredoc_body_contents"
+                "name": "heredoc_content"
               },
               {
                 "type": "SYMBOL",
@@ -10486,7 +10486,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_heredoc_body_contents"
+      "name": "heredoc_content"
     },
     {
       "type": "SYMBOL",

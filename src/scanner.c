@@ -68,7 +68,7 @@ enum Token {
 
     HEREDOC_START,
     HEREDOC_BODY_START,
-    HEREDOC_BODY_CONTENTS,
+    HEREDOC_CONTENT,
     HEREDOC_END,
 
     REGEX_MODIFIER,
@@ -549,8 +549,9 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
     }
 }
 
-// Scan for heredoc contents, and return true if the body or end tag of the current heredoc is
-// matched.
+// Scan for heredoc contents, and return true if the body or end tag of the
+// current heredoc is matched. This function will scan across multiple lines,
+// so one heredoc_content node will contain as many characters as possible.
 static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[ERROR_RECOVERY] && !has_active_heredoc(state)) {
         return false;
@@ -562,102 +563,140 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
     bool found_content = false;
 
     Heredoc active_heredoc;
+    bool heredoc_pending_start;
 
-    for (uint8_t i = 0; i < state->heredoc_count; i++) {
-        if (state->heredoc_queue[i].started) {
-            active_heredoc = state->heredoc_queue[i];
-            break;
-        }
-    }
-
-    if (valid_symbols[HEREDOC_END] && lexer->get_column(lexer) == 0) {
-        while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
-            lex_skip(state, lexer);
-        }
-
-        uint8_t byte_size = active_heredoc.byte_size;
-        size_t byte_offset = 0;
-        bool possible_match = true;
-
-        // Load all the expected codepoints at once. Theoretically this is less efficient than
-        // checking one codepoint at a time, but the actual performance impact is minimal.
-        int32_t codepoints[MAX_HEREDOC_WORD_SIZE];
-        size_t codepoint_count = utf8_to_codepoints(codepoints, state->heredoc_buffer, byte_size);
-
-        for (uint8_t i = 0; i < codepoint_count; i++) {
-            int32_t expected_codepoint = codepoints[i];
-
-            // The active heredoc's word is always the first word stored in the buffer.
-            if (lexer->lookahead == expected_codepoint) {
-                // matched the word so far
-                lex_advance(lexer);
-                found_content = true;
-            } else {
-                possible_match = false;
+    if (state->heredoc_queue[0].started) {
+        heredoc_pending_start = false;
+        active_heredoc = state->heredoc_queue[0];
+    } else {
+        // The first heredoc in the queue isn't started, which means it's a
+        // pending nested heredoc that will begin on the next line.
+        heredoc_pending_start = true;
+        for (uint8_t i = 1; i < state->heredoc_count; i++) {
+            if (state->heredoc_queue[i].started) {
+                active_heredoc = state->heredoc_queue[i];
                 break;
             }
         }
-
-        if (possible_match) {
-            if (lexer->lookahead == '\n' || lexer->lookahead == '\r' || lexer->eof(lexer)) {
-                pop_heredoc(state);
-
-                lexer->result_symbol = HEREDOC_END;
-                return true;
-            }
-        }
     }
-
-    // we found either a partial or no match for the heredoc identifier, so scan for string contents
-    lexer->result_symbol = HEREDOC_BODY_CONTENTS;
 
     for (;;) {
-        if (lexer->eof(lexer)) {
-            DEBUG("reached EOF\n");
-            return found_content;
+    start_of_line:
+        if (found_content && heredoc_pending_start) {
+            // We matched the remaining heredoc_content on a previous line after
+            // the start of a nested heredoc. Now we return that content, and
+            // the next call to the scanner will trigger check_for_heredoc_start.
+            return true;
         }
 
-        switch (lexer->lookahead) {
-            case '\\':
-                if (active_heredoc.allow_escapes) {
-                    return found_content;
+        if (valid_symbols[HEREDOC_END] && !lexer->eof(lexer) && lexer->get_column(lexer) == 0) {
+            if (found_content) {
+                lexer->mark_end(lexer);
+                while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
+                    lex_advance(lexer);
                 }
-                break;
 
-            case '#':
-                if (!active_heredoc.allow_escapes) {
+            } else {
+                while (lexer->lookahead == '\t' || lexer->lookahead == ' ') {
+                    lex_skip(state, lexer);
+                }
+                lexer->mark_end(lexer);
+            }
+
+            uint8_t byte_size = active_heredoc.byte_size;
+            size_t matched_codepoint_count;
+
+            // Load all the expected codepoints at once. Theoretically this is less efficient than
+            // checking one codepoint at a time, but the actual performance impact is minimal.
+            int32_t codepoints[MAX_HEREDOC_WORD_SIZE];
+            size_t codepoint_count = utf8_to_codepoints(codepoints, state->heredoc_buffer, byte_size);
+
+            for (matched_codepoint_count = 0; matched_codepoint_count < codepoint_count; matched_codepoint_count++) {
+                int32_t expected_codepoint = codepoints[matched_codepoint_count];
+
+                if (lexer->lookahead == expected_codepoint) {
+                    lex_advance(lexer);
+                } else {
                     break;
                 }
+            }
 
-                lexer->mark_end(lexer);
-                lex_advance(lexer);
+            bool end_of_line = (lexer->lookahead == '\n' || lexer->lookahead == '\r' || lexer->eof(lexer));
 
-                if (lexer->lookahead == '{') {
-                    return found_content;
+            if ((matched_codepoint_count == codepoint_count) && end_of_line) {
+                if (found_content) {
+                    // We already scanned content on a previous line, which must be
+                    // returned. The next call to the scanner will match this heredoc word
+                    // again, and return it.
+                    return true;
+                } else {
+                    pop_heredoc(state);
+
+                    lexer->mark_end(lexer);
+                    lexer->result_symbol = HEREDOC_END;
+                    return true;
                 }
+            }
 
+            if (matched_codepoint_count > 0) {
+                // lex_advance was called at least once while scanning for the heredoc
+                // word, make sure those characters are counted as content.
                 found_content = true;
                 lexer->mark_end(lexer);
-                continue;
+            }
+        }
 
-            case '\r':
-                lex_advance(lexer);
-                lexer->mark_end(lexer);
-                found_content = true;
+        // We found either a partial or no match for the heredoc identifier, so scan for string contents
+        lexer->result_symbol = HEREDOC_CONTENT;
 
-                if (lexer->lookahead != '\n') {
-                    break;
-                }
-            case '\n':
-                lex_advance(lexer);
-                lexer->mark_end(lexer);
-                found_content = true;
+        for (;;) {
+            if (lexer->eof(lexer)) {
+                DEBUG("reached EOF\n");
                 return found_content;
-        }
+            }
 
-        lex_advance(lexer);
-        lexer->mark_end(lexer);
-        found_content = true;
+            switch (lexer->lookahead) {
+                case '\\':
+                    if (active_heredoc.allow_escapes) {
+                        return found_content;
+                    }
+                    break;
+
+                case '#':
+                    if (!active_heredoc.allow_escapes) {
+                        break;
+                    }
+
+                    lexer->mark_end(lexer);
+                    lex_advance(lexer);
+
+                    if (lexer->lookahead == '{') {
+                        return found_content;
+                    }
+
+                    found_content = true;
+                    lexer->mark_end(lexer);
+                    continue;
+
+                case '\r':
+                    lex_advance(lexer);
+                    lexer->mark_end(lexer);
+                    found_content = true;
+
+                    if (lexer->lookahead != '\n') {
+                        continue;
+                    }
+                case '\n':
+                    lex_advance(lexer);
+                    lexer->mark_end(lexer);
+                    found_content = true;
+                    goto start_of_line;
+            }
+
+            lex_advance(lexer);
+            lexer->mark_end(lexer);
+            found_content = true;
+        }
     }
 }
 
@@ -1120,7 +1159,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
     LOG_SYMBOL(HEREDOC_START);
     LOG_SYMBOL(HEREDOC_BODY_START);
-    LOG_SYMBOL(HEREDOC_BODY_CONTENTS);
+    LOG_SYMBOL(HEREDOC_CONTENT);
     LOG_SYMBOL(HEREDOC_END);
     LOG_SYMBOL(REGEX_MODIFIER);
     LOG_SYMBOL(START_OF_PARENLESS_ARGS);
@@ -1138,7 +1177,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
-    if (valid_symbols[HEREDOC_BODY_CONTENTS] && state->heredoc_count > 0 && scan_heredoc_contents(state, lexer, valid_symbols)) {
+    if (valid_symbols[HEREDOC_CONTENT] && state->heredoc_count > 0 && scan_heredoc_contents(state, lexer, valid_symbols)) {
         return true;
     }
 
