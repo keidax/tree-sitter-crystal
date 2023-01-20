@@ -14,6 +14,7 @@
 
 enum Token {
     LINE_BREAK,
+    LINE_CONTINUATION,
 
     START_OF_BRACE_BLOCK,
     START_OF_HASH_OR_TUPLE,
@@ -156,6 +157,7 @@ typedef struct Heredoc Heredoc;
 
 struct State {
     bool has_leading_whitespace;
+    bool previous_line_continued;
 
     // It's possible to have nested delimited literals, like
     //   %(#{%(foo)})
@@ -314,6 +316,7 @@ void *tree_sitter_crystal_external_scanner_create() {
     state = malloc(sizeof(State));
     memset(state, 0, sizeof(State));
     state->has_leading_whitespace = false;
+    state->previous_line_continued = false;
 
     return state;
 }
@@ -346,6 +349,7 @@ static bool check_for_heredoc_start(State *state, TSLexer *lexer, const bool *va
     // Note: calling get_column(lexer) at EOF seems to cause loops, so make sure EOF is checked first
     if (valid_symbols[HEREDOC_BODY_START]
         && has_unstarted_heredoc(state)
+        && !state->previous_line_continued
         && !lexer->eof(lexer)
         && lexer->get_column(lexer) == 0) {
 
@@ -1123,6 +1127,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[sym]) DEBUG("\t" #sym "\n");
 
     LOG_SYMBOL(LINE_BREAK);
+    LOG_SYMBOL(LINE_CONTINUATION);
     LOG_SYMBOL(START_OF_BRACE_BLOCK);
     LOG_SYMBOL(START_OF_HASH_OR_TUPLE);
     LOG_SYMBOL(START_OF_NAMED_TUPLE);
@@ -1178,6 +1183,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
+    // The previous_line_continued flag only matters for check_for_heredoc_start,
+    // so it can now be cleared.
+    if (state->previous_line_continued) {
+        state->previous_line_continued = false;
+    }
+
     if (valid_symbols[DELIMITED_STRING_CONTENTS] && HAS_ACTIVE_LITERAL(state) && scan_string_contents(state, lexer, valid_symbols)) {
         return true;
     }
@@ -1206,8 +1217,6 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
 
     if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        ASSERT(ACTIVE_LITERAL(state).type == STRING);
-
         if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
             lex_advance(lexer);
             POP_LITERAL(state);
@@ -1850,6 +1859,30 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 lex_advance(lexer);
                 lexer->result_symbol = STRING_LITERAL_END;
                 return true;
+            }
+            break;
+
+        case '\\':
+            if (valid_symbols[LINE_CONTINUATION]) {
+                // Inside a string, a percent literal, or a heredoc, treat backslash + newline
+                // like other escaped string characters.
+                if (HAS_ACTIVE_LITERAL(state) || has_active_heredoc(state)) {
+                    return false;
+                }
+
+                lex_advance(lexer);
+
+                if (lexer->lookahead == '\r') {
+                    lex_advance(lexer);
+                }
+
+                if (lexer->lookahead == '\n') {
+                    lex_advance(lexer);
+                    lexer->result_symbol = LINE_CONTINUATION;
+                    state->previous_line_continued = true;
+                    DEBUG("returning line continuation symbol\n")
+                    return true;
+                }
             }
             break;
 

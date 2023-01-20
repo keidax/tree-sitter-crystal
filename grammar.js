@@ -44,6 +44,7 @@ module.exports = grammar({
 
   externals: $ => [
     $._line_break,
+    $._line_continuation,
 
     $._start_of_brace_block,
     $._start_of_hash_or_tuple,
@@ -120,6 +121,7 @@ module.exports = grammar({
 
   extras: $ => [
     /\s/,
+    $._line_continuation,
     $.comment,
     $.heredoc_body,
   ],
@@ -328,7 +330,6 @@ module.exports = grammar({
       ),
       $._statement,
     ),
-
 
     _parenthesized_statement: $ => prec(1, seq(
       '(', $._statement, optional($._terminator), ')',

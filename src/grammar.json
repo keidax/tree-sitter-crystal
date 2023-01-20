@@ -10076,6 +10076,10 @@
     },
     {
       "type": "SYMBOL",
+      "name": "_line_continuation"
+    },
+    {
+      "type": "SYMBOL",
       "name": "comment"
     },
     {
@@ -10326,6 +10330,10 @@
     {
       "type": "SYMBOL",
       "name": "_line_break"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_line_continuation"
     },
     {
       "type": "SYMBOL",
