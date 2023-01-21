@@ -254,6 +254,10 @@
           "name": "string"
         },
         {
+          "type": "SYMBOL",
+          "name": "chained_string"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -1976,6 +1980,22 @@
         {
           "type": "SYMBOL",
           "name": "_string_literal_end"
+        }
+      ]
+    },
+    "chained_string": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string"
+          }
         }
       ]
     },

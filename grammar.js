@@ -380,6 +380,7 @@ module.exports = grammar({
       $.array,
       $.hash,
       $.string,
+      $.chained_string,
       alias($.string_percent_literal, $.string),
       alias($.string_array_percent_literal, $.array),
       alias($.operator_symbol, $.symbol),
@@ -563,8 +564,6 @@ module.exports = grammar({
       )))
     },
 
-    // TODO:
-    // multiple string literals joined by backslashes
     string: $ => seq(
       $._string_literal_start,
       repeat(choice(
@@ -575,6 +574,11 @@ module.exports = grammar({
       )),
       $._string_literal_end,
     ),
+
+    // Represents multiple strings joined by line continuations. $._line_continuation is
+    // not actually included here because it doesn't play with `extras`, see
+    // https://github.com/tree-sitter/tree-sitter/issues/1950
+    chained_string: $ => seq($.string, repeat1($.string)),
 
     ignored_backslash: $ => {
       return token.immediate(seq('\\',

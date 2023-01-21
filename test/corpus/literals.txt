@@ -1579,22 +1579,38 @@ D
 e\
 e
 E
+
+string_with_newline = "hello
+  world"
+
+string_with_interior_backslashes = "hello \
+  world \
+  no \
+  newlines"
+
+string_joined_with_backslashes = "hello " \
+  "world "\
+  " no " \
+  "newlines"
+
+not_chained = "str1"
+  "str2"
 --------------------------------------------------------------------------------
 
 (source_file
   (multi_assign
-    (identifier)
-    (identifier)
-    (identifier)
-    (identifier)
-    (identifier)
-    (string
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (string
       (string_escape_sequence))
-    (string)
-    (string
+    rhs: (string)
+    rhs: (string
       (string_escape_sequence))
-    (heredoc_start)
-    (heredoc_start))
+    rhs: (heredoc_start)
+    rhs: (heredoc_start))
   (heredoc_body
     (heredoc_content)
     (string_escape_sequence)
@@ -1602,4 +1618,24 @@ E
     (heredoc_end))
   (heredoc_body
     (heredoc_content)
-    (heredoc_end)))
+    (heredoc_end))
+  (assign
+    lhs: (identifier)
+    rhs: (string))
+  (assign
+    lhs: (identifier)
+    rhs: (string
+      (string_escape_sequence)
+      (string_escape_sequence)
+      (string_escape_sequence)))
+  (assign
+    lhs: (identifier)
+    rhs: (chained_string
+      (string)
+      (string)
+      (string)
+      (string)))
+  (assign
+    lhs: (identifier)
+    rhs: (string))
+  (string))
