@@ -141,6 +141,8 @@ module.exports = grammar({
       'shift_operator',
       'binary_and_operator',
       'binary_or_operator',
+      'equality_operator',
+      'comparison_operator',
       'logical_and_operator',
       'logical_or_operator',
       'range_operator',
@@ -442,6 +444,8 @@ module.exports = grammar({
       alias($.complement_operator, $.op_call),
       alias($.binary_and_operator, $.op_call),
       alias($.binary_or_operator, $.op_call),
+      alias($.equality_operator, $.op_call),
+      alias($.comparison_operator, $.op_call),
       alias($.index_operator, $.index_call),
       $.assign,
       alias($.operator_assign, $.op_assign),
@@ -1661,6 +1665,28 @@ module.exports = grammar({
       const arg = field('argument', $._expression)
 
       return prec.left('binary_or_operator', seq(
+        receiver, method, arg,
+      ))
+    },
+
+    equality_operator: $ => {
+      const operator = choice('==', '!=', '=~', '!~', '===')
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.left('equality_operator', seq(
+        receiver, method, arg,
+      ))
+    },
+
+    comparison_operator: $ => {
+      const operator = choice('<', '<=', '>', '>=', '<=>')
+      const receiver = field('receiver', $._expression)
+      const method = field('operator', alias(operator, $.operator))
+      const arg = field('argument', $._expression)
+
+      return prec.left('comparison_operator', seq(
         receiver, method, arg,
       ))
     },

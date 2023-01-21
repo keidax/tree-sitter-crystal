@@ -1194,6 +1194,130 @@ d && e || f && g
       (identifier))))
 
 ================================================================================
+equality operators
+================================================================================
+a == b
+
+name =~
+/Shawn/
+
+c !=\
+d
+
+e !~ /regex/
+
+(Symbol === :asdf)
+--------------------------------------------------------------------------------
+
+(source_file
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (regex))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (regex))
+  (op_call
+    receiver: (constant)
+    operator: (operator)
+    argument: (symbol)))
+
+================================================================================
+comparison operators
+================================================================================
+1 < 2
+
+"b" >
+"a"
+
+5 \
+<=\
+5.1
+
+(9 >= 7)
+
+p! 0 <=> 5
+--------------------------------------------------------------------------------
+
+(source_file
+  (op_call
+    receiver: (integer)
+    operator: (operator)
+    argument: (integer))
+  (op_call
+    receiver: (string)
+    operator: (operator)
+    argument: (string))
+  (op_call
+    receiver: (integer)
+    operator: (operator)
+    argument: (float))
+  (op_call
+    receiver: (integer)
+    operator: (operator)
+    argument: (integer))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        receiver: (integer)
+        operator: (operator)
+        argument: (integer)))))
+
+================================================================================
+chained equality and comparison operators
+================================================================================
+a <= b <= c
+
+a >= b <= c > d
+
+a == b <= c
+a <= b == c
+--------------------------------------------------------------------------------
+
+(source_file
+  (op_call
+    receiver: (op_call
+      receiver: (identifier)
+      operator: (operator)
+      argument: (identifier))
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (op_call
+      receiver: (op_call
+        receiver: (identifier)
+        operator: (operator)
+        argument: (identifier))
+      operator: (operator)
+      argument: (identifier))
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (op_call
+      receiver: (identifier)
+      operator: (operator)
+      argument: (identifier))
+    operator: (operator)
+    argument: (identifier))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (op_call
+      receiver: (identifier)
+      operator: (operator)
+      argument: (identifier))))
+
+================================================================================
 combined assignment operators
 ================================================================================
 a += b
