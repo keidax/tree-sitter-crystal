@@ -689,7 +689,11 @@ p% ()
 %Q|\|\n|
 
 %q(\)
+%q(\
+)
 %Q(\\)
+%Q(\
+\\)
 
 %(1#{2}3)
 %{#{""}}
@@ -731,7 +735,11 @@ p% ()
     (ignored_backslash)
     (string_escape_sequence))
   (string)
+  (string)
   (string
+    (string_escape_sequence))
+  (string
+    (string_escape_sequence)
     (string_escape_sequence))
   (string
     (interpolation
@@ -784,7 +792,8 @@ d)
 %w((\)))
 %w|\|\)|
 
-%w| a\b c\d |
+%w| a\b c\\
+d |
 
 %w[1 2		3
 4567]
@@ -825,6 +834,7 @@ d)
     (string
       (ignored_backslash))
     (string
+      (ignored_backslash)
       (ignored_backslash)))
   (array
     (string)
@@ -853,6 +863,8 @@ d)
 %i(1\ 2)
   %i( a\	b)
 %i{a\  a }
+%i{1\
+1 2}
 %i{a \ \ }
 %i((\)))
 %i|\|\)|
@@ -879,6 +891,10 @@ d)
   (array
     (symbol
       (ignored_backslash)))
+  (array
+    (symbol
+      (ignored_backslash))
+    (symbol))
   (array
     (symbol
       (ignored_backslash))
@@ -1548,3 +1564,78 @@ puts %x[echo \t[#{foo}]\]]
         (interpolation
           (identifier))
         (ignored_backslash)))))
+
+================================================================================
+strings with backslash newlines
+================================================================================
+a, b, c, d, e = "1\
+2", %q(1\
+2), %Q(1\
+2), <<-D, \
+<<-'E'
+d\
+d
+D
+e\
+e
+E
+
+string_with_newline = "hello
+  world"
+
+string_with_interior_backslashes = "hello \
+  world \
+  no \
+  newlines"
+
+string_joined_with_backslashes = "hello " \
+  "world "\
+  " no " \
+  "newlines"
+
+not_chained = "str1"
+  "str2"
+--------------------------------------------------------------------------------
+
+(source_file
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (string
+      (string_escape_sequence))
+    rhs: (string)
+    rhs: (string
+      (string_escape_sequence))
+    rhs: (heredoc_start)
+    rhs: (heredoc_start))
+  (heredoc_body
+    (heredoc_content)
+    (string_escape_sequence)
+    (heredoc_content)
+    (heredoc_end))
+  (heredoc_body
+    (heredoc_content)
+    (heredoc_end))
+  (assign
+    lhs: (identifier)
+    rhs: (string))
+  (assign
+    lhs: (identifier)
+    rhs: (string
+      (string_escape_sequence)
+      (string_escape_sequence)
+      (string_escape_sequence)))
+  (assign
+    lhs: (identifier)
+    rhs: (chained_string
+      (string)
+      (string)
+      (string)
+      (string)))
+  (assign
+    lhs: (identifier)
+    rhs: (string))
+  (string))

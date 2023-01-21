@@ -14,6 +14,7 @@
 
 enum Token {
     LINE_BREAK,
+    LINE_CONTINUATION,
 
     START_OF_BRACE_BLOCK,
     START_OF_HASH_OR_TUPLE,
@@ -55,13 +56,16 @@ enum Token {
 
     MODULO_OPERATOR,
 
+    STRING_LITERAL_START,
+    DELIMITED_STRING_CONTENTS,
+    STRING_LITERAL_END,
+
     STRING_PERCENT_LITERAL_START,
     COMMAND_PERCENT_LITERAL_START,
     STRING_ARRAY_PERCENT_LITERAL_START,
     SYMBOL_ARRAY_PERCENT_LITERAL_START,
     REGEX_PERCENT_LITERAL_START,
     PERCENT_LITERAL_END,
-    DELIMITED_STRING_CONTENTS,
 
     DELIMITED_ARRAY_ELEMENT_START,
     DELIMITED_ARRAY_ELEMENT_END,
@@ -153,6 +157,7 @@ typedef struct Heredoc Heredoc;
 
 struct State {
     bool has_leading_whitespace;
+    bool previous_line_continued;
 
     // It's possible to have nested delimited literals, like
     //   %(#{%(foo)})
@@ -311,6 +316,7 @@ void *tree_sitter_crystal_external_scanner_create() {
     state = malloc(sizeof(State));
     memset(state, 0, sizeof(State));
     state->has_leading_whitespace = false;
+    state->previous_line_continued = false;
 
     return state;
 }
@@ -343,6 +349,7 @@ static bool check_for_heredoc_start(State *state, TSLexer *lexer, const bool *va
     // Note: calling get_column(lexer) at EOF seems to cause loops, so make sure EOF is checked first
     if (valid_symbols[HEREDOC_BODY_START]
         && has_unstarted_heredoc(state)
+        && !state->previous_line_continued
         && !lexer->eof(lexer)
         && lexer->get_column(lexer) == 0) {
 
@@ -1120,6 +1127,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[sym]) DEBUG("\t" #sym "\n");
 
     LOG_SYMBOL(LINE_BREAK);
+    LOG_SYMBOL(LINE_CONTINUATION);
     LOG_SYMBOL(START_OF_BRACE_BLOCK);
     LOG_SYMBOL(START_OF_HASH_OR_TUPLE);
     LOG_SYMBOL(START_OF_NAMED_TUPLE);
@@ -1148,13 +1156,15 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(REGULAR_UNLESS_KEYWORD);
     LOG_SYMBOL(MODIFIER_UNLESS_KEYWORD);
     LOG_SYMBOL(MODULO_OPERATOR);
+    LOG_SYMBOL(STRING_LITERAL_START);
+    LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
+    LOG_SYMBOL(STRING_LITERAL_END);
     LOG_SYMBOL(STRING_PERCENT_LITERAL_START);
     LOG_SYMBOL(COMMAND_PERCENT_LITERAL_START);
     LOG_SYMBOL(STRING_ARRAY_PERCENT_LITERAL_START);
     LOG_SYMBOL(SYMBOL_ARRAY_PERCENT_LITERAL_START);
     LOG_SYMBOL(REGEX_PERCENT_LITERAL_START);
     LOG_SYMBOL(PERCENT_LITERAL_END);
-    LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_START);
     LOG_SYMBOL(DELIMITED_ARRAY_ELEMENT_END);
     LOG_SYMBOL(HEREDOC_START);
@@ -1171,6 +1181,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     if (check_for_heredoc_start(state, lexer, valid_symbols)) {
         return true;
+    }
+
+    // The previous_line_continued flag only matters for check_for_heredoc_start,
+    // so it can now be cleared.
+    if (state->previous_line_continued) {
+        state->previous_line_continued = false;
     }
 
     if (valid_symbols[DELIMITED_STRING_CONTENTS] && HAS_ACTIVE_LITERAL(state) && scan_string_contents(state, lexer, valid_symbols)) {
@@ -1196,6 +1212,15 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
             lex_advance(lexer);
             POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
+            return true;
+        }
+    }
+
+    if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+            lex_advance(lexer);
+            POP_LITERAL(state);
+            lexer->result_symbol = STRING_LITERAL_END;
             return true;
         }
     }
@@ -1814,6 +1839,50 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                 lexer->result_symbol = MODULO_OPERATOR;
                 return true;
+            }
+            break;
+
+        case '"':
+            if (valid_symbols[STRING_LITERAL_START]) {
+                lex_advance(lexer);
+
+                PUSH_LITERAL(state, ((PercentLiteral){
+                                        .opening_char = '"',
+                                        .closing_char = '"',
+                                        .type = STRING,
+                                        .nesting_level = 0,
+                                    }));
+
+                lexer->result_symbol = STRING_LITERAL_START;
+                return true;
+            } else if (valid_symbols[STRING_LITERAL_END]) {
+                lex_advance(lexer);
+                lexer->result_symbol = STRING_LITERAL_END;
+                return true;
+            }
+            break;
+
+        case '\\':
+            if (valid_symbols[LINE_CONTINUATION]) {
+                // Inside a string, a percent literal, or a heredoc, treat backslash + newline
+                // like other escaped string characters.
+                if (HAS_ACTIVE_LITERAL(state) || has_active_heredoc(state)) {
+                    return false;
+                }
+
+                lex_advance(lexer);
+
+                if (lexer->lookahead == '\r') {
+                    lex_advance(lexer);
+                }
+
+                if (lexer->lookahead == '\n') {
+                    lex_advance(lexer);
+                    lexer->result_symbol = LINE_CONTINUATION;
+                    state->previous_line_continued = true;
+                    DEBUG("returning line continuation symbol\n")
+                    return true;
+                }
             }
             break;
 

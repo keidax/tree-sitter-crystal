@@ -44,6 +44,7 @@ module.exports = grammar({
 
   externals: $ => [
     $._line_break,
+    $._line_continuation,
 
     $._start_of_brace_block,
     $._start_of_hash_or_tuple,
@@ -88,13 +89,16 @@ module.exports = grammar({
 
     $._modulo_operator,
 
+    $._string_literal_start,
+    $._delimited_string_contents,
+    $._string_literal_end,
+
     $._string_percent_literal_start,
     $._command_percent_literal_start,
     $._string_array_percent_literal_start,
     $._symbol_array_percent_literal_start,
     $._regex_percent_literal_start,
     $._percent_literal_end,
-    $._delimited_string_contents,
     $._delimited_array_element_start,
     $._delimited_array_element_end,
 
@@ -117,6 +121,7 @@ module.exports = grammar({
 
   extras: $ => [
     /\s/,
+    $._line_continuation,
     $.comment,
     $.heredoc_body,
   ],
@@ -326,7 +331,6 @@ module.exports = grammar({
       $._statement,
     ),
 
-
     _parenthesized_statement: $ => prec(1, seq(
       '(', $._statement, optional($._terminator), ')',
     )),
@@ -376,6 +380,7 @@ module.exports = grammar({
       $.array,
       $.hash,
       $.string,
+      $.chained_string,
       alias($.string_percent_literal, $.string),
       alias($.string_array_percent_literal, $.array),
       alias($.operator_symbol, $.symbol),
@@ -559,18 +564,21 @@ module.exports = grammar({
       )))
     },
 
-    // TODO:
-    // multiple string literals joined by backslashes
     string: $ => seq(
-      '"',
+      $._string_literal_start,
       repeat(choice(
-        token.immediate(prec(1, /[^\\"]/)),
+        $._delimited_string_contents,
         $.string_escape_sequence,
         $.ignored_backslash,
         $.interpolation,
       )),
-      token.immediate('"'),
+      $._string_literal_end,
     ),
+
+    // Represents multiple strings joined by line continuations. $._line_continuation is
+    // not actually included here because it doesn't play with `extras`, see
+    // https://github.com/tree-sitter/tree-sitter/issues/1950
+    chained_string: $ => seq($.string, repeat1($.string)),
 
     ignored_backslash: $ => {
       return token.immediate(seq('\\',
@@ -630,6 +638,9 @@ module.exports = grammar({
       repeat(choice(
         $._delimited_string_contents,
         $.ignored_backslash,
+        // Normally backslash + newline is considered a string escape sequence, but
+        // it's valid here and represents a newline that doesn't break the word.
+        alias(/\\\n/, $.ignored_backslash),
       )),
       $._delimited_array_element_end,
     ),

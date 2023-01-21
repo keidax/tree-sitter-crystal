@@ -757,3 +757,44 @@ end
     (method_def
       name: (identifier)
       (string))))
+
+================================================================================
+line continuations
+================================================================================
+a, b, \
+\
+c, d = :a, <<-B,  \
+:c,
+  b
+  B
+  "d"
+
+def\
+foo;\
+puts\
+"hello"\
+,\
+"world"\
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (multi_assign
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    lhs: (identifier)
+    rhs: (symbol)
+    rhs: (heredoc_start)
+    rhs: (symbol)
+    (heredoc_body
+      (heredoc_content)
+      (heredoc_end))
+    rhs: (string))
+  (method_def
+    name: (identifier)
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (string)
+        (string)))))
