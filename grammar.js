@@ -946,8 +946,7 @@ module.exports = grammar({
       'end',
     ),
 
-    method_def: $ => {
-      const visibility = choice('private', 'protected')
+    _base_method_def: $ => {
       const klass = field('class', seq(
         choice($.constant, $.self),
         '.',
@@ -960,27 +959,22 @@ module.exports = grammar({
       const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
       const forall = field('forall', $.forall)
 
-      // Method defs require at least one of the following after the name
-      // - parameters wrapped in ()
-      // - a return type
-      // - a newline or semicolon
-      //
-      // In other words, these are all valid:
-      //   def foo(bar) end
-      //   def foo : Bool true end
-      //   def foo; end
-      const param_spec = choice(
-        seq(params, optional(return_type), optional(forall), optional($._terminator)),
-        seq(optional(params), return_type, optional($._terminator)),
-        seq(optional(params), optional(return_type), $._terminator),
-      )
-
-      return seq(
-        optional(visibility),
+      return prec.right(seq(
         'def',
         optional(klass),
         name,
-        param_spec,
+        optional(params),
+        optional(return_type),
+        optional(forall),
+      ))
+    },
+
+    method_def: $ => {
+      const visibility = choice('private', 'protected')
+
+      return seq(
+        optional(visibility),
+        $._base_method_def,
         optional($._statements),
         'end',
       )
@@ -988,22 +982,11 @@ module.exports = grammar({
 
     abstract_method_def: $ => {
       const visibility = choice('private', 'protected')
-      const name = field('name', choice(
-        $.identifier,
-        alias($.identifier_method_call, $.identifier),
-      ))
-      const params = seq('(', field('params', optional($.param_list)), ')')
-      const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
-      const forall = field('forall', $.forall)
 
       return seq(
         optional(visibility),
         'abstract',
-        'def',
-        name,
-        optional(params),
-        optional(return_type),
-        optional(forall),
+        $._base_method_def,
       )
     },
 
