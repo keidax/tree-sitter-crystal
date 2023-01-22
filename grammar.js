@@ -1828,7 +1828,7 @@ module.exports = grammar({
     },
 
     type_declaration: $ => {
-      const variable = field('var', $.identifier)
+      const variable = field('var', choice($.identifier, $.instance_var, $.class_var))
       const type = field('type', $._bare_type)
       const value = field('value', $._expression)
 

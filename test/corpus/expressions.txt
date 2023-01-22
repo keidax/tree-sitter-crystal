@@ -2432,6 +2432,9 @@ d : Range(String, String) = "a" .. "b"
 f = g : Int32 = 7
 
 class K
+  @var : String
+  @@var2 : String = "var2"
+
   getter asdf : String, hjkl : String = "hjkl"
 end
 --------------------------------------------------------------------------------
@@ -2531,6 +2534,13 @@ end
       value: (integer)))
   (class_def
     name: (constant)
+    (type_declaration
+      var: (instance_var)
+      type: (constant))
+    (type_declaration
+      var: (class_var)
+      type: (constant)
+      value: (string))
     (call
       method: (identifier)
       arguments: (argument_list
