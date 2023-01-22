@@ -946,6 +946,8 @@ module.exports = grammar({
       'end',
     ),
 
+    _operator_token: $ => choice(...operator_tokens),
+
     _base_method_def: $ => {
       const klass = field('class', seq(
         choice($.constant, $.self),
@@ -954,6 +956,7 @@ module.exports = grammar({
       const name = field('name', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
+        alias($._operator_token, $.operator),
       ))
       const params = seq('(', field('params', optional($.param_list)), ')')
       const return_type = field('type', seq(/[ \t]:\s/, $._bare_type))
@@ -1406,7 +1409,7 @@ module.exports = grammar({
       const method = field('method', choice(
         $.identifier,
         alias($.identifier_method_call, $.identifier),
-        alias(choice(...operator_tokens), $.operator),
+        alias($._operator_token, $.operator),
       ))
 
       // In the case of something like

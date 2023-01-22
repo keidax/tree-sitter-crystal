@@ -38,6 +38,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
           }
         ]
       },
@@ -8328,6 +8332,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
           }
         ]
       },
@@ -12371,6 +12379,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "operator",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "or",
@@ -19474,11 +19487,23 @@
     "named": false
   },
   {
+    "type": "!=",
+    "named": false
+  },
+  {
+    "type": "!~",
+    "named": false
+  },
+  {
     "type": "\"",
     "named": false
   },
   {
     "type": "#{",
+    "named": false
+  },
+  {
+    "type": "%",
     "named": false
   },
   {
@@ -19498,11 +19523,27 @@
     "named": false
   },
   {
+    "type": "&*",
+    "named": false
+  },
+  {
+    "type": "&**",
+    "named": false
+  },
+  {
     "type": "&*=",
     "named": false
   },
   {
+    "type": "&+",
+    "named": false
+  },
+  {
     "type": "&+=",
+    "named": false
+  },
+  {
+    "type": "&-",
     "named": false
   },
   {
@@ -19574,6 +19615,10 @@
     "named": false
   },
   {
+    "type": "//",
+    "named": false
+  },
+  {
     "type": "//=",
     "named": false
   },
@@ -19606,7 +19651,19 @@
     "named": false
   },
   {
+    "type": "<<",
+    "named": false
+  },
+  {
     "type": "<<=",
+    "named": false
+  },
+  {
+    "type": "<=",
+    "named": false
+  },
+  {
+    "type": "<=>",
     "named": false
   },
   {
@@ -19614,7 +19671,31 @@
     "named": false
   },
   {
+    "type": "==",
+    "named": false
+  },
+  {
+    "type": "===",
+    "named": false
+  },
+  {
     "type": "=>",
+    "named": false
+  },
+  {
+    "type": "=~",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": ">=",
+    "named": false
+  },
+  {
+    "type": ">>",
     "named": false
   },
   {
@@ -19634,11 +19715,27 @@
     "named": false
   },
   {
+    "type": "[]",
+    "named": false
+  },
+  {
+    "type": "[]=",
+    "named": false
+  },
+  {
+    "type": "[]?",
+    "named": false
+  },
+  {
     "type": "]",
     "named": false
   },
   {
     "type": "]?",
+    "named": false
+  },
+  {
+    "type": "^",
     "named": false
   },
   {
@@ -19790,10 +19887,6 @@
     "named": false
   },
   {
-    "type": "operator",
-    "named": true
-  },
-  {
     "type": "private",
     "named": false
   },
@@ -19903,6 +19996,10 @@
   },
   {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "~",
     "named": false
   }
 ]

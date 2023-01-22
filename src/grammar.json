@@ -4018,6 +4018,135 @@
         }
       ]
     },
+    "_operator_token": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "+"
+        },
+        {
+          "type": "STRING",
+          "value": "-"
+        },
+        {
+          "type": "STRING",
+          "value": "*"
+        },
+        {
+          "type": "STRING",
+          "value": "/"
+        },
+        {
+          "type": "STRING",
+          "value": "//"
+        },
+        {
+          "type": "STRING",
+          "value": "%"
+        },
+        {
+          "type": "STRING",
+          "value": "&"
+        },
+        {
+          "type": "STRING",
+          "value": "|"
+        },
+        {
+          "type": "STRING",
+          "value": "^"
+        },
+        {
+          "type": "STRING",
+          "value": "**"
+        },
+        {
+          "type": "STRING",
+          "value": ">>"
+        },
+        {
+          "type": "STRING",
+          "value": "<<"
+        },
+        {
+          "type": "STRING",
+          "value": "=="
+        },
+        {
+          "type": "STRING",
+          "value": "!="
+        },
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "STRING",
+          "value": "<="
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        },
+        {
+          "type": "STRING",
+          "value": ">="
+        },
+        {
+          "type": "STRING",
+          "value": "<=>"
+        },
+        {
+          "type": "STRING",
+          "value": "==="
+        },
+        {
+          "type": "STRING",
+          "value": "[]"
+        },
+        {
+          "type": "STRING",
+          "value": "[]?"
+        },
+        {
+          "type": "STRING",
+          "value": "[]="
+        },
+        {
+          "type": "STRING",
+          "value": "!"
+        },
+        {
+          "type": "STRING",
+          "value": "~"
+        },
+        {
+          "type": "STRING",
+          "value": "!~"
+        },
+        {
+          "type": "STRING",
+          "value": "=~"
+        },
+        {
+          "type": "STRING",
+          "value": "&+"
+        },
+        {
+          "type": "STRING",
+          "value": "&-"
+        },
+        {
+          "type": "STRING",
+          "value": "&*"
+        },
+        {
+          "type": "STRING",
+          "value": "&**"
+        }
+      ]
+    },
     "_base_method_def": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -4080,6 +4209,15 @@
                   },
                   "named": true,
                   "value": "identifier"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_operator_token"
+                  },
+                  "named": true,
+                  "value": "operator"
                 }
               ]
             }
@@ -6034,133 +6172,8 @@
                     {
                       "type": "ALIAS",
                       "content": {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "STRING",
-                            "value": "+"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "-"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "*"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "/"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "//"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "%"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "&"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "|"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "^"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "**"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": ">>"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "<<"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "=="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "!="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "<"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "<="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": ">"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": ">="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "<=>"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "==="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "[]"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "[]?"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "[]="
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "!"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "~"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "!~"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "=~"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "&+"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "&-"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "&*"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": "&**"
-                          }
-                        ]
+                        "type": "SYMBOL",
+                        "name": "_operator_token"
                       },
                       "named": true,
                       "value": "operator"
