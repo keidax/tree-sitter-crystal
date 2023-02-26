@@ -3,6 +3,24 @@
     "type": "abstract_method_def",
     "named": true,
     "fields": {
+      "class": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "self",
+            "named": true
+          }
+        ]
+      },
       "forall": {
         "multiple": false,
         "required": false,
@@ -19,6 +37,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "operator",
             "named": true
           }
         ]
@@ -8310,6 +8332,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
           }
         ]
       },
@@ -12353,6 +12379,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "operator",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "or",
@@ -19456,11 +19487,23 @@
     "named": false
   },
   {
+    "type": "!=",
+    "named": false
+  },
+  {
+    "type": "!~",
+    "named": false
+  },
+  {
     "type": "\"",
     "named": false
   },
   {
     "type": "#{",
+    "named": false
+  },
+  {
+    "type": "%",
     "named": false
   },
   {
@@ -19480,11 +19523,27 @@
     "named": false
   },
   {
+    "type": "&*",
+    "named": false
+  },
+  {
+    "type": "&**",
+    "named": false
+  },
+  {
     "type": "&*=",
     "named": false
   },
   {
+    "type": "&+",
+    "named": false
+  },
+  {
     "type": "&+=",
+    "named": false
+  },
+  {
+    "type": "&-",
     "named": false
   },
   {
@@ -19556,6 +19615,10 @@
     "named": false
   },
   {
+    "type": "//",
+    "named": false
+  },
+  {
     "type": "//=",
     "named": false
   },
@@ -19588,7 +19651,19 @@
     "named": false
   },
   {
+    "type": "<<",
+    "named": false
+  },
+  {
     "type": "<<=",
+    "named": false
+  },
+  {
+    "type": "<=",
+    "named": false
+  },
+  {
+    "type": "<=>",
     "named": false
   },
   {
@@ -19596,7 +19671,31 @@
     "named": false
   },
   {
+    "type": "==",
+    "named": false
+  },
+  {
+    "type": "===",
+    "named": false
+  },
+  {
     "type": "=>",
+    "named": false
+  },
+  {
+    "type": "=~",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": ">=",
+    "named": false
+  },
+  {
+    "type": ">>",
     "named": false
   },
   {
@@ -19616,11 +19715,27 @@
     "named": false
   },
   {
+    "type": "[]",
+    "named": false
+  },
+  {
+    "type": "[]=",
+    "named": false
+  },
+  {
+    "type": "[]?",
+    "named": false
+  },
+  {
     "type": "]",
     "named": false
   },
   {
     "type": "]?",
+    "named": false
+  },
+  {
+    "type": "^",
     "named": false
   },
   {
@@ -19772,10 +19887,6 @@
     "named": false
   },
   {
-    "type": "operator",
-    "named": true
-  },
-  {
     "type": "private",
     "named": false
   },
@@ -19885,6 +19996,10 @@
   },
   {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "~",
     "named": false
   }
 ]

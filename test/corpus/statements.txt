@@ -539,6 +539,41 @@ end
           (constant))))))
 
 ================================================================================
+operator method definitions
+================================================================================
+class Operators
+  def ~ : self
+  end
+
+  def self.+(other)
+  end
+
+  def ===(other)
+  false
+  end
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (class_def
+    name: (constant)
+    (method_def
+      name: (operator)
+      type: (self))
+    (method_def
+      class: (self)
+      name: (operator)
+      params: (param_list
+        (param
+          name: (identifier))))
+    (method_def
+      name: (operator)
+      params: (param_list
+        (param
+          name: (identifier)))
+      (false))))
+
+================================================================================
 class method definitions
 ================================================================================
 class A::B(U); end

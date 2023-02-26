@@ -344,8 +344,7 @@ q
     (heredoc_start)
     (heredoc_start)
     (heredoc_start)
-    (ERROR
-      (operator))
+    (ERROR)
     (op_call
       (operator)
       (identifier)))
