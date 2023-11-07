@@ -87,6 +87,9 @@ module.exports = grammar({
     $._regular_unless_keyword,
     $._modifier_unless_keyword,
 
+    $._regular_rescue_keyword,
+    $._modifier_rescue_keyword,
+
     $._regular_ensure_keyword,
     $._modifier_ensure_keyword,
 
@@ -356,6 +359,7 @@ module.exports = grammar({
       $.require,
       $.modifier_if,
       $.modifier_unless,
+      $.modifier_rescue,
       $.modifier_ensure,
 
       $.return,
@@ -430,7 +434,6 @@ module.exports = grammar({
       $.case,
       alias($.exhaustive_case, $.case),
       // TODO
-      // rescue modifier
       // macro interpolation
       // macro if
       // macro for
@@ -1885,6 +1888,9 @@ module.exports = grammar({
         'do',
         optional(params),
         optional($._statements),
+        field('rescue', repeat($.rescue_block)),
+        field('else', optional($.else)),
+        field('ensure', optional($.ensure)),
         'end',
       )
     },
@@ -1916,7 +1922,7 @@ module.exports = grammar({
       const rescue_body = optional($._statements)
 
       return seq(
-        'rescue',
+        alias($._regular_rescue_keyword, 'rescue'),
         optional(choice(
           seq(rescue_variable, ': ', rescue_type),
           rescue_variable,
@@ -1928,6 +1934,12 @@ module.exports = grammar({
     },
 
     ensure: $ => seq(alias($._regular_ensure_keyword, 'ensure'), optional($._statements)),
+
+    modifier_rescue: $ => seq(
+      $._statement,
+      alias($._modifier_rescue_keyword, 'rescue'),
+      field('rescue', $._expression),
+    ),
 
     modifier_ensure: $ => seq(
       $._statement,

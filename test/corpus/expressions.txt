@@ -776,10 +776,11 @@ end
     rescue: (rescue_block
       type: (constant)
       (integer)
-      (integer))
-    rescue: (rescue_block
-      variable: (identifier)
-      type: (constant)
+      (modifier_rescue
+        (integer)
+        rescue: (type_declaration
+          var: (identifier)
+          type: (constant)))
       (integer)))
   (begin_block
     (integer)
@@ -847,11 +848,12 @@ end
 
 (source_file
   (begin_block
+    (modifier_rescue
+      (integer)
+      rescue: (type_declaration
+        var: (identifier)
+        type: (constant)))
     (integer)
-    rescue: (rescue_block
-      variable: (identifier)
-      type: (constant)
-      (integer))
     rescue: (rescue_block
       variable: (identifier)
       (integer))
@@ -859,6 +861,34 @@ end
       (integer))
     ensure: (ensure
       (integer))))
+
+================================================================================
+rescue modifiers
+================================================================================
+puts 7 rescue ArgumentError
+puts (7 rescue ArgumentError)
+
+do_stuff rescue do_stuff rescue 7
+--------------------------------------------------------------------------------
+
+(source_file
+  (modifier_rescue
+    (call
+      method: (identifier)
+      arguments: (argument_list
+        (integer)))
+    rescue: (constant))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (modifier_rescue
+        (integer)
+        rescue: (constant))))
+  (modifier_rescue
+    (modifier_rescue
+      (identifier)
+      rescue: (identifier))
+    rescue: (integer)))
 
 ================================================================================
 ensure modifiers
@@ -1883,6 +1913,46 @@ a (b do 1 end) do 2 end
           (integer))))
     block: (block
       (integer))))
+
+================================================================================
+do/end blocks with rescue, else, and ensure
+================================================================================
+a do rescue e ; end
+b do ensure bar end
+
+(1..10).each do |n|
+:a
+rescue
+else
+ensure
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    method: (identifier)
+    block: (block
+      rescue: (rescue_block
+        variable: (identifier))))
+  (call
+    method: (identifier)
+    block: (block
+      ensure: (ensure
+        (identifier))))
+  (call
+    receiver: (range
+      begin: (integer)
+      operator: (operator)
+      end: (integer))
+    method: (identifier)
+    block: (block
+      params: (param_list
+        (param
+          name: (identifier)))
+      (symbol)
+      rescue: (rescue_block)
+      else: (else)
+      ensure: (ensure))))
 
 ================================================================================
 calls with {} blocks

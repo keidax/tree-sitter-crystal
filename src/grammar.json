@@ -185,6 +185,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "modifier_rescue"
+        },
+        {
+          "type": "SYMBOL",
           "name": "modifier_ensure"
         },
         {
@@ -9154,6 +9158,49 @@
           ]
         },
         {
+          "type": "FIELD",
+          "name": "rescue",
+          "content": {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "rescue_block"
+            }
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "else",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "else"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "ensure",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "ensure"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        },
+        {
           "type": "STRING",
           "value": "end"
         }
@@ -9307,7 +9354,12 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_regular_rescue_keyword"
+          },
+          "named": false,
           "value": "rescue"
         },
         {
@@ -9405,6 +9457,32 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "modifier_rescue": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_statement"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_modifier_rescue_keyword"
+          },
+          "named": false,
+          "value": "rescue"
+        },
+        {
+          "type": "FIELD",
+          "name": "rescue",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
         }
       ]
     },
@@ -10507,6 +10585,14 @@
     {
       "type": "SYMBOL",
       "name": "_modifier_unless_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_regular_rescue_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_modifier_rescue_keyword"
     },
     {
       "type": "SYMBOL",
