@@ -706,7 +706,7 @@ end
       (break))))
 
 ================================================================================
-begin blocks
+basic begin blocks
 ================================================================================
 begin 1 end
 begin;2;end
@@ -717,6 +717,21 @@ begin
 end
 begin begin end end
 
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_block
+    (integer))
+  (begin_block
+    (integer))
+  (begin_block
+    (begin_block))
+  (begin_block
+    (begin_block)))
+
+================================================================================
+begin blocks with rescue
+================================================================================
 begin
   1
 rescue
@@ -732,47 +747,151 @@ begin
 begin
   7
 rescue Exception; 8
+9 rescue c : FooError; 10
 end
 
 begin 9
 rescue err : FooError | BarError
+else
+:foo
 end
 --------------------------------------------------------------------------------
 
 (source_file
   (begin_block
-    body: (integer))
-  (begin_block
-    body: (integer))
-  (begin_block
-    body: (begin_block))
-  (begin_block
-    body: (begin_block))
-  (begin_block
-    body: (integer)
+    (integer)
     rescue: (rescue_block
-      body: (integer)))
+      (integer)))
   (begin_block
-    body: (integer)
+    (integer)
     rescue: (rescue_block
-      body: (integer)))
+      (integer)))
   (begin_block
-    body: (integer)
+    (integer)
     rescue: (rescue_block
       variable: (identifier)
-      body: (integer)))
+      (integer)))
   (begin_block
-    body: (integer)
+    (integer)
     rescue: (rescue_block
       type: (constant)
-      body: (integer)))
+      (integer)
+      (integer))
+    rescue: (rescue_block
+      variable: (identifier)
+      type: (constant)
+      (integer)))
   (begin_block
-    body: (integer)
+    (integer)
     rescue: (rescue_block
       variable: (identifier)
       type: (union_type
         (constant)
-        (constant)))))
+        (constant)))
+    else: (else
+      (symbol))))
+
+================================================================================
+begin blocks with ensure
+================================================================================
+begin
+  1
+ensure
+  2
+end
+
+begin a ensure b;ensure c end
+
+puts begin 1
+2;3; ensure puts 2;end
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_block
+    (integer)
+    ensure: (ensure
+      (integer)))
+  (begin_block
+    (modifier_ensure
+      (identifier)
+      ensure: (identifier))
+    ensure: (ensure
+      (identifier)))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (begin_block
+        (integer)
+        (integer)
+        (integer)
+        ensure: (ensure
+          (call
+            method: (identifier)
+            arguments: (argument_list
+              (integer))))))))
+
+================================================================================
+begin blocks with rescue, else, and ensure
+================================================================================
+begin
+1 rescue a : ArgumentError
+2
+rescue b
+3
+else
+4
+ensure
+5
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_block
+    (integer)
+    rescue: (rescue_block
+      variable: (identifier)
+      type: (constant)
+      (integer))
+    rescue: (rescue_block
+      variable: (identifier)
+      (integer))
+    else: (else
+      (integer))
+    ensure: (ensure
+      (integer))))
+
+================================================================================
+ensure modifiers
+================================================================================
+puts (4 ensure (puts 3))
+
+def foo
+  a; b
+ensure
+  g; h ensure g; h
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (modifier_ensure
+        (integer)
+        ensure: (call
+          method: (identifier)
+          arguments: (argument_list
+            (integer))))))
+  (method_def
+    name: (identifier)
+    (identifier)
+    (identifier)
+    ensure: (ensure
+      (identifier)
+      (modifier_ensure
+        (identifier)
+        ensure: (identifier))
+      (identifier))))
 
 ================================================================================
 binary additive operators
@@ -1012,7 +1131,7 @@ foo(// // 3)
     argument: (integer))
   (op_call
     receiver: (begin_block
-      body: (integer))
+      (integer))
     operator: (operator)
     argument: (integer))
   (call

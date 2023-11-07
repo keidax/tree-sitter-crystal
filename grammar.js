@@ -87,6 +87,9 @@ module.exports = grammar({
     $._regular_unless_keyword,
     $._modifier_unless_keyword,
 
+    $._regular_ensure_keyword,
+    $._modifier_ensure_keyword,
+
     $._modulo_operator,
 
     $._string_literal_start,
@@ -353,6 +356,7 @@ module.exports = grammar({
       $.require,
       $.modifier_if,
       $.modifier_unless,
+      $.modifier_ensure,
 
       $.return,
       $.next,
@@ -979,6 +983,9 @@ module.exports = grammar({
         optional(visibility),
         $._base_method_def,
         optional($._statements),
+        field('rescue', repeat($.rescue_block)),
+        field('else', optional($.else)),
+        field('ensure', optional($.ensure)),
         'end',
       )
     },
@@ -1896,16 +1903,17 @@ module.exports = grammar({
     begin_block: $ => seq(
       'begin',
       optional($._terminator),
-      field('body', optional($._statements)),
-      field('rescue', optional($.rescue_block)),
-      // TODO: else, ensure
+      optional($._statements),
+      field('rescue', repeat($.rescue_block)),
+      field('else', optional($.else)),
+      field('ensure', optional($.ensure)),
       'end',
     ),
 
     rescue_block: $ => {
       const rescue_variable = field('variable', $.identifier)
       const rescue_type = field('type', $._bare_type)
-      const rescue_body = field('body', optional($._statements))
+      const rescue_body = optional($._statements)
 
       return seq(
         'rescue',
@@ -1918,6 +1926,14 @@ module.exports = grammar({
         rescue_body,
       )
     },
+
+    ensure: $ => seq(alias($._regular_ensure_keyword, 'ensure'), optional($._statements)),
+
+    modifier_ensure: $ => seq(
+      $._statement,
+      alias($._modifier_ensure_keyword, 'ensure'),
+      field('ensure', $._expression),
+    ),
 
     while: $ => seq(
       'while',

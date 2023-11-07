@@ -185,6 +185,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "modifier_ensure"
+        },
+        {
+          "type": "SYMBOL",
           "name": "return"
         },
         {
@@ -4342,6 +4346,49 @@
               "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "FIELD",
+          "name": "rescue",
+          "content": {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "rescue_block"
+            }
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "else",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "else"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "ensure",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "ensure"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
         },
         {
           "type": "STRING",
@@ -9196,14 +9243,37 @@
           ]
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_statements"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "FIELD",
-          "name": "body",
+          "name": "rescue",
+          "content": {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "rescue_block"
+            }
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "else",
           "content": {
             "type": "CHOICE",
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_statements"
+                "name": "else"
               },
               {
                 "type": "BLANK"
@@ -9213,13 +9283,13 @@
         },
         {
           "type": "FIELD",
-          "name": "rescue",
+          "name": "ensure",
           "content": {
             "type": "CHOICE",
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "rescue_block"
+                "name": "ensure"
               },
               {
                 "type": "BLANK"
@@ -9299,19 +9369,67 @@
           "name": "_terminator"
         },
         {
-          "type": "FIELD",
-          "name": "body",
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_statements"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "ensure": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "_statements"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_regular_ensure_keyword"
+          },
+          "named": false,
+          "value": "ensure"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_statements"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "modifier_ensure": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_statement"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_modifier_ensure_keyword"
+          },
+          "named": false,
+          "value": "ensure"
+        },
+        {
+          "type": "FIELD",
+          "name": "ensure",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         }
       ]
@@ -10389,6 +10507,14 @@
     {
       "type": "SYMBOL",
       "name": "_modifier_unless_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_regular_ensure_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_modifier_ensure_keyword"
     },
     {
       "type": "SYMBOL",

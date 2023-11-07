@@ -54,6 +54,9 @@ enum Token {
     REGULAR_UNLESS_KEYWORD,
     MODIFIER_UNLESS_KEYWORD,
 
+    REGULAR_ENSURE_KEYWORD,
+    MODIFIER_ENSURE_KEYWORD,
+
     MODULO_OPERATOR,
 
     STRING_LITERAL_START,
@@ -1155,6 +1158,8 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(MODIFIER_IF_KEYWORD);
     LOG_SYMBOL(REGULAR_UNLESS_KEYWORD);
     LOG_SYMBOL(MODIFIER_UNLESS_KEYWORD);
+    LOG_SYMBOL(REGULAR_ENSURE_KEYWORD);
+    LOG_SYMBOL(MODIFIER_ENSURE_KEYWORD);
     LOG_SYMBOL(MODULO_OPERATOR);
     LOG_SYMBOL(STRING_LITERAL_START);
     LOG_SYMBOL(DELIMITED_STRING_CONTENTS);
@@ -1900,6 +1905,42 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 DEBUG(" ==> returning BEGINLESS_RANGE_OPERATOR\n");
                 lexer->result_symbol = BEGINLESS_RANGE_OPERATOR;
                 return true;
+            }
+            break;
+        case 'e':
+            if (valid_symbols[REGULAR_ENSURE_KEYWORD] || valid_symbols[MODIFIER_ENSURE_KEYWORD]) {
+                lex_advance(lexer);
+                if (lexer->lookahead != 'n') { return false; }
+                lex_advance(lexer);
+                if (lexer->lookahead != 's') { return false; }
+                lex_advance(lexer);
+                if (lexer->lookahead != 'u') { return false; }
+                lex_advance(lexer);
+                if (lexer->lookahead != 'r') { return false; }
+                lex_advance(lexer);
+                if (lexer->lookahead != 'e') { return false; }
+
+                lex_advance(lexer);
+                if (next_char_is_identifier(lexer)) {
+                    // This is some other identifier, not 'ensure'
+                    return false;
+                }
+
+                if (valid_symbols[MODIFIER_ENSURE_KEYWORD] && !valid_symbols[REGULAR_ENSURE_KEYWORD]) {
+                    lexer->result_symbol = MODIFIER_ENSURE_KEYWORD;
+                    return true;
+                } else if (valid_symbols[REGULAR_ENSURE_KEYWORD] && !valid_symbols[MODIFIER_ENSURE_KEYWORD]) {
+                    lexer->result_symbol = REGULAR_ENSURE_KEYWORD;
+                    return true;
+                } else {
+                    // Both are valid
+                    ASSERT(valid_symbols[MODIFIER_ENSURE_KEYWORD] && valid_symbols[REGULAR_ENSURE_KEYWORD]);
+
+                    // TODO: currently assuming that the modifier always takes
+                    // precedence here. Is that correct?
+                    lexer->result_symbol = MODIFIER_ENSURE_KEYWORD;
+                    return true;
+                }
             }
             break;
         case 'i':

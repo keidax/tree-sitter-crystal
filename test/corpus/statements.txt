@@ -614,6 +614,31 @@ end
           (identifier))))))
 
 ================================================================================
+method definitions with rescue, else, and ensure
+================================================================================
+def foo
+rescue e1 : SpecificError | OtherError
+rescue e2 : GeneralError
+else
+ensure
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (method_def
+    name: (identifier)
+    rescue: (rescue_block
+      variable: (identifier)
+      type: (union_type
+        (constant)
+        (constant)))
+    rescue: (rescue_block
+      variable: (identifier)
+      type: (constant))
+    else: (else)
+    ensure: (ensure)))
+
+================================================================================
 annotations
 ================================================================================
 annotation Thing
