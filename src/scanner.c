@@ -1971,13 +1971,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     // Both are valid
                     ASSERT(valid_symbols[MODIFIER_IF_KEYWORD] && valid_symbols[REGULAR_IF_KEYWORD]);
 
-                    // This sort of ambiguity should only happen after an identifier without parentheses
-                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
-
-                    if (valid_symbols[START_OF_PARENLESS_ARGS]) {
-                        lexer->result_symbol = MODIFIER_IF_KEYWORD;
-                        return true;
-                    }
+                    // This sort of ambiguity may happen after an identifier
+                    // without parentheses, or after a keyword like `return`
+                    // that takes an optional expression.
+                    lexer->result_symbol = MODIFIER_IF_KEYWORD;
+                    return true;
                 }
             }
             break;
@@ -2046,13 +2044,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     // Both are valid
                     ASSERT(valid_symbols[MODIFIER_UNLESS_KEYWORD] && valid_symbols[REGULAR_UNLESS_KEYWORD]);
 
-                    // This sort of ambiguity should only happen after an identifier without parentheses
-                    ASSERT(valid_symbols[START_OF_PARENLESS_ARGS]);
-
-                    if (valid_symbols[START_OF_PARENLESS_ARGS]) {
-                        lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
-                        return true;
-                    }
+                    // This sort of ambiguity may happen after an identifier
+                    // without parentheses, or after a keyword like `return`
+                    // that takes an optional expression.
+                    lexer->result_symbol = MODIFIER_UNLESS_KEYWORD;
+                    return true;
                 }
             }
             break;

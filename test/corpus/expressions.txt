@@ -1728,6 +1728,12 @@ def foo
 
   foo! if bar
   "foo" if bar
+
+  foo if bar
+  return if bar
+  7 if bar
+  foo[0] = 1 if 2
+  1 rescue 2 if 3
 end
 --------------------------------------------------------------------------------
 
@@ -1780,7 +1786,29 @@ end
       cond: (identifier))
     (modifier_if
       then: (string)
-      cond: (identifier))))
+      cond: (identifier))
+    (modifier_if
+      then: (identifier)
+      cond: (identifier))
+    (modifier_if
+      then: (return)
+      cond: (identifier))
+    (modifier_if
+      then: (integer)
+      cond: (identifier))
+    (modifier_if
+      then: (assign
+        lhs: (index_call
+          receiver: (identifier)
+          arguments: (argument_list
+            (integer)))
+        rhs: (integer))
+      cond: (integer))
+    (modifier_if
+      then: (modifier_rescue
+        (integer)
+        rescue: (integer))
+      cond: (integer))))
 
 ================================================================================
 unless modifiers
@@ -1802,6 +1830,12 @@ def foo
 
   foo! unless bar
   "foo" unless bar
+
+  foo unless bar
+  return unless bar
+  7 unless bar
+  foo[0] = 1 unless 2
+  1 rescue 2 unless 3
 end
 --------------------------------------------------------------------------------
 
@@ -1854,7 +1888,29 @@ end
       cond: (identifier))
     (modifier_unless
       then: (string)
-      cond: (identifier))))
+      cond: (identifier))
+    (modifier_unless
+      then: (identifier)
+      cond: (identifier))
+    (modifier_unless
+      then: (return)
+      cond: (identifier))
+    (modifier_unless
+      then: (integer)
+      cond: (identifier))
+    (modifier_unless
+      then: (assign
+        lhs: (index_call
+          receiver: (identifier)
+          arguments: (argument_list
+            (integer)))
+        rhs: (integer))
+      cond: (integer))
+    (modifier_unless
+      then: (modifier_rescue
+        (integer)
+        rescue: (integer))
+      cond: (integer))))
 
 ================================================================================
 calls with do/end blocks
