@@ -1110,7 +1110,9 @@ module.exports = grammar({
 
       const argument_list = field('arguments', choice(
         alias($.argument_list_with_parens, $.argument_list),
+        alias($.argument_list_with_parens_and_block, $.argument_list),
         alias($.argument_list_no_parens, $.argument_list),
+        alias($.argument_list_no_parens_with_block, $.argument_list),
       ))
 
       return seq(
@@ -1536,16 +1538,20 @@ module.exports = grammar({
         alias($.argument_list_no_parens, $.argument_list),
       ))
 
+      const argument_list_with_block = field('arguments', choice(
+        alias($.argument_list_with_parens_and_block, $.argument_list),
+        alias($.argument_list_no_parens_with_block, $.argument_list),
+      ))
+
       const brace_block = field('block', alias($.brace_block, $.block))
 
       const do_end_block = field('block', alias($.do_end_block, $.block))
 
       return choice(
-        prec('no_block_call', seq(method_name, optional(argument_list))),
-
-        prec('brace_block_call', seq(method_name, optional(argument_list), brace_block)),
-
-        prec('do_end_block_call', seq(method_name, optional(argument_list), do_end_block)),
+        seq(method_name, optional(argument_list)),
+        seq(method_name, optional(argument_list), brace_block),
+        seq(method_name, optional(argument_list), do_end_block),
+        seq(method_name, argument_list_with_block),
       )
     },
 

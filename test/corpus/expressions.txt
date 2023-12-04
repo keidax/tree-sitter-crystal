@@ -2483,6 +2483,10 @@ def bar
   with a yield! yield *something
 
   yield &+ yield
+
+  # Technically block arguments are allowed, but will be ignored
+  yield("foo", &->{"bar"})
+  yield 7, &->(a){a+1}
 end
 --------------------------------------------------------------------------------
 
@@ -2518,7 +2522,28 @@ end
     (op_call
       receiver: (yield)
       operator: (operator)
-      argument: (yield))))
+      argument: (yield))
+    (comment)
+    (yield
+      arguments: (argument_list
+        (string)
+        (block_argument
+          (proc
+            block: (block
+              (string))))))
+    (yield
+      arguments: (argument_list
+        (integer)
+        (block_argument
+          (proc
+            params: (param_list
+              (param
+                name: (identifier)))
+            block: (block
+              (op_call
+                receiver: (identifier)
+                operator: (operator)
+                argument: (integer)))))))))
 
 ================================================================================
 operator method calls
@@ -2728,6 +2753,7 @@ else
   case val3
   when .>(0), false
   when .[] 2, count: 3
+  when .try(&->(v : Int32){v == 0})
   end
 end
 --------------------------------------------------------------------------------
@@ -2833,7 +2859,22 @@ end
               (integer)
               (named_expr
                 name: (identifier)
-                (integer)))))))))
+                (integer)))))
+        (when
+          cond: (implicit_object_call
+            method: (identifier)
+            arguments: (argument_list
+              (block_argument
+                (proc
+                  params: (param_list
+                    (param
+                      name: (identifier)
+                      type: (constant)))
+                  block: (block
+                    (op_call
+                      receiver: (identifier)
+                      operator: (operator)
+                      argument: (integer))))))))))))
 
 ================================================================================
 exhaustive case expressions
