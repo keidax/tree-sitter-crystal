@@ -75,6 +75,9 @@ module.exports = grammar({
     $._unary_double_star,
     $._binary_double_star,
 
+    $._block_ampersand,
+    $.binary_ampersand,
+
     $._beginless_range_operator,
 
     $._regex_start,
@@ -153,6 +156,7 @@ module.exports = grammar({
       'logical_or_operator',
       'range_operator',
       'ternary_operator',
+      'block_ampersand',
       'assignment_operator',
       'splat_operator',
       $.named_expr,
@@ -203,6 +207,18 @@ module.exports = grammar({
     [
       'no_block_call',
       'do_end_block_call',
+    ],
+
+    // Ensure `a b &c` parses as `a b(&c)`
+    [
+      'ampersand_block_call',
+      $._expression,
+    ],
+
+    // Ensure `a b! &c` parses as `a b!(&c)`
+    [
+      'ampersand_block_call',
+      'no_block_call',
     ],
 
     // Ensure `(1; 2)` is considered an `expressions` node, but `(1)` is just an integer
@@ -862,6 +878,8 @@ module.exports = grammar({
         alias($.brace_block, $.block),
       ))
 
+      // TODO: include syntax for capturing methods as procs
+
       return seq(
         '->',
         optional(params),
@@ -1472,8 +1490,12 @@ module.exports = grammar({
         alias($.argument_list_no_parens, $.argument_list),
       ))
 
-      const brace_block = field('block', alias($.brace_block, $.block))
+      const argument_list_with_block = field('arguments', choice(
+        alias($.argument_list_with_parens_and_block, $.argument_list),
+        alias($.argument_list_no_parens_with_block, $.argument_list),
+      ))
 
+      const brace_block = field('block', alias($.brace_block, $.block))
       const do_end_block = field('block', alias($.do_end_block, $.block))
 
       return choice(
@@ -1485,6 +1507,9 @@ module.exports = grammar({
 
         prec('do_end_block_call', seq(receiver_call, optional(argument_list), do_end_block)),
         prec('do_end_block_call', seq(ambiguous_call, optional(argument_list), do_end_block)),
+
+        prec('ampersand_block_call', seq(receiver_call, argument_list_with_block)),
+        prec('ampersand_block_call', seq(ambiguous_call, argument_list_with_block)),
       )
     },
 
@@ -1644,7 +1669,7 @@ module.exports = grammar({
     },
 
     binary_and_operator: $ => {
-      const operator = '&'
+      const operator = $.binary_ampersand
       const receiver = field('receiver', $._expression)
       const method = field('operator', alias(operator, $.operator))
       const arg = field('argument', $._expression)
@@ -1717,6 +1742,20 @@ module.exports = grammar({
       ))
     },
 
+    argument_list_no_parens_with_block: $ => {
+      const args = choice($._expression, $.splat, $.double_splat, $.named_expr)
+
+      return prec.right(seq(
+        optional($._start_of_parenless_args),
+        optional(seq(
+          args,
+          repeat(prec('comma', seq(',', args))),
+          ',',
+        )),
+        $.block_argument,
+      ))
+    },
+
     argument_list_with_parens: $ => {
       const args = choice($._expression, $.splat, $.double_splat, $.named_expr)
 
@@ -1727,6 +1766,21 @@ module.exports = grammar({
           repeat(seq(',', args)),
           optional(','),
         )),
+        ')',
+      ))
+    },
+
+    argument_list_with_parens_and_block: $ => {
+      const args = choice($._expression, $.splat, $.double_splat, $.named_expr)
+
+      return prec.right(seq(
+        token.immediate('('),
+        optional(seq(
+          args,
+          repeat(seq(',', args)),
+          ',',
+        )),
+        $.block_argument,
         ')',
       ))
     },
@@ -1905,6 +1959,17 @@ module.exports = grammar({
         '}',
       )
     },
+
+    block_argument: $ => {
+      return prec('block_ampersand', seq(
+        alias($._block_ampersand, '&'),
+        $._expression,
+      ))
+    },
+
+    // TODO:
+    // block_short_syntax: $ => {
+    // },
 
     begin_block: $ => seq(
       'begin',

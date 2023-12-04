@@ -42,6 +42,9 @@ enum Token {
     UNARY_DOUBLE_STAR,
     BINARY_DOUBLE_STAR,
 
+    BLOCK_AMPERSAND,
+    BINARY_AMPERSAND,
+
     BEGINLESS_RANGE_OPERATOR,
 
     REGEX_START,
@@ -1153,6 +1156,8 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     LOG_SYMBOL(BINARY_STAR);
     LOG_SYMBOL(UNARY_DOUBLE_STAR);
     LOG_SYMBOL(BINARY_DOUBLE_STAR);
+    LOG_SYMBOL(BLOCK_AMPERSAND);
+    LOG_SYMBOL(BINARY_AMPERSAND);
     LOG_SYMBOL(BEGINLESS_RANGE_OPERATOR);
     LOG_SYMBOL(REGEX_START);
     LOG_SYMBOL(BINARY_SLASH);
@@ -1629,8 +1634,12 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 valid_symbols[UNARY_WRAPPING_PLUS]
                 || valid_symbols[UNARY_WRAPPING_MINUS]
                 || valid_symbols[BINARY_WRAPPING_PLUS]
-                || valid_symbols[BINARY_WRAPPING_MINUS]) {
+                || valid_symbols[BINARY_WRAPPING_MINUS]
+                || valid_symbols[BLOCK_AMPERSAND]
+                || valid_symbols[BINARY_AMPERSAND]
+            ) {
                 lex_advance(lexer);
+                lexer->mark_end(lexer);
 
                 if (lexer->lookahead == '+') {
                     lex_advance(lexer);
@@ -1643,9 +1652,11 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     //   foo! &+bar
                     // is still binary.
                     if (valid_symbols[BINARY_WRAPPING_PLUS]) {
+                        lexer->mark_end(lexer);
                         lexer->result_symbol = BINARY_WRAPPING_PLUS;
                         return true;
                     } else if (valid_symbols[UNARY_WRAPPING_PLUS]) {
+                        lexer->mark_end(lexer);
                         lexer->result_symbol = UNARY_WRAPPING_PLUS;
                         return true;
                     }
@@ -1660,15 +1671,65 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         return false;
                     }
 
+                    if (lexer->lookahead == '>') {
+                        // In the case of '&->', we always return just the '&',
+                        // so mark_end is _not_ called here.
+
+                        bool unary_priority = state->has_leading_whitespace;
+
+                        if (unary_priority && valid_symbols[BLOCK_AMPERSAND]) {
+                            lexer->result_symbol = BLOCK_AMPERSAND;
+                            return true;
+                        } else if (valid_symbols[BINARY_AMPERSAND]) {
+                            lexer->result_symbol = BINARY_AMPERSAND;
+                            return true;
+                        } else if(valid_symbols[BLOCK_AMPERSAND]) {
+                            lexer->result_symbol = BLOCK_AMPERSAND;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+
                     if (valid_symbols[BINARY_WRAPPING_MINUS]) {
+                        lexer->mark_end(lexer);
                         lexer->result_symbol = BINARY_WRAPPING_MINUS;
                         return true;
                     } else if (valid_symbols[UNARY_WRAPPING_MINUS]) {
+                        lexer->mark_end(lexer);
                         lexer->result_symbol = UNARY_WRAPPING_MINUS;
                         return true;
                     }
 
                     return false;
+                }
+
+                if (lexer->lookahead == '*' ||
+                    lexer->lookahead == '&' ||
+                    lexer->lookahead == '='
+                ) {
+                    // Symbols not managed by this external scanner:
+                    // '&*', '&**', '&&', '&='
+                    return false;
+                }
+
+                // Use whitespace to distinguish between '&' as a block
+                // argument, and as a binary operator.
+                // For example, these are parsed as binary operators:
+                //   foo & bar
+                //   foo&bar
+                // while this is parsed as a block argument:
+                //   foo &bar
+                bool unary_priority = (state->has_leading_whitespace && !iswspace(lexer->lookahead));
+                if (unary_priority && valid_symbols[BLOCK_AMPERSAND]) {
+                    lexer->result_symbol = BLOCK_AMPERSAND;
+                    return true;
+                } else if (valid_symbols[BINARY_AMPERSAND]) {
+                    lexer->result_symbol = BINARY_AMPERSAND;
+                    return true;
+                } else if (valid_symbols[BLOCK_AMPERSAND]) {
+                    lexer->result_symbol = BLOCK_AMPERSAND;
+                    return true;
                 }
             }
             break;

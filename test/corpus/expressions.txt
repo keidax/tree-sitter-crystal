@@ -2154,6 +2154,280 @@ a 1, {2, b { 4 }} { 3 }
       (integer))))
 
 ================================================================================
+calls with & block forwarding
+================================================================================
+foo(&block)
+foo &block
+a.foo &block
+a.foo(&block)
+foo "boo", &(->{})
+foo "boo", &->{}
+foo "boo", &(captured)
+bar &foo "hi", "bye"
+bar &if true
+       foo "yes"
+     else
+       foo "no"
+     end
+
+bar &prc ? 1 : 2 # => bar(&(prc ? 1 : 2))
+bar &prc .. 7 # => bar(&(prc..7))
+
+foo &b = a
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    receiver: (identifier)
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (string)
+      (block_argument
+        (proc
+          block: (block)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (string)
+      (block_argument
+        (proc
+          block: (block)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (string)
+      (block_argument
+        (identifier))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (call
+          method: (identifier)
+          arguments: (argument_list
+            (string)
+            (string))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (if
+          cond: (true)
+          then: (then
+            (call
+              method: (identifier)
+              arguments: (argument_list
+                (string))))
+          else: (else
+            (call
+              method: (identifier)
+              arguments: (argument_list
+                (string))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (conditional
+          cond: (identifier)
+          then: (integer)
+          else: (integer)))))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (range
+          begin: (identifier)
+          operator: (operator)
+          end: (integer)))))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (assign
+          lhs: (identifier)
+          rhs: (identifier))))))
+
+================================================================================
+ampersand disambiguation
+================================================================================
+## Operators ##
+
+func &+var   # binary
+func(&+var)  # unary
+func(&+ var) # unary
+
+func &-var   # binary
+func(&-var)  # unary
+func(&- var) # unary
+
+func&var     # binary
+func&->{}
+func & var   # binary
+func & ->{}
+
+var.&
+
+## Blocks ##
+
+func(&var)
+func &var
+func(&->{})
+func &->{}
+
+func(&(var.-))
+func &(var.-)
+func &var.-
+
+func(&(-var))
+func &(-var)
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (identifier))))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (identifier))))
+  (comment)
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (identifier))))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (op_call
+        operator: (operator)
+        receiver: (identifier))))
+  (comment)
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (comment)
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (proc
+      block: (block)))
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (identifier))
+  (comment)
+  (op_call
+    receiver: (identifier)
+    operator: (operator)
+    argument: (proc
+      block: (block)))
+  (call
+    receiver: (identifier)
+    method: (operator))
+  (comment)
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (identifier))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (proc
+          block: (block)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (proc
+          block: (block)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (call
+          receiver: (identifier)
+          method: (operator)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (call
+          receiver: (identifier)
+          method: (operator)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (call
+          receiver: (identifier)
+          method: (operator)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (op_call
+          operator: (operator)
+          receiver: (identifier)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (op_call
+          operator: (operator)
+          receiver: (identifier))))))
+
+================================================================================
 block parameters
 ================================================================================
 foo{|_|}
