@@ -254,26 +254,6 @@ module.exports = grammar({
 
   conflicts: $ => [
     // When the parser is in this state:
-    //   def foo(bar : String,
-    //                       ^
-    // we need to consider both of these interpretations as legitimate:
-    //   def foo(bar : String, baz : String)
-    // and
-    //   def foo(bar : String, String -> Int32)
-    [
-      $.param, $.proc_type,
-    ],
-
-    // Splat and double splat parameters are similar situations to above
-    [
-      $.splat_param, $.proc_type,
-    ],
-    [
-      $.double_splat_param, $.proc_type,
-    ],
-
-
-    // When the parser is in this state:
     //   { {} of A => B,
     //                 ^
     // we need to consider both of these interpretations as legitimate:
