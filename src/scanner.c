@@ -1,4 +1,5 @@
-#include <tree_sitter/parser.h>
+#include "tree_sitter/alloc.h"
+#include "tree_sitter/parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -322,7 +323,7 @@ typedef enum LookaheadResult LookaheadResult;
 void *tree_sitter_crystal_external_scanner_create() {
     State *state;
 
-    state = malloc(sizeof(State));
+    state = ts_malloc(sizeof(State));
     memset(state, 0, sizeof(State));
     state->has_leading_whitespace = false;
     state->previous_line_continued = false;
@@ -1636,8 +1637,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                 || valid_symbols[BINARY_WRAPPING_PLUS]
                 || valid_symbols[BINARY_WRAPPING_MINUS]
                 || valid_symbols[BLOCK_AMPERSAND]
-                || valid_symbols[BINARY_AMPERSAND]
-            ) {
+                || valid_symbols[BINARY_AMPERSAND]) {
                 lex_advance(lexer);
                 lexer->mark_end(lexer);
 
@@ -1683,7 +1683,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                         } else if (valid_symbols[BINARY_AMPERSAND]) {
                             lexer->result_symbol = BINARY_AMPERSAND;
                             return true;
-                        } else if(valid_symbols[BLOCK_AMPERSAND]) {
+                        } else if (valid_symbols[BLOCK_AMPERSAND]) {
                             lexer->result_symbol = BLOCK_AMPERSAND;
                             return true;
                         } else {
@@ -1704,10 +1704,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     return false;
                 }
 
-                if (lexer->lookahead == '*' ||
-                    lexer->lookahead == '&' ||
-                    lexer->lookahead == '='
-                ) {
+                if (lexer->lookahead == '*' || lexer->lookahead == '&' || lexer->lookahead == '=') {
                     // Symbols not managed by this external scanner:
                     // '&*', '&**', '&&', '&='
                     return false;
@@ -2165,5 +2162,5 @@ void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char 
 
 void tree_sitter_crystal_external_scanner_destroy(void *payload) {
     State *state = (State *)payload;
-    free(state);
+    ts_free(state);
 }
