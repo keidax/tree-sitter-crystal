@@ -409,6 +409,119 @@ string interpolation
         argument: (identifier)))))
 
 ================================================================================
+nested interpolation stress test
+================================================================================
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+%(#{
+  { {} of String => Int32, %(#{7}) }
+}) +
+%(#{
+  { {} of String => Int32, Int32 -> Int32 => %(#{8}) }
+}) +
+%(#{
+  { {} of String => Int32, %(#{
+    { {} of String => Int32, %(#{7}) }
+  })
+  }
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+})
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (string
+    (interpolation
+      (string
+        (interpolation
+          (string
+            (interpolation
+              (string
+                (interpolation
+                  (string
+                    (interpolation
+                      (string
+                        (interpolation
+                          (string
+                            (interpolation
+                              (string
+                                (interpolation
+                                  (string
+                                    (interpolation
+                                      (string
+                                        (interpolation
+                                          (string
+                                            (interpolation
+                                              (string
+                                                (interpolation
+                                                  (string
+                                                    (interpolation
+                                                      (op_call
+                                                        (op_call
+                                                          (string
+                                                            (interpolation
+                                                              (tuple
+                                                                (hash
+                                                                  (constant)
+                                                                  (constant))
+                                                                (string
+                                                                  (interpolation
+                                                                    (integer))))))
+                                                          (operator)
+                                                          (string
+                                                            (interpolation
+                                                              (hash
+                                                                (hash_entry
+                                                                  (hash
+                                                                    (constant)
+                                                                    (proc_type
+                                                                      (constant)
+                                                                      (constant)
+                                                                      (constant)))
+                                                                  (string
+                                                                    (interpolation
+                                                                      (integer))))))))
+                                                        (operator)
+                                                        (string
+                                                          (interpolation
+                                                            (tuple
+                                                              (hash
+                                                                (constant)
+                                                                (constant))
+                                                              (string
+                                                                (interpolation
+                                                                  (tuple
+                                                                    (hash
+                                                                      (constant)
+                                                                      (constant))
+                                                                    (string
+                                                                      (interpolation
+                                                                        (integer)))))))))))))))))))))))))))))))))))))
+
+================================================================================
 heredoc strings
 ================================================================================
 puts 1, <<-C, 3
