@@ -155,7 +155,7 @@ struct Heredoc {
     bool allow_escapes;
     bool started;
     // Heredoc identifier encoded with UTF-8
-    Array(char) identifier;
+    Array(uint8_t) identifier;
 };
 typedef struct Heredoc Heredoc;
 
@@ -217,7 +217,7 @@ static bool has_unstarted_heredoc(State *state) {
 // Return the number of bytes currently stored across all heredocs
 static size_t heredoc_current_buffer_size(State *state) {
     size_t bytes = 0;
-    for (int i = 0; i < state->heredocs.size; i++) {
+    for (uint8_t i = 0; i < state->heredocs.size; i++) {
         bytes += array_get(&state->heredocs, i)->identifier.size;
     }
     return bytes;
@@ -648,6 +648,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
                     if (lexer->lookahead != '\n') {
                         continue;
                     }
+                    // fall through
                 case '\n':
                     lex_advance(lexer);
                     lexer->mark_end(lexer);
@@ -662,7 +663,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
     }
 }
 
-static bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_regex_modifier(State *state, TSLexer *lexer) {
     if (!state->has_leading_whitespace) {
         bool found_modifier = false;
 
@@ -713,7 +714,7 @@ static bool is_ident_part(int32_t codepoint) {
         || (0x00a0 <= codepoint && codepoint <= 0x10ffffff);
 }
 
-static void consume_const(State *state, TSLexer *lexer) {
+static void consume_const(TSLexer *lexer) {
     if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
         lex_advance(lexer);
 
@@ -723,7 +724,7 @@ static void consume_const(State *state, TSLexer *lexer) {
     }
 }
 
-static void consume_string_literal(State *state, TSLexer *lexer) {
+static void consume_string_literal(TSLexer *lexer) {
     bool can_escape = true, can_nest;
     int32_t opening_char = 0, closing_char, nesting_level = 0;
 
@@ -885,7 +886,7 @@ static LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer 
 }
 
 // Check if there is an identifier followed by `:` indicating the start of a named tuple item
-static LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexer, bool started) {
+static LookaheadResult lookahead_start_of_named_tuple_entry(TSLexer *lexer, bool started) {
     if (started
         || ('a' <= lexer->lookahead && lexer->lookahead <= 'z')
         || ('A' <= lexer->lookahead && lexer->lookahead <= 'Z')
@@ -915,7 +916,7 @@ static LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexe
     }
 
     if (lexer->lookahead == '"' || lexer->lookahead == '%') {
-        consume_string_literal(state, lexer);
+        consume_string_literal(lexer);
 
         if (lexer->lookahead == ':') {
             lex_advance(lexer);
@@ -971,7 +972,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
                                 || (lexer->lookahead == '!')
                                 || (lexer->lookahead == '?')) {
                                 // identifier continues beyond `typeof`
-                                return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                                return lookahead_start_of_named_tuple_entry(lexer, true);
                             }
 
                             return LOOKAHEAD_TYPE;
@@ -997,7 +998,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
                     if (is_ident_part(lexer->lookahead)
                         || (lexer->lookahead == '!')) {
                         // identifier continues beyond `self`
-                        return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                        return lookahead_start_of_named_tuple_entry(lexer, true);
                     }
 
                     skip_space(state, lexer);
@@ -1008,12 +1009,12 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
     } else if (('a' <= lexer->lookahead && lexer->lookahead <= 'z')
         || (0x00a0 <= lexer->lookahead && lexer->lookahead <= 0x10ffffff)) {
         // other identifiers are not part of the type grammar
-        return lookahead_start_of_named_tuple_entry(state, lexer, false);
+        return lookahead_start_of_named_tuple_entry(lexer, false);
     }
 
     // Check for constant
     while ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
-        consume_const(state, lexer);
+        consume_const(lexer);
 
         if (lexer->lookahead == ':') {
             lex_advance(lexer);
@@ -1066,7 +1067,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
             break;
         case '"':
         case '%':
-            return lookahead_start_of_named_tuple_entry(state, lexer, false);
+            return lookahead_start_of_named_tuple_entry(lexer, false);
     }
 
     DEBUG("Not the start of a type\n");
@@ -1079,7 +1080,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     DEBUG(" ==> valid symbols are:\n");
 
 #define LOG_SYMBOL(sym) \
-    if (valid_symbols[sym]) DEBUG("\t" #sym "\n");
+    if (valid_symbols[sym]) { DEBUG("\t" #sym "\n"); }
 
     LOG_SYMBOL(LINE_BREAK);
     LOG_SYMBOL(LINE_CONTINUATION);
@@ -1171,7 +1172,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[PERCENT_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
         if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
-            POP_LITERAL(state);
+            (void)POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
             return true;
         }
@@ -1180,7 +1181,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
         if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
-            POP_LITERAL(state);
+            (void)POP_LITERAL(state);
             lexer->result_symbol = STRING_LITERAL_END;
             return true;
         }
@@ -1191,7 +1192,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
-    if (valid_symbols[REGEX_MODIFIER] && scan_regex_modifier(state, lexer, valid_symbols)) {
+    if (valid_symbols[REGEX_MODIFIER] && scan_regex_modifier(state, lexer)) {
         return true;
     }
 
@@ -1304,7 +1305,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lexer->mark_end(lexer);
                     skip_space_and_newline(state, lexer);
 
-                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                    switch (lookahead_start_of_named_tuple_entry(lexer, false)) {
                         case LOOKAHEAD_NAMED_TUPLE:
                             ASSERT(valid_symbols[START_OF_NAMED_TUPLE]);
                             lexer->result_symbol = START_OF_NAMED_TUPLE;
@@ -1322,7 +1323,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lexer->mark_end(lexer);
                     skip_space_and_newline(state, lexer);
 
-                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                    switch (lookahead_start_of_named_tuple_entry(lexer, false)) {
                         case LOOKAHEAD_NAMED_TUPLE:
                             ASSERT(valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
                             lexer->result_symbol = START_OF_NAMED_TUPLE_TYPE;
@@ -2088,7 +2089,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     return false;
 }
 
-void *tree_sitter_crystal_external_scanner_create() {
+void *tree_sitter_crystal_external_scanner_create(void) {
     State *state;
 
     state = ts_calloc(1, sizeof(State));
