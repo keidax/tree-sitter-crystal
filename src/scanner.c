@@ -1,4 +1,5 @@
 #include "tree_sitter/alloc.h"
+#include "tree_sitter/array.h"
 #include "tree_sitter/parser.h"
 
 #include <stdio.h>
@@ -172,8 +173,7 @@ struct State {
     // It's possible to have nested delimited literals, like
     //   %(#{%(foo)})
     // We can handle up to MAX_LITERAL_COUNT levels of nesting.
-    uint8_t literal_count;
-    PercentLiteral literal_stack[MAX_LITERAL_COUNT];
+    Array(PercentLiteral) literals;
 
     uint8_t heredoc_count;
     Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
@@ -190,16 +190,16 @@ _Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
  */
 
 #define HAS_ACTIVE_LITERAL(state) \
-    (state->literal_count > 0)
+    (state->literals.size > 0)
 
 #define ACTIVE_LITERAL(state) \
-    (state->literal_stack[state->literal_count - 1])
+    array_back(&state->literals)
 
 #define PUSH_LITERAL(state, literal) \
-    (state->literal_stack[state->literal_count++] = literal)
+    array_push(&state->literals, literal)
 
 #define POP_LITERAL(state) \
-    (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
+    array_pop(&state->literals)
 
 // Return true if any heredoc is started
 static bool has_active_heredoc(State *state) {
@@ -323,12 +323,21 @@ typedef enum LookaheadResult LookaheadResult;
 void *tree_sitter_crystal_external_scanner_create() {
     State *state;
 
-    state = ts_malloc(sizeof(State));
-    memset(state, 0, sizeof(State));
+    state = ts_calloc(1, sizeof(State));
+
     state->has_leading_whitespace = false;
     state->previous_line_continued = false;
 
+    array_init(&state->literals);
+
     return state;
+}
+
+void tree_sitter_crystal_external_scanner_destroy(void *payload) {
+    State *state = (State *)payload;
+
+    array_delete(&state->literals);
+    ts_free(state);
 }
 
 static void lex_skip(State *state, TSLexer *lexer) {
@@ -451,7 +460,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             return found_content;
         }
 
-        active_type = ACTIVE_LITERAL(state).type;
+        active_type = ACTIVE_LITERAL(state)->type;
 
         switch (lexer->lookahead) {
             case '\\':
@@ -469,7 +478,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
                         // ahead one character.
                         lexer->mark_end(lexer);
                         lex_advance(lexer);
-                        if (iswspace(lexer->lookahead) || ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                        if (iswspace(lexer->lookahead) || ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
                             return found_content;
                         }
 
@@ -516,7 +525,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             case '"':
             case '|':
                 // These delimiters can't nest
-                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                if (ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
                     if (found_content) {
                         // We've already found string contents, return that.
                         return true;
@@ -533,16 +542,16 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             case '[':
             case '{':
             case '<':
-                if (ACTIVE_LITERAL(state).opening_char == lexer->lookahead) {
-                    ACTIVE_LITERAL(state).nesting_level++;
+                if (ACTIVE_LITERAL(state)->opening_char == lexer->lookahead) {
+                    ACTIVE_LITERAL(state)->nesting_level++;
                 }
                 break;
             case ')':
             case ']':
             case '}':
             case '>':
-                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
-                    if (ACTIVE_LITERAL(state).nesting_level == 0) {
+                if (ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
+                    if (ACTIVE_LITERAL(state)->nesting_level == 0) {
                         if (found_content) {
                             // We've already found string contents, return that.
                             return true;
@@ -555,7 +564,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
                         }
                     }
 
-                    ACTIVE_LITERAL(state).nesting_level--;
+                    ACTIVE_LITERAL(state)->nesting_level--;
                 }
                 break;
         }
@@ -1224,7 +1233,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
 
     if (valid_symbols[PERCENT_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
             POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
@@ -1233,7 +1242,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
 
     if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
             POP_LITERAL(state);
             lexer->result_symbol = STRING_LITERAL_END;
@@ -1881,7 +1890,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                     lexer->result_symbol = return_symbol;
 
-                    if (state->literal_count >= MAX_LITERAL_COUNT) {
+                    if (state->literals.size >= MAX_LITERAL_COUNT) {
                         // Instead of overflowing the state (and accessing out-of-bounds memory)
                         // we'll just return false, resulting in an error in the syntax tree. The
                         // literals already on the stack can still be parsed successfully.
@@ -2142,25 +2151,59 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
 unsigned tree_sitter_crystal_external_scanner_serialize(void *payload, char *buffer) {
     State *state = (State *)payload;
+    size_t offset = 0;
 
-    size_t state_size = sizeof(State);
+    buffer[offset++] = (char)state->has_leading_whitespace;
+    buffer[offset++] = (char)state->previous_line_continued;
+    // It's safe to cast the size into a char since it will always be less than MAX_LITERAL_COUNT.
+    buffer[offset++] = (char)state->literals.size;
 
-    memcpy(buffer, state, state_size);
+    size_t literal_content_size = state->literals.size * array_elem_size(&state->literals);
+    memcpy(&buffer[offset], state->literals.contents, literal_content_size);
+    offset += literal_content_size;
 
-    return state_size;
+    buffer[offset++] = state->heredoc_count;
+    for (uint8_t i = 0; i < state->heredoc_count; i++) {
+        memcpy(&buffer[offset], &state->heredoc_queue[i], sizeof(Heredoc));
+        offset += sizeof(Heredoc);
+    }
+
+    memcpy(&buffer[offset], state->heredoc_buffer, HEREDOC_BUFFER_SIZE);
+    offset += HEREDOC_BUFFER_SIZE;
+
+    return offset;
 }
 
 void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     State *state = (State *)payload;
 
-    if (length < sizeof(State)) {
-        memset(state, 0, sizeof(State));
+    // Reset the size of the array, but don't touch its reserved memory or capacity.
+    // We can reuse the same contents buffer without freeing and reallocating memory.
+    array_clear(&state->literals);
+
+    if (length == 0) {
+        state->has_leading_whitespace = false;
+        state->previous_line_continued = false;
+        state->heredoc_count = 0;
+        return;
     }
 
-    memcpy(state, buffer, length);
-}
+    size_t offset = 0;
+    state->has_leading_whitespace = (bool)buffer[offset++];
+    state->previous_line_continued = (bool)buffer[offset++];
 
-void tree_sitter_crystal_external_scanner_destroy(void *payload) {
-    State *state = (State *)payload;
-    ts_free(state);
+    uint8_t literals_size = (uint8_t)buffer[offset++];
+    array_extend(&state->literals, literals_size, &buffer[offset]);
+    offset += literals_size * array_elem_size(&state->literals);
+
+    state->heredoc_count = buffer[offset++];
+    for (uint8_t i = 0; i < state->heredoc_count; i++) {
+        memcpy(&state->heredoc_queue[i], &buffer[offset], sizeof(Heredoc));
+        offset += sizeof(Heredoc);
+    }
+
+    memcpy(state->heredoc_buffer, &buffer[offset], HEREDOC_BUFFER_SIZE);
+    offset += HEREDOC_BUFFER_SIZE;
+
+    ASSERT(offset == length);
 }
