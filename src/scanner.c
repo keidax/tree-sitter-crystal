@@ -1659,6 +1659,15 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     return false;
                 }
 
+                if (lexer->lookahead == '.') {
+                    // '&.' is always treated as a block ampersand.
+                    if (valid_symbols[BLOCK_AMPERSAND]) {
+                        lexer->result_symbol = BLOCK_AMPERSAND;
+                        return true;
+                    }
+
+                    return false;
+                }
                 // Use whitespace to distinguish between '&' as a block
                 // argument, and as a binary operator.
                 // For example, these are parsed as binary operators:

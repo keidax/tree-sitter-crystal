@@ -2271,6 +2271,174 @@ foo &b = a
           rhs: (identifier))))))
 
 ================================================================================
+calls with &. short block syntax
+================================================================================
+method &.  some_method
+method(&. to_s)
+["i", "o"].join(",", &.upcase(Unicode::CaseOptions::Turkic))
+method(&.	[index])
+method(&.[](index))
+method(&. + 2)
+method(&.+(2))
+method(&.@ivar)
+method(&.take_block(&.foo))
+method(&.take_block(&.@foo))
+method(&.take_block { |f| f.foo })
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (identifier)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (identifier)))))
+  (call
+    receiver: (array
+      (string)
+      (string))
+    method: (identifier)
+    arguments: (argument_list
+      (string)
+      (block_argument
+        (implicit_object_call
+          method: (identifier)
+          arguments: (argument_list
+            (constant))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          (index_call
+            arguments: (argument_list
+              (identifier)))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (operator)
+          arguments: (argument_list
+            (identifier))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (operator)
+          arguments: (argument_list
+            (integer))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (operator)
+          arguments: (argument_list
+            (integer))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          (instance_var)))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (identifier)
+          arguments: (argument_list
+            (block_argument
+              (implicit_object_call
+                method: (identifier))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (identifier)
+          arguments: (argument_list
+            (block_argument
+              (implicit_object_call
+                (instance_var))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (block_argument
+        (implicit_object_call
+          method: (identifier)
+          block: (block
+            params: (param_list
+              (param
+                name: (identifier)))
+            (call
+              receiver: (identifier)
+              method: (identifier))))))))
+
+================================================================================
+precedence of block attachment with &. short block syntax
+================================================================================
+outer method &.take_block do "inner" end
+outer method &.take_block { "inner" }
+outer(method &.take_block do "inner" end)
+outer method(&.take_block) do "inner" end
+--------------------------------------------------------------------------------
+
+(source_file
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (block_argument
+            (implicit_object_call
+              method: (identifier)
+              block: (block
+                (string))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (block_argument
+            (implicit_object_call
+              method: (identifier)
+              block: (block
+                (string))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (block_argument
+            (implicit_object_call
+              method: (identifier)
+              block: (block
+                (string))))))))
+  (call
+    method: (identifier)
+    arguments: (argument_list
+      (call
+        method: (identifier)
+        arguments: (argument_list
+          (block_argument
+            (implicit_object_call
+              method: (identifier))))))
+    block: (block
+      (string))))
+
+================================================================================
 ampersand disambiguation
 ================================================================================
 ## Operators ##

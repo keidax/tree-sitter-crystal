@@ -1497,6 +1497,7 @@ module.exports = grammar({
 
     implicit_object_method_identifier: $ => token(seq(
       '.',
+      repeat(/\s/),
       ident_start,
       repeat(ident_part),
       optional(/[?!]/),
@@ -1504,8 +1505,28 @@ module.exports = grammar({
 
     implicit_object_method_operator: $ => token(seq(
       '.',
+      repeat(/\s/),
       choice(...operator_tokens),
     )),
+
+    implicit_object_ivar: $ => token(seq(
+      '.',
+      repeat(/\s/),
+      '@',
+      ident_start,
+      repeat(ident_part),
+    )),
+
+    implicit_object_index_operator: $ => {
+      const args = field('arguments', alias($.bracket_argument_list, $.argument_list))
+
+      return seq(
+        '.',
+        alias($._start_of_index_operator, '['),
+        args,
+        choice(']', ']?'),
+      )
+    },
 
     implicit_object_call: $ => {
       const method_name = field('method', choice(
@@ -1528,10 +1549,12 @@ module.exports = grammar({
       const do_end_block = field('block', alias($.do_end_block, $.block))
 
       return choice(
-        seq(method_name, optional(argument_list)),
+        prec.right(seq(method_name, optional(argument_list))),
         seq(method_name, optional(argument_list), brace_block),
         seq(method_name, optional(argument_list), do_end_block),
         seq(method_name, argument_list_with_block),
+        alias($.implicit_object_ivar, $.instance_var),
+        alias($.implicit_object_index_operator, $.index_call),
       )
     },
 
@@ -1949,13 +1972,12 @@ module.exports = grammar({
     block_argument: $ => {
       return prec('block_ampersand', seq(
         alias($._block_ampersand, '&'),
-        $._expression,
+        choice(
+          $._expression,
+          $.implicit_object_call,
+        ),
       ))
     },
-
-    // TODO:
-    // block_short_syntax: $ => {
-    // },
 
     begin_block: $ => seq(
       'begin',
