@@ -1,4 +1,5 @@
 #include "tree_sitter/alloc.h"
+#include "tree_sitter/array.h"
 #include "tree_sitter/parser.h"
 
 #include <stdio.h>
@@ -151,10 +152,10 @@ struct PercentLiteral {
 typedef struct PercentLiteral PercentLiteral;
 
 struct Heredoc {
-    // The length of this identifer in bytes, after UTF-8 encoding.
-    uint8_t byte_size;
-    bool allow_escapes : 1;
-    bool started : 1;
+    bool allow_escapes;
+    bool started;
+    // Heredoc identifier encoded with UTF-8
+    Array(uint8_t) identifier;
 };
 typedef struct Heredoc Heredoc;
 
@@ -172,39 +173,32 @@ struct State {
     // It's possible to have nested delimited literals, like
     //   %(#{%(foo)})
     // We can handle up to MAX_LITERAL_COUNT levels of nesting.
-    uint8_t literal_count;
-    PercentLiteral literal_stack[MAX_LITERAL_COUNT];
+    Array(PercentLiteral) literals;
 
-    uint8_t heredoc_count;
-    Heredoc heredoc_queue[MAX_HEREDOC_COUNT];
-
-    // Contains heredoc identifiers, encoded as UTF-8
-    uint8_t heredoc_buffer[HEREDOC_BUFFER_SIZE];
+    Array(Heredoc) heredocs;
 };
 typedef struct State State;
-
-_Static_assert(sizeof(State) <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "mesg");
 
 /*
  * State-related macros and functions
  */
 
 #define HAS_ACTIVE_LITERAL(state) \
-    (state->literal_count > 0)
+    (state->literals.size > 0)
 
 #define ACTIVE_LITERAL(state) \
-    (state->literal_stack[state->literal_count - 1])
+    array_back(&state->literals)
 
 #define PUSH_LITERAL(state, literal) \
-    (state->literal_stack[state->literal_count++] = literal)
+    array_push(&state->literals, literal)
 
 #define POP_LITERAL(state) \
-    (state->literal_stack[--state->literal_count] = (PercentLiteral){0, 0, 0, 0})
+    array_pop(&state->literals)
 
 // Return true if any heredoc is started
 static bool has_active_heredoc(State *state) {
-    for (uint8_t i = 0; i < state->heredoc_count; i++) {
-        if (state->heredoc_queue[i].started) {
+    for (uint8_t i = 0; i < state->heredocs.size; i++) {
+        if (array_get(&state->heredocs, i)->started) {
             return true;
         }
     }
@@ -213,103 +207,62 @@ static bool has_active_heredoc(State *state) {
 
 // Return true if the first heredoc on the queue is unstarted
 static bool has_unstarted_heredoc(State *state) {
-    if (state->heredoc_count == 0) {
+    if (state->heredocs.size == 0) {
         return false;
     }
 
-    return !state->heredoc_queue[0].started;
+    return !array_front(&state->heredocs)->started;
 }
 
-// Return the number of bytes currently stored in the heredoc word buffer
+// Return the number of bytes currently stored across all heredocs
 static size_t heredoc_current_buffer_size(State *state) {
     size_t bytes = 0;
-    for (int i = 0; i < state->heredoc_count; i++) {
-        bytes += state->heredoc_queue[i].byte_size;
+    for (uint8_t i = 0; i < state->heredocs.size; i++) {
+        bytes += array_get(&state->heredocs, i)->identifier.size;
     }
     return bytes;
 }
 
 // Pop the active heredoc off the queue
 static void pop_heredoc(State *state) {
-    ASSERT(state->heredoc_count > 0);
-    ASSERT(state->heredoc_queue[0].started);
+    ASSERT(state->heredocs.size > 0);
 
-    uint8_t old_byte_size = state->heredoc_queue[0].byte_size;
+    Heredoc *popped = array_front(&state->heredocs);
+    ASSERT(popped->started);
 
-    uint8_t count = state->heredoc_count - 1;
-    state->heredoc_count = count;
-
-    // Shift the queue forward by one element
-    memmove(state->heredoc_queue, state->heredoc_queue + 1, sizeof(Heredoc) * count);
-
-    // Zero out the empty space at the tail of the queue
-    state->heredoc_queue[count] = (Heredoc){0, 0, 0};
-
-    // Shift the word buffer forward
-    size_t buffer_byte_size = heredoc_current_buffer_size(state);
-    memmove(state->heredoc_buffer, state->heredoc_buffer + old_byte_size, buffer_byte_size);
-
-    // Zero out the empty space in the word buffer
-    memset(state->heredoc_buffer + buffer_byte_size, 0, old_byte_size);
+    array_delete(&popped->identifier);
+    array_erase(&state->heredocs, 0);
 }
 
 // Return true if state has room to track another heredoc
 static bool has_room_for_heredoc(State *state, Heredoc heredoc) {
-    if (state->heredoc_count >= MAX_HEREDOC_COUNT) {
+    if (state->heredocs.size >= MAX_HEREDOC_COUNT) {
         return false;
     }
 
     size_t current_bytes = heredoc_current_buffer_size(state);
-    return (current_bytes + heredoc.byte_size) <= HEREDOC_BUFFER_SIZE;
+    return (current_bytes + heredoc.identifier.size) <= HEREDOC_BUFFER_SIZE;
 }
 
 // Push a heredoc onto the end of the state queue. If there's already an active
 // heredoc, the new heredoc must be nested, so it is added to the queue before
 // the active heredoc.
-static void push_heredoc(State *state, Heredoc heredoc, uint8_t *word) {
-    ASSERT(state->heredoc_count < MAX_HEREDOC_COUNT);
+static void push_heredoc(State *state, Heredoc heredoc) {
+    ASSERT(state->heredocs.size < MAX_HEREDOC_COUNT);
 
     if (has_active_heredoc(state)) {
         // This must be a nested heredoc, so insert it before the currently-active heredoc
-        uint8_t index;
-        for (index = 0; index < state->heredoc_count; index++) {
-            if (state->heredoc_queue[index].started) {
+        size_t index;
+        for (index = 0; index < state->heredocs.size; index++) {
+            if (array_get(&state->heredocs, index)->started) {
                 break;
             }
         }
-        ASSERT(index < state->heredoc_count);
+        ASSERT(index < state->heredocs.size);
 
-        size_t heredocs_to_shift = state->heredoc_count - index;
-
-        uint8_t *start_of_buffer_shift = state->heredoc_buffer;
-        for (int i = 0; i < index; i++) {
-            start_of_buffer_shift += state->heredoc_queue[i].byte_size;
-        }
-
-        size_t bytes_to_shift = 0;
-        for (int i = index; i < state->heredoc_count; i++) {
-            bytes_to_shift += state->heredoc_queue[i].byte_size;
-        }
-
-        // Make room in the word buffer
-        memcpy(start_of_buffer_shift + heredoc.byte_size, start_of_buffer_shift, bytes_to_shift);
-
-        // Copy in the new word
-        memcpy(start_of_buffer_shift, word, heredoc.byte_size);
-
-        // Make room in the queue
-        memcpy(state->heredoc_queue + index + 1, state->heredoc_queue + index, sizeof(Heredoc) * heredocs_to_shift);
-
-        // Copy in the new heredoc
-        state->heredoc_queue[index] = heredoc;
-        state->heredoc_count++;
-
+        array_insert(&state->heredocs, index, heredoc);
     } else {
-        size_t buffer_byte_size = heredoc_current_buffer_size(state);
-
-        state->heredoc_queue[state->heredoc_count++] = heredoc;
-
-        memcpy(state->heredoc_buffer + buffer_byte_size, word, heredoc.byte_size);
+        array_push(&state->heredocs, heredoc);
     }
 }
 
@@ -319,17 +272,6 @@ enum LookaheadResult {
     LOOKAHEAD_NAMED_TUPLE,
 };
 typedef enum LookaheadResult LookaheadResult;
-
-void *tree_sitter_crystal_external_scanner_create() {
-    State *state;
-
-    state = ts_malloc(sizeof(State));
-    memset(state, 0, sizeof(State));
-    state->has_leading_whitespace = false;
-    state->previous_line_continued = false;
-
-    return state;
-}
 
 static void lex_skip(State *state, TSLexer *lexer) {
     state->has_leading_whitespace = true;
@@ -363,11 +305,12 @@ static bool check_for_heredoc_start(State *state, TSLexer *lexer, const bool *va
         && !lexer->eof(lexer)
         && lexer->get_column(lexer) == 0) {
 
-        ASSERT(state->heredoc_count > 0);
-        ASSERT(!state->heredoc_queue[0].started);
+        ASSERT(state->heredocs.size > 0);
+        ASSERT(!array_front(&state->heredocs)->started);
 
-        state->heredoc_queue[0].started = true;
+        array_front(&state->heredocs)->started = true;
 
+        DEBUG(" ==> returning HEREDOC_BODY_START\n");
         lexer->result_symbol = HEREDOC_BODY_START;
         return true;
     }
@@ -387,13 +330,15 @@ static bool scan_whitespace(State *state, TSLexer *lexer, const bool *valid_symb
 
             case '\n':
                 if (valid_symbols[HEREDOC_BODY_START] && has_unstarted_heredoc(state)) {
-                    ASSERT(state->heredoc_count > 0);
-                    ASSERT(!state->heredoc_queue[0].started);
+                    ASSERT(state->heredocs.size > 0);
+                    Heredoc *heredoc = array_front(&state->heredocs);
+                    ASSERT(!heredoc->started);
 
-                    state->heredoc_queue[0].started = true;
+                    heredoc->started = true;
                     // HEREDOC_BODY_START is a zero-width token. Use skip instead
                     // of advance because we don't want to include the newline.
                     lex_skip(state, lexer);
+                    DEBUG(" ==> returning HEREDOC_BODY_START\n");
                     lexer->result_symbol = HEREDOC_BODY_START;
                     return true;
                 } else if (valid_symbols[LINE_BREAK] && !crossed_newline) {
@@ -451,7 +396,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             return found_content;
         }
 
-        active_type = ACTIVE_LITERAL(state).type;
+        active_type = ACTIVE_LITERAL(state)->type;
 
         switch (lexer->lookahead) {
             case '\\':
@@ -469,7 +414,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
                         // ahead one character.
                         lexer->mark_end(lexer);
                         lex_advance(lexer);
-                        if (iswspace(lexer->lookahead) || ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                        if (iswspace(lexer->lookahead) || ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
                             return found_content;
                         }
 
@@ -516,7 +461,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             case '"':
             case '|':
                 // These delimiters can't nest
-                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
+                if (ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
                     if (found_content) {
                         // We've already found string contents, return that.
                         return true;
@@ -533,16 +478,16 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
             case '[':
             case '{':
             case '<':
-                if (ACTIVE_LITERAL(state).opening_char == lexer->lookahead) {
-                    ACTIVE_LITERAL(state).nesting_level++;
+                if (ACTIVE_LITERAL(state)->opening_char == lexer->lookahead) {
+                    ACTIVE_LITERAL(state)->nesting_level++;
                 }
                 break;
             case ')':
             case ']':
             case '}':
             case '>':
-                if (ACTIVE_LITERAL(state).closing_char == lexer->lookahead) {
-                    if (ACTIVE_LITERAL(state).nesting_level == 0) {
+                if (ACTIVE_LITERAL(state)->closing_char == lexer->lookahead) {
+                    if (ACTIVE_LITERAL(state)->nesting_level == 0) {
                         if (found_content) {
                             // We've already found string contents, return that.
                             return true;
@@ -555,7 +500,7 @@ static bool scan_string_contents(State *state, TSLexer *lexer, const bool *valid
                         }
                     }
 
-                    ACTIVE_LITERAL(state).nesting_level--;
+                    ACTIVE_LITERAL(state)->nesting_level--;
                 }
                 break;
         }
@@ -574,24 +519,24 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
         return false;
     }
 
-    ASSERT(state->heredoc_count > 0);
+    ASSERT(state->heredocs.size > 0);
     ASSERT(has_active_heredoc(state));
 
     bool found_content = false;
 
-    Heredoc active_heredoc;
+    Heredoc *active_heredoc;
     bool heredoc_pending_start;
 
-    if (state->heredoc_queue[0].started) {
+    if (array_front(&state->heredocs)->started) {
         heredoc_pending_start = false;
-        active_heredoc = state->heredoc_queue[0];
+        active_heredoc = array_front(&state->heredocs);
     } else {
         // The first heredoc in the queue isn't started, which means it's a
         // pending nested heredoc that will begin on the next line.
         heredoc_pending_start = true;
-        for (uint8_t i = 1; i < state->heredoc_count; i++) {
-            if (state->heredoc_queue[i].started) {
-                active_heredoc = state->heredoc_queue[i];
+        for (uint8_t i = 1; i < state->heredocs.size; i++) {
+            if (array_get(&state->heredocs, i)->started) {
+                active_heredoc = array_get(&state->heredocs, i);
                 break;
             }
         }
@@ -620,13 +565,13 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
                 lexer->mark_end(lexer);
             }
 
-            uint8_t byte_size = active_heredoc.byte_size;
+            size_t byte_size = active_heredoc->identifier.size;
             size_t matched_codepoint_count;
 
             // Load all the expected codepoints at once. Theoretically this is less efficient than
             // checking one codepoint at a time, but the actual performance impact is minimal.
             int32_t codepoints[MAX_HEREDOC_WORD_SIZE];
-            size_t codepoint_count = utf8_to_codepoints(codepoints, state->heredoc_buffer, byte_size);
+            size_t codepoint_count = utf8_to_codepoints(codepoints, active_heredoc->identifier.contents, byte_size);
 
             for (matched_codepoint_count = 0; matched_codepoint_count < codepoint_count; matched_codepoint_count++) {
                 int32_t expected_codepoint = codepoints[matched_codepoint_count];
@@ -674,13 +619,13 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
 
             switch (lexer->lookahead) {
                 case '\\':
-                    if (active_heredoc.allow_escapes) {
+                    if (active_heredoc->allow_escapes) {
                         return found_content;
                     }
                     break;
 
                 case '#':
-                    if (!active_heredoc.allow_escapes) {
+                    if (!active_heredoc->allow_escapes) {
                         break;
                     }
 
@@ -703,6 +648,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
                     if (lexer->lookahead != '\n') {
                         continue;
                     }
+                    // fall through
                 case '\n':
                     lex_advance(lexer);
                     lexer->mark_end(lexer);
@@ -717,7 +663,7 @@ static bool scan_heredoc_contents(State *state, TSLexer *lexer, const bool *vali
     }
 }
 
-static bool scan_regex_modifier(State *state, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_regex_modifier(State *state, TSLexer *lexer) {
     if (!state->has_leading_whitespace) {
         bool found_modifier = false;
 
@@ -768,7 +714,7 @@ static bool is_ident_part(int32_t codepoint) {
         || (0x00a0 <= codepoint && codepoint <= 0x10ffffff);
 }
 
-static void consume_const(State *state, TSLexer *lexer) {
+static void consume_const(TSLexer *lexer) {
     if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
         lex_advance(lexer);
 
@@ -778,7 +724,7 @@ static void consume_const(State *state, TSLexer *lexer) {
     }
 }
 
-static void consume_string_literal(State *state, TSLexer *lexer) {
+static void consume_string_literal(TSLexer *lexer) {
     bool can_escape = true, can_nest;
     int32_t opening_char = 0, closing_char, nesting_level = 0;
 
@@ -940,7 +886,7 @@ static LookaheadResult lookahead_delimiter_or_type_suffix(State *state, TSLexer 
 }
 
 // Check if there is an identifier followed by `:` indicating the start of a named tuple item
-static LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexer *lexer, bool started) {
+static LookaheadResult lookahead_start_of_named_tuple_entry(TSLexer *lexer, bool started) {
     if (started
         || ('a' <= lexer->lookahead && lexer->lookahead <= 'z')
         || ('A' <= lexer->lookahead && lexer->lookahead <= 'Z')
@@ -970,7 +916,7 @@ static LookaheadResult lookahead_start_of_named_tuple_entry(State *state, TSLexe
     }
 
     if (lexer->lookahead == '"' || lexer->lookahead == '%') {
-        consume_string_literal(state, lexer);
+        consume_string_literal(lexer);
 
         if (lexer->lookahead == ':') {
             lex_advance(lexer);
@@ -1026,7 +972,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
                                 || (lexer->lookahead == '!')
                                 || (lexer->lookahead == '?')) {
                                 // identifier continues beyond `typeof`
-                                return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                                return lookahead_start_of_named_tuple_entry(lexer, true);
                             }
 
                             return LOOKAHEAD_TYPE;
@@ -1052,7 +998,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
                     if (is_ident_part(lexer->lookahead)
                         || (lexer->lookahead == '!')) {
                         // identifier continues beyond `self`
-                        return lookahead_start_of_named_tuple_entry(state, lexer, true);
+                        return lookahead_start_of_named_tuple_entry(lexer, true);
                     }
 
                     skip_space(state, lexer);
@@ -1063,12 +1009,12 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
     } else if (('a' <= lexer->lookahead && lexer->lookahead <= 'z')
         || (0x00a0 <= lexer->lookahead && lexer->lookahead <= 0x10ffffff)) {
         // other identifiers are not part of the type grammar
-        return lookahead_start_of_named_tuple_entry(state, lexer, false);
+        return lookahead_start_of_named_tuple_entry(lexer, false);
     }
 
     // Check for constant
     while ('A' <= lexer->lookahead && lexer->lookahead <= 'Z') {
-        consume_const(state, lexer);
+        consume_const(lexer);
 
         if (lexer->lookahead == ':') {
             lex_advance(lexer);
@@ -1121,7 +1067,7 @@ static LookaheadResult lookahead_start_of_type(State *state, TSLexer *lexer) {
             break;
         case '"':
         case '%':
-            return lookahead_start_of_named_tuple_entry(state, lexer, false);
+            return lookahead_start_of_named_tuple_entry(lexer, false);
     }
 
     DEBUG("Not the start of a type\n");
@@ -1134,7 +1080,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     DEBUG(" ==> valid symbols are:\n");
 
 #define LOG_SYMBOL(sym) \
-    if (valid_symbols[sym]) DEBUG("\t" #sym "\n");
+    if (valid_symbols[sym]) { DEBUG("\t" #sym "\n"); }
 
     LOG_SYMBOL(LINE_BREAK);
     LOG_SYMBOL(LINE_CONTINUATION);
@@ -1209,7 +1155,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
-    if (valid_symbols[HEREDOC_CONTENT] && state->heredoc_count > 0 && scan_heredoc_contents(state, lexer, valid_symbols)) {
+    if (valid_symbols[HEREDOC_CONTENT] && state->heredocs.size > 0 && scan_heredoc_contents(state, lexer, valid_symbols)) {
         return true;
     }
 
@@ -1224,18 +1170,18 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
 
     if (valid_symbols[PERCENT_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
-            POP_LITERAL(state);
+            (void)POP_LITERAL(state);
             lexer->result_symbol = PERCENT_LITERAL_END;
             return true;
         }
     }
 
     if (valid_symbols[STRING_LITERAL_END] && HAS_ACTIVE_LITERAL(state)) {
-        if (lexer->lookahead == ACTIVE_LITERAL(state).closing_char) {
+        if (lexer->lookahead == ACTIVE_LITERAL(state)->closing_char) {
             lex_advance(lexer);
-            POP_LITERAL(state);
+            (void)POP_LITERAL(state);
             lexer->result_symbol = STRING_LITERAL_END;
             return true;
         }
@@ -1246,7 +1192,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
         return true;
     }
 
-    if (valid_symbols[REGEX_MODIFIER] && scan_regex_modifier(state, lexer, valid_symbols)) {
+    if (valid_symbols[REGEX_MODIFIER] && scan_regex_modifier(state, lexer)) {
         return true;
     }
 
@@ -1359,7 +1305,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lexer->mark_end(lexer);
                     skip_space_and_newline(state, lexer);
 
-                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                    switch (lookahead_start_of_named_tuple_entry(lexer, false)) {
                         case LOOKAHEAD_NAMED_TUPLE:
                             ASSERT(valid_symbols[START_OF_NAMED_TUPLE]);
                             lexer->result_symbol = START_OF_NAMED_TUPLE;
@@ -1377,7 +1323,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                     lexer->mark_end(lexer);
                     skip_space_and_newline(state, lexer);
 
-                    switch (lookahead_start_of_named_tuple_entry(state, lexer, false)) {
+                    switch (lookahead_start_of_named_tuple_entry(lexer, false)) {
                         case LOOKAHEAD_NAMED_TUPLE:
                             ASSERT(valid_symbols[START_OF_NAMED_TUPLE_TYPE]);
                             lexer->result_symbol = START_OF_NAMED_TUPLE_TYPE;
@@ -1507,15 +1453,18 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
                             Heredoc heredoc = {
                                 .allow_escapes = !quoted,
                                 .started = false,
-                                .byte_size = word_length,
+                                .identifier = array_new(),
                             };
+
+                            array_extend(&heredoc.identifier, word_length, &word);
 
                             // double check we can safely store the new heredoc
                             if (!has_room_for_heredoc(state, heredoc)) {
+                                array_delete(&heredoc.identifier);
                                 return false;
                             }
 
-                            push_heredoc(state, heredoc, word);
+                            push_heredoc(state, heredoc);
 
                             lexer->result_symbol = HEREDOC_START;
                             DEBUG(" ==> returning HEREDOC_START (size %d)\n", word_length);
@@ -1881,7 +1830,7 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
 
                     lexer->result_symbol = return_symbol;
 
-                    if (state->literal_count >= MAX_LITERAL_COUNT) {
+                    if (state->literals.size >= MAX_LITERAL_COUNT) {
                         // Instead of overflowing the state (and accessing out-of-bounds memory)
                         // we'll just return false, resulting in an error in the syntax tree. The
                         // literals already on the stack can still be parsed successfully.
@@ -2140,27 +2089,132 @@ bool tree_sitter_crystal_external_scanner_scan(void *payload, TSLexer *lexer, co
     return false;
 }
 
-unsigned tree_sitter_crystal_external_scanner_serialize(void *payload, char *buffer) {
-    State *state = (State *)payload;
+void *tree_sitter_crystal_external_scanner_create(void) {
+    State *state;
 
-    size_t state_size = sizeof(State);
+    state = ts_calloc(1, sizeof(State));
 
-    memcpy(buffer, state, state_size);
+    state->has_leading_whitespace = false;
+    state->previous_line_continued = false;
 
-    return state_size;
+    array_init(&state->literals);
+    array_init(&state->heredocs);
+
+    return state;
 }
 
-void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-    State *state = (State *)payload;
-
-    if (length < sizeof(State)) {
-        memset(state, 0, sizeof(State));
+// Release any memory allocated for heredoc identifiers
+static void free_old_heredoc_identifiers(State *state) {
+    for (size_t i = 0; i < state->heredocs.size; i++) {
+        Heredoc *heredoc = array_get(&state->heredocs, i);
+        array_delete(&heredoc->identifier);
     }
-
-    memcpy(state, buffer, length);
 }
 
 void tree_sitter_crystal_external_scanner_destroy(void *payload) {
     State *state = (State *)payload;
+
+    free_old_heredoc_identifiers(state);
+    array_delete(&state->literals);
+    array_delete(&state->heredocs);
     ts_free(state);
+}
+
+unsigned tree_sitter_crystal_external_scanner_serialize(void *payload, char *buffer) {
+    State *state = (State *)payload;
+    size_t offset = 0;
+
+    buffer[offset++] = (char)state->has_leading_whitespace;
+    buffer[offset++] = (char)state->previous_line_continued;
+
+    // It's safe to cast the literal count into a char since it will always be
+    // less than MAX_LITERAL_COUNT.
+    buffer[offset++] = (char)state->literals.size;
+
+    // The literals array can be serialized in one chunk.
+    size_t literal_content_size = state->literals.size * array_elem_size(&state->literals);
+    memcpy(&buffer[offset], state->literals.contents, literal_content_size);
+    offset += literal_content_size;
+
+    // It's safe to cast the heredoc count into a char since it will always be
+    // less than MAX_HEREDOC_COUNT.
+    buffer[offset++] = (char)state->heredocs.size;
+
+    // Heredoc are serialized one at a time, with their identifier buffers inlined.
+    for (uint8_t i = 0; i < state->heredocs.size; i++) {
+        Heredoc *heredoc = array_get(&state->heredocs, i);
+
+        buffer[offset++] = (char)heredoc->allow_escapes;
+        buffer[offset++] = (char)heredoc->started;
+
+        // It's safe to cast the identifier size into a char since it will
+        // always be less than or equal to MAX_HEREDOC_WORD_SIZE.
+        buffer[offset++] = (char)heredoc->identifier.size;
+
+        memcpy(&buffer[offset], heredoc->identifier.contents, heredoc->identifier.size);
+        offset += heredoc->identifier.size;
+    }
+
+    ASSERT(offset <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE);
+
+    return offset;
+}
+
+_Static_assert(
+    2                                                    // boolean variables
+            + 1                                          // literals count
+            + sizeof(PercentLiteral) * MAX_LITERAL_COUNT // each literal
+            + 1                                          // heredocs count
+            + 3 * MAX_HEREDOC_COUNT                      // each heredoc object
+            + HEREDOC_BUFFER_SIZE                        // heredoc buffer total
+        <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE,
+    "Maximum serialized size is too large");
+
+void tree_sitter_crystal_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
+    State *state = (State *)payload;
+
+    // Any deserialized heredocs will overwrite what's here already, so free the
+    // existing heredoc references.
+    free_old_heredoc_identifiers(state);
+
+    // Reset the size of the arrays, but don't touch their reserved memory or capacity.
+    // We can reuse the same content buffers without freeing and reallocating memory.
+    array_clear(&state->literals);
+    array_clear(&state->heredocs);
+
+    if (length == 0) {
+        // Sometimes this function is called with a length of zero. In that
+        // case we just finish resetting the state.
+        state->has_leading_whitespace = false;
+        state->previous_line_continued = false;
+        return;
+    }
+
+    size_t offset = 0;
+    state->has_leading_whitespace = (bool)buffer[offset++];
+    state->previous_line_continued = (bool)buffer[offset++];
+
+    // The literals array can be deserialized in one chunk.
+    uint8_t literals_size = (uint8_t)buffer[offset++];
+    array_extend(&state->literals, literals_size, &buffer[offset]);
+    offset += literals_size * array_elem_size(&state->literals);
+
+    // Each heredoc must be deserialized individually to handle the identifier buffer.
+    uint8_t heredocs_size = (uint8_t)buffer[offset++];
+    for (uint8_t i = 0; i < heredocs_size; i++) {
+        Heredoc heredoc = {
+            .allow_escapes = false,
+            .started = false,
+            .identifier = array_new(),
+        };
+        heredoc.allow_escapes = (bool)buffer[offset++];
+        heredoc.started = (bool)buffer[offset++];
+
+        uint8_t identifier_size = (uint8_t)buffer[offset++];
+        array_extend(&heredoc.identifier, identifier_size, &buffer[offset]);
+        offset += identifier_size;
+
+        array_push(&state->heredocs, heredoc);
+    }
+    ASSERT(offset == length);
 }

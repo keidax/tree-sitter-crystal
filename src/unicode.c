@@ -56,10 +56,13 @@ static size_t codepoint_to_utf8(int32_t codepoint, uint8_t *buffer) {
     switch (bytes_written) {
         case 4:
             *buffer++ = UTF8_CONTINUATION_BYTE | ((codepoint >> 12) & UTF8_CONTINUATION_MASK);
+            // fall through
         case 3:
             *buffer++ = UTF8_CONTINUATION_BYTE | ((codepoint >> 6) & UTF8_CONTINUATION_MASK);
+            // fall through
         case 2:
             *buffer++ = UTF8_CONTINUATION_BYTE | (codepoint & UTF8_CONTINUATION_MASK);
+            // fall through
         default:
             return bytes_written;
     }
