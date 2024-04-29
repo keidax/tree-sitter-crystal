@@ -974,6 +974,7 @@ module.exports = grammar({
         optional(params),
         optional(return_type),
         optional(forall),
+        optional($._terminator),
       ))
     },
 

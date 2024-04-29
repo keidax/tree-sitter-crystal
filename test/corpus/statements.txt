@@ -347,6 +347,10 @@ def buzz(
 )
   puts x + y
 end
+
+def blam
+  (a || b) && c
+end
 --------------------------------------------------------------------------------
 
 (source_file
@@ -396,7 +400,14 @@ end
         (op_call
           receiver: (identifier)
           operator: (operator)
-          argument: (identifier))))))
+          argument: (identifier)))))
+  (method_def
+    name: (identifier)
+    (and
+      (or
+        (identifier)
+        (identifier))
+      (identifier))))
 
 ================================================================================
 method definitions with block parameters
