@@ -3,6 +3,8 @@
 ((constant) @constant
  (#match? @constant "^[A-Z\\d_]+$"))
 
+(require) @function.method.builtin
+
 [
   "alias"
   "begin"
@@ -11,12 +13,12 @@
   "class"
   "def"
   "do"
-  "of"
   "end"
   "ensure"
   "in"
   "module"
   "next"
+  "of"
   "rescue"
   "then"
   "unless"
