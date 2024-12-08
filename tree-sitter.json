@@ -8,6 +8,7 @@
       "file-types": [
         "cr"
       ],
+      "highlights": "queries/highlights.scm",
       "injection-regex": "crystal"
     }
   ],
@@ -16,7 +17,7 @@
     "license": "ISC",
     "description": "",
     "links": {
-      "repository": "https://github.com/tree-sitter/tree-sitter-crystal"
+      "repository": "https://github.com/keidax/tree-sitter-crystal"
     }
   },
   "bindings": {
