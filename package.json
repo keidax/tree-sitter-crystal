@@ -1,47 +1,53 @@
 {
   "name": "tree-sitter-crystal",
   "version": "0.0.1",
-  "description": "",
+  "description": "Crystal grammar for tree-sitter",
+  "repository": "https://github.com/keidax/tree-sitter-crystal",
+  "license": "MIT",
+  "author": {
+    "name": "Gabriel Holodak",
+    "email": "gthepiper@gmail.com"
+  },
   "main": "bindings/node",
   "types": "bindings/node",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node-gyp-build",
-    "prebuildify": "prebuildify --napi --strip"
-  },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "incremental",
+    "parsing",
+    "tree-sitter",
+    "crystal"
+  ],
+  "files": [
+    "grammar.js",
+    "tree-sitter.json",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**",
+    "*.wasm"
+  ],
   "dependencies": {
-    "node-addon-api": "^7.1.0",
-    "node-gyp-build": "^4.8.0"
+    "node-addon-api": "^8.2.1",
+    "node-gyp-build": "^4.8.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "prebuildify": "^6.0.1",
+    "tree-sitter-cli": "^0.24.4"
   },
   "peerDependencies": {
-    "tree-sitter": "^0.21.1"
+    "tree-sitter": "^0.22.1"
   },
   "peerDependenciesMeta": {
     "tree_sitter": {
       "optional": true
     }
   },
-  "devDependencies": {
-    "eslint": "^8.18.0",
-    "prebuildify": "^6.0.0"
-  },
-  "files": [
-    "grammar.js",
-    "binding.gyp",
-    "prebuilds/**",
-    "bindings/node/*",
-    "queries/*",
-    "src/**"
-  ],
-  "tree-sitter": [
-    {
-      "scope": "source.crystal",
-      "file-types": [
-        "cr"
-      ],
-      "injection-regex": "crystal"
-    }
-  ]
+  "scripts": {
+    "install": "node-gyp-build",
+    "lint": "eslint grammar.js",
+    "prestart": "tree-sitter build --wasm",
+    "start": "tree-sitter playground -q",
+    "test": "node --test bindings/node/*_test.js"
+  }
 }
