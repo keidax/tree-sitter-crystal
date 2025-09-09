@@ -1229,9 +1229,15 @@ module.exports = grammar({
     },
 
     fun_type_param_list: $ => {
+      // dynamic precedence is added to the comma so
+      //   fun foo(A, B, C -> D)
+      // is parsed as
+      //   fun foo(A, B, (C -> D))
+      // rather than
+      //   fun foo((A, B, C) -> D)
       return seq(
-        choice($.fun_param, $._type),
-        repeat(seq(',', choice($.fun_param, $._type))),
+        choice($.fun_param, $._bare_type),
+        repeat(seq(prec.dynamic(1, ','), choice($.fun_param, $._bare_type))),
         optional(seq(
           ',', optional('...'),
         )),

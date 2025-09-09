@@ -892,8 +892,13 @@ class SExpVisitor < Crystal::Visitor
         if node.args.size > 0
           in_node("param_list") do
             node.args.each_with_index do |arg, i|
-              alias_next_node!("fun_param")
-              arg.accept self
+              # Only fun params with a name are wrapped in `fun_param` nodes
+              if arg.name.empty?
+                arg.restriction.try &.accept self
+              else
+                alias_next_node!("fun_param")
+                arg.accept self
+              end
             end
           end
         end

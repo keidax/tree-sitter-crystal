@@ -5181,7 +5181,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_type"
+              "name": "_bare_type"
             }
           ]
         },
@@ -5191,8 +5191,12 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "STRING",
-                "value": ","
+                "type": "PREC_DYNAMIC",
+                "value": 1,
+                "content": {
+                  "type": "STRING",
+                  "value": ","
+                }
               },
               {
                 "type": "CHOICE",
@@ -5203,7 +5207,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "_type"
+                    "name": "_bare_type"
                   }
                 ]
               }
